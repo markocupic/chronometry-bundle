@@ -1,0 +1,171 @@
+@charset "UTF-8";
+body {
+    padding: 2rem;
+}
+
+.mod_chronometryList #sidebarContainer {
+    background-color: #333;
+    padding: 1rem;
+    position: fixed;
+    min-width: 290px;
+    height: 100%;
+    top: 0;
+    right: 0;
+    opacity: 1;
+    z-index: 2000;
+    overflow-y: scroll;
+}
+.mod_chronometryList #sidebarContainer.hidden-sidebar {
+    min-width: auto;
+    height: auto;
+    overflow-y: hidden;
+}
+.mod_chronometryList #sidebarContainer.hidden-sidebar .inner {
+    display: none;
+}
+.mod_chronometryList #sidebarContainer.hidden-sidebar .close-nav:before {
+    content: "";
+}
+.mod_chronometryList #sidebarContainer .toggle-sidebar {
+    color: #fff;
+    font-size: 20px;
+}
+.mod_chronometryList #sidebarContainer .clock {
+    font-size: 60px;
+    color: #fff;
+}
+.mod_chronometryList #sidebarContainer #toolContainer label {
+    color: #eee;
+}
+.mod_chronometryList #sidebarContainer #toolContainer ul {
+    list-style-type: none;
+}
+.mod_chronometryList #sidebarContainer #toolContainer ul li {
+    color: #eee;
+}
+.mod_chronometryList #sidebarContainer #toolContainer .panel-heading {
+    margin-top: 1rem;
+}
+.mod_chronometryList #sidebarContainer #toolContainer .panel-title a {
+    color: #eee;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 1rem;
+}
+.mod_chronometryList #sidebarContainer #toolContainer .panel-title a:before {
+    font-family: "Font Awesome 5 Free";
+    content: "";
+}
+.mod_chronometryList #sidebarContainer #toolContainer .panel-title a.collapsed:before {
+    content: "";
+}
+.mod_chronometryList #sidebarContainer #toolContainer .dropdown.suggest {
+    position: relative;
+    top: 100%;
+    left: -1px;
+}
+.mod_chronometryList #sidebarContainer #toolContainer .dropdown.suggest ul {
+    padding: 0;
+    margin: 0;
+}
+.mod_chronometryList #sidebarContainer #toolContainer .dropdown.suggest ul li {
+    border-bottom: 1px solid #ddd;
+    line-height: 2rem;
+    padding: 0 5px;
+    z-index: 99999;
+    color: #333 !important;
+}
+.mod_chronometryList #sidebarContainer #toolContainer .dropdown.suggest ul li:hover {
+    cursor: pointer;
+    background-color: #ccc;
+    color: #333 !important;
+}
+.mod_chronometryList .table-container {
+    overflow-x: scroll;
+}
+.mod_chronometryList .table-container table thead th[data-sort] {
+    cursor: pointer;
+}
+.mod_chronometryList .table-container table tr td.number:after {
+    font-family: "Font Awesome 5 Free";
+    padding-left: 10px;
+}
+.mod_chronometryList .table-container table tr.arrived td.number:after {
+    content: "";
+    color: #00aa00;
+}
+.mod_chronometryList .table-container table tr.abandoned td.number:after {
+    content: "";
+    color: red;
+}
+.mod_chronometryList .table-container table tr.requesting td.number:after {
+    content: "";
+    color: red;
+}
+.mod_chronometryList .table-container table tr.error td {
+    background-color: indianred;
+}
+.mod_chronometryList .table-container table tr.error td.number:after {
+    content: "";
+    color: red;
+}
+.mod_chronometryList .table-container table tr button {
+    border: 0;
+    background-color: green;
+}
+.mod_chronometryList .table-container table tr button:hover {
+    background-color: darkgreen;
+}
+.mod_chronometryList .table-container table tr.arrived button, .mod_chronometryList .table-container table tr.abandoned button {
+    background-color: red;
+}
+.mod_chronometryList .table-container table tr.arrived button:hover, .mod_chronometryList .table-container table tr.abandoned button:hover {
+    background-color: darkred;
+}
+.mod_chronometryList .current {
+    background-color: #ccc;
+}
+.mod_chronometryList .modal .modal-header {
+    position: relative;
+}
+.mod_chronometryList .modal .modal-header .close {
+    right: 1rem;
+    top: 1rem;
+    position: absolute;
+}
+.mod_chronometryList .modal .modal-body {
+    color: black;
+}
+.mod_chronometryList .modal .modal-body .modal-endtime {
+    font-size: 2rem;
+}
+.mod_chronometryList .modal .modal-body .info {
+    display: none;
+    color: red;
+    font-size: 1.5rem;
+}
+.mod_chronometryList .modal .modal-body .large-icon {
+    font-size: 2rem;
+}
+.mod_chronometryList .modal .modal-body #endtimeCtrl {
+    font-size: 2rem;
+}
+.mod_chronometryList .modal .modal-title {
+    font-size: 3rem;
+    color: black;
+}
+.mod_chronometryList .modal .modal-content {
+    top: 60px;
+}
+.mod_chronometryList .modal .clockStyle {
+    font-size: 2rem;
+    color: red !important;
+    text-align: left;
+}
+.mod_chronometryList .modal.arrived #infoArrived {
+    display: block !important;
+}
+.mod_chronometryList .modal.arrived #endtimeCtrl {
+    background-color: #ac2925;
+    color: #fff;
+}
