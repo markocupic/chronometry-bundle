@@ -141,7 +141,7 @@ $GLOBALS['TL_DCA']['tl_chronometry'] = array(
             'search' => true,
             'sorting' => true,
             'filter' => true,
-            'options' => array('1', '2', '3', '4'),
+            'options' => Config::get('chronometry_categories'),
             'inputType' => 'select',
             'eval' => array('mandatory' => true, 'decodeEntities' => false, 'maxlength' => 1, 'tl_class' => 'w50'),
             'sql' => "varchar(1) NOT NULL default ''"

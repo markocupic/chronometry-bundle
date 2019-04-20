@@ -1,10 +1,12 @@
-<?php $GLOBALS['TL_CSS'][] = 'bundles/markocupicchronometry/bootstrap/css/bootstrap.min.css'; ?>
-<?php $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/markocupicchronometry/bootstrap/js/bootstrap.min.js'; ?>
-<?php $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/markocupicchronometry/stupid-table/stupidtable.min.js'; ?>
-<?php $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/markocupicchronometry/table-sorter/table-sorter.js'; ?>
-<?php $GLOBALS['TL_CSS'][] = 'bundles/markocupicchronometry/fontawesome/css/all.css'; ?>
-<?php $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/markocupicchronometry/vue/vue.min.js'; ?>
-<?php $GLOBALS['TL_CSS'][] = 'bundles/markocupicchronometry/css/chronometry.css'; ?>
+<?php $GLOBALS['TL_CSS'][] = MOD_CHRONOMETRY_ASSET_PATH . '/bootstrap/css/bootstrap.min.css'; ?>
+<?php $GLOBALS['TL_JAVASCRIPT'][] = MOD_CHRONOMETRY_ASSET_PATH . '/bootstrap/js/bootstrap.min.js'; ?>
+<?php $GLOBALS['TL_JAVASCRIPT'][] = MOD_CHRONOMETRY_ASSET_PATH . '/stupid-table/stupidtable.min.js'; ?>
+<?php $GLOBALS['TL_JAVASCRIPT'][] = MOD_CHRONOMETRY_ASSET_PATH . '/table-sorter/table-sorter.js'; ?>
+<?php $GLOBALS['TL_CSS'][] = MOD_CHRONOMETRY_ASSET_PATH . '/fontawesome/css/all.css'; ?>
+<?php $GLOBALS['TL_CSS'][] = MOD_CHRONOMETRY_ASSET_PATH . '/fontawesome/css/brands.css'; ?>
+
+<?php $GLOBALS['TL_JAVASCRIPT'][] = MOD_CHRONOMETRY_ASSET_PATH . '/vue/vue.min.js'; ?>
+<?php $GLOBALS['TL_CSS'][] = MOD_CHRONOMETRY_ASSET_PATH . '/css/chronometry.css'; ?>
 
 
 <?php $this->extend('block_unsearchable'); ?>
@@ -64,11 +66,8 @@
                     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#toolContainer">
                         <div class="card-body">
                             <select class="form-control" id="filterSelect" v-on:change="applyFilter">
-                                <option value="0">-----</option>
-                                <option value="1">PS boys</option>
-                                <option value="2">PS girls</option>
-                                <option value="3">ISS boys</option>
-                                <option value="4">ISS girls</option>
+                                <option value="0">alle auswählen</option>
+                                <option v-for="(category, index) in categories" v-bind:value="category.id">{{ category.label }}</option>
                             </select>
                         </div>
                     </div>
@@ -110,7 +109,7 @@
     </div>
 
     <div class="container">
-        <div class="table-container">
+        <div class="table-container table-responsive">
             <table id="startlistTable" class="startlist-table table">
                 <thead>
                 <tr>
@@ -154,34 +153,34 @@
                 </div>
                 <div class="modal-body">
 
-                    <h2>{{ modal.fullname }}</h2>
+                    <h2 class="mb-4">{{ modal.fullname }}</h2>
 
                     <div id="infoArrived" v-if="modal.runnerIsFinisher">Athlet ist bereits im Ziel!</div>
 
                     <div class="modal-endtime input-group mb-3">
                         <div class="input-group-prepend">
-                            <button class="btn btn-secondary btn-warning btnGetTime" v-on:click="setEndTimeFromCurrentTime(modal.runnerIndex)" title="Zielzeit setzen" type="button"><i class="large-icon far fa-clock"></i></button>
+                            <button class="btn btn-secondary btn-warning btnGetTime" v-on:click="setEndTimeFromCurrentTime" title="Zielzeit setzen" type="button"><i class="large-icon far fa-clock"></i></button>
                         </div>
-                        <input type="text" class="form-control" id="endtimeCtrl" v-bind:value="modal.endTime" v-on:keydown.enter="saveData(modal.runnerIndex)" placeholder="00:00:00"/>
+                        <input type="text" class="form-control" id="endtimeCtrl" v-model="modal.endTime" v-on:keydown.enter="saveData(modal.runnerIndex)" placeholder="00:00:00"/>
                         <div class="input-group-append">
                             <button id="inputClear" class="btn btn-secondary btn-danger" v-on:click="clearEndTime(modal.runnerIndex)" title="Zeit zurücksetzen" type="button"><i class="large-icon fa fa-times-circle"></i></button>
                         </div>
                     </div>
                     <input type="hidden" id="idCtrl" v-bind:value="modal.runnerId"/>
 
-                    <div class="checkbox">
-                        <label>
-                            <input id="aufgegebenCtrl" type="checkbox" value="1" :checked="modal.hasAbandoned === true"> Wettkampf aufgegeben
-                        </label>
+
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="aufgegebenCtrl" value="1" :checked="modal.hasAbandoned === true">
+                        <label class="custom-control-label" for="aufgegebenCtrl">Wettkampf aufgegeben</label>
                     </div>
+
+
+                    <div id="lastChange" class="mt-3 text-right lastChange">{{ modal.lastChange }}</div>
+                    <div id="clockDisplay" class="mt-3 clockStyle">{{ currentTime }}</div>
 
                 </div>
 
                 <div class="modal-footer">
-                    <div id="lastChange" class="lastChange">{{ modal.lastChange }}</div>
-
-                    <div id="clockDisplay" class="clockStyle">{{ currentTime }}</div>
-
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Schliessen</button>
                     <button id="saveChanges" v-on:click="saveData(modal.runnerIndex)" type="button" class="btn btn-primary">Speichern</button>
                 </div>
@@ -194,7 +193,7 @@
 </div><!-- end #timing-app -->
 
 
-<script src="system/modules/chronometry/assets/chronometry-app-vue.js"></script>
+<script src="<?= MOD_CHRONOMETRY_ASSET_PATH ?>/chronometry-app-vue.js"></script>
 
 
 <?php $this->endblock(); ?>

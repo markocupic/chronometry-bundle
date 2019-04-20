@@ -39,24 +39,25 @@ body {
 }
 .mod_chronometryList #sidebarContainer #toolContainer ul {
     list-style-type: none;
+    padding: 0;
 }
 .mod_chronometryList #sidebarContainer #toolContainer ul li {
     color: #eee;
 }
-.mod_chronometryList #sidebarContainer #toolContainer .panel-heading {
-    margin-top: 1rem;
+.mod_chronometryList #sidebarContainer #toolContainer .card-header {
+    border-bottom-color: #eeeeee;
 }
-.mod_chronometryList #sidebarContainer #toolContainer .panel-title a {
+.mod_chronometryList #sidebarContainer #toolContainer .card-header button {
     color: #eee;
     font-weight: bold;
     text-decoration: none;
     font-size: 1rem;
 }
-.mod_chronometryList #sidebarContainer #toolContainer .panel-title a:before {
+.mod_chronometryList #sidebarContainer #toolContainer .card-header collapse:before {
     font-family: "Font Awesome 5 Free";
     content: "";
 }
-.mod_chronometryList #sidebarContainer #toolContainer .panel-title a.collapsed:before {
+.mod_chronometryList #sidebarContainer #toolContainer .card-header collapse.show:before {
     content: "";
 }
 .mod_chronometryList #sidebarContainer #toolContainer .dropdown.suggest {
@@ -80,9 +81,6 @@ body {
     background-color: #ccc;
     color: #333 !important;
 }
-.mod_chronometryList .table-container {
-    overflow-x: scroll;
-}
 .mod_chronometryList .table-container table thead th[data-sort] {
     cursor: pointer;
 }
@@ -90,48 +88,23 @@ body {
     font-family: "Font Awesome 5 Free";
     padding-left: 10px;
 }
-.mod_chronometryList .table-container table tr.arrived td.number:after {
+.mod_chronometryList .table-container table tr[data-arrived=true] td.number:after {
     content: "";
-    color: #00aa00;
+    color: green;
 }
-.mod_chronometryList .table-container table tr.abandoned td.number:after {
-    content: "";
+.mod_chronometryList .table-container table tr[data-abandoned=true] td.number:after {
+    content: "";
     color: red;
 }
 .mod_chronometryList .table-container table tr.requesting td.number:after {
     content: "";
-    color: red;
-}
-.mod_chronometryList .table-container table tr.error td {
-    background-color: indianred;
-}
-.mod_chronometryList .table-container table tr.error td.number:after {
-    content: "";
-    color: red;
-}
-.mod_chronometryList .table-container table tr button {
-    border: 0;
-    background-color: green;
-}
-.mod_chronometryList .table-container table tr button:hover {
-    background-color: darkgreen;
-}
-.mod_chronometryList .table-container table tr.arrived button, .mod_chronometryList .table-container table tr.abandoned button {
-    background-color: red;
-}
-.mod_chronometryList .table-container table tr.arrived button:hover, .mod_chronometryList .table-container table tr.abandoned button:hover {
-    background-color: darkred;
-}
-.mod_chronometryList .current {
-    background-color: #ccc;
+    color: blue;
 }
 .mod_chronometryList .modal .modal-header {
     position: relative;
 }
 .mod_chronometryList .modal .modal-header .close {
-    right: 1rem;
-    top: 1rem;
-    position: absolute;
+    font-size: 4rem;
 }
 .mod_chronometryList .modal .modal-body {
     color: black;
@@ -139,16 +112,13 @@ body {
 .mod_chronometryList .modal .modal-body .modal-endtime {
     font-size: 2rem;
 }
-.mod_chronometryList .modal .modal-body .info {
-    display: none;
-    color: red;
-    font-size: 1.5rem;
-}
 .mod_chronometryList .modal .modal-body .large-icon {
     font-size: 2rem;
 }
 .mod_chronometryList .modal .modal-body #endtimeCtrl {
     font-size: 2rem;
+    background-color: darkseagreen;
+    color: #000;
 }
 .mod_chronometryList .modal .modal-title {
     font-size: 3rem;
@@ -164,6 +134,7 @@ body {
 }
 .mod_chronometryList .modal.arrived #infoArrived {
     display: block !important;
+    font-size: 2rem;
 }
 .mod_chronometryList .modal.arrived #endtimeCtrl {
     background-color: #ac2925;

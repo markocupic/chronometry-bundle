@@ -1,13 +1,13 @@
 <?php
 /**
- * @copyright  Marko Cupic 2019 <m.cupic@gmx.ch>
+ * @copyright  Marko Cupic 2017 <m.cupic@gmx.ch>
  * @author     Marko Cupic
- * @package    ChronometryBundle
+ * @package    ImportFromCsvBundle
  * @license    LGPL-3.0+
- * @see	       https://github.com/markocupic/chronometry-bundle
+ * @see	       https://github.com/markocupic/import-from-csv-bundle
  *
  */
-namespace Markocupic\ImportFromCsvBundle\ContaoManager;
+namespace Markocupic\ChronometryBundle\ContaoManager;
 
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
@@ -27,7 +27,7 @@ class Plugin implements BundlePluginInterface
     {
         return [
             BundleConfig::create('Markocupic\ChronometryBundle\MarkocupicChronometryBundle')
-                ->setLoadAfter(['Contao\CoreBundle\ContaoCoreBundle']),
+                ->setLoadAfter(['Contao\CoreBundle\ContaoCoreBundle'])
         ];
     }
 }

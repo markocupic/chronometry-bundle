@@ -36,7 +36,9 @@ array_insert($GLOBALS['FE_MOD'], 2, array
 
 $GLOBALS['TL_HOOKS']['addCustomRegexp'][] = array('Markocupic\Chronometry', 'customRegexp');
 
-if(TL_MODE == 'FE')
-{
-    $GLOBALS['TL_CSS'][] = 'system/modules/chronometry/assets/chronometry.css';
-}
+// Asset path
+define('MOD_CHRONOMETRY_ASSET_PATH', 'bundles/markocupicchronometry');
+
+// Categories
+// @see references in $GLOBALS['TL_LANG']['tl_chronometry']['categories']
+$GLOBALS['TL_CONFIG']['chronometry_categories'] = array('1', '2', '3', '4');

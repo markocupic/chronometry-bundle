@@ -3,6 +3,7 @@ var chronometryApp = new Vue({
     data: {
         currentTime: '',
         runners: null,
+        categories: null,
         modal: {
             runnerIndex: null,
             arrived: false,
@@ -41,7 +42,6 @@ var chronometryApp = new Vue({
         });
     },
     methods: {
-
         /**
          * Get all rows from server
          */
@@ -57,9 +57,9 @@ var chronometryApp = new Vue({
                 }
             });
             xhr.done(function (response) {
-                console.log(response);
                 self.runners = response.data;
                 self.stats = response.stats;
+                self.categories = response.categories;
             });
             xhr.fail(function () {
                 alert("XHR-Request fehlgeschlagen!!!");
@@ -87,20 +87,11 @@ var chronometryApp = new Vue({
             let d = new Date(runner.tstamp * 1000);
             modal.lastChange = 'Letzte Änderung: ' + self.getFormatedTime(d);
 
-            modal.endTime = runner.endtime == '' ? self.getFormatedTime(new Date()) : runner.endtime;
+            modal.endTime = runner.endtime == '' ? self.currentTime : runner.endtime;
             modal.endTime = runner.aufgegeben ? '' : modal.endTime;
 
             // If athlete has abandoned the race
             modal.hasAbandoned = runner.aufgegeben ? true : false;
-
-            // Open modal
-            $('.modal').modal({});
-
-            // Get Focus on the Input Field
-            $('.modal ').on('shown.bs.modal', function (e) {
-                $('#endtimeCtrl').focus();
-                showTime($('#clockDisplay'));
-            });
 
             // Get Focus on the Input Field
             $('.modal ').on('hidden.bs.modal', function (e) {
@@ -111,6 +102,14 @@ var chronometryApp = new Vue({
                     }
                 );
             });
+
+            // Get Focus on the Input Field
+            $('.modal ').on('shown.bs.modal', function (e) {
+                $('#endtimeCtrl').focus();
+            });
+
+            // Open modal
+            $('.modal').modal({});
 
             // Clear Input Field
             $("#inputClear").click(function () {
@@ -130,6 +129,7 @@ var chronometryApp = new Vue({
             var id = modal.runnerId;
             var endtime = $('#endtimeCtrl').val();
             var aufgegeben = $('.modal #aufgegebenCtrl').is(':checked') ? 1 : '';
+
             // Check for a valid input f.ex. 22:12:59
             var regex = /^(([0|1][0-9])|([2][0-3])):([0-5][0-9]):([0-5][0-9])$/;
 
@@ -157,8 +157,9 @@ var chronometryApp = new Vue({
 
                     if (response.status == 'success') {
                         runner.requesting = false;
-                        self.runners[index] = response.data;
+                        self.runners = response.data;
                         self.stats = response.stats;
+                        self.categories = response.categories;
                     } else {
                         alert('Fehler');
                     }
@@ -201,14 +202,13 @@ var chronometryApp = new Vue({
          * Set end time from current time
          * @param index
          */
-        setEndTimeFromCurrentTime: function (index) {
+        setEndTimeFromCurrentTime: function () {
             let self = this;
-            //let runner = self.runners[index];
             let modal = self.modal;
-
             var d = new Date();
             var formatedTime = self.getFormatedTime(d);
             modal.endTime = formatedTime;
+            console.log(modal.endTime);
         },
 
         /**

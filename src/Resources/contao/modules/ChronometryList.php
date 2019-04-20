@@ -10,6 +10,9 @@
 
 namespace Markocupic;
 
+use Contao\Config;
+use Contao\Controller;
+
 /**
  * Front end module "car list".
  *
@@ -82,6 +85,7 @@ class ChronometryList extends \Module
             $json['status'] = 'success';
             $json['stats'] = $this->getStats();
             $json['data'] = $arrItems;
+            $json['categories'] = $this->getCategories();
 
             echo json_encode($json);
             exit();
@@ -106,15 +110,18 @@ class ChronometryList extends \Module
                 $objChronometry->tstamp = time();
                 $objChronometry->save();
 
+                $arrItems = array();
                 $json = array();
-                $objChronometry = $this->Database->prepare('SELECT * FROM tl_chronometry WHERE id=?')->limit(1)->execute($objChronometry->id);
-                $row = $objChronometry->fetchAssoc();
-
-                $objRow = $this->getRowAsObject($row);
+                $objChronometry = $this->Database->prepare('SELECT * FROM tl_chronometry WHERE published=? ORDER BY starttime ASC, stufe ASC, teachername, gender')->execute(1, 2);
+                while ($row = $objChronometry->fetchAssoc())
+                {
+                    $arrItems[] = $this->getRowAsObject($row);
+                }
 
                 $json['status'] = 'success';
                 $json['stats'] = $this->getStats();
-                $json['data'] = $objRow;
+                $json['data'] = $arrItems;
+                $json['categories'] = $this->getCategories();
 
                 echo json_encode($json);
                 // Do Backup (charset utf8)
@@ -207,6 +214,25 @@ class ChronometryList extends \Module
         $objStats->runnerstotal = $runnerstotal;
 
         return $objStats;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCategories()
+    {
+        Controller::loadLanguageFile('tl_chronometry');
+        $aCat = array();
+        $arrCats = Config::get('chronometry_categories');
+        if(!empty($arrCats) && is_array($arrCats)){
+            foreach($arrCats as $cat){
+                $objCat = new \stdClass();
+                $objCat->id = $cat;
+                $objCat->label = $GLOBALS['TL_LANG']['tl_chronometry']['categories'][$cat] != '' ? $GLOBALS['TL_LANG']['tl_chronometry']['categories'][$cat] : 'undefined';
+                $aCat[] = $objCat;
+            }
+        }
+        return $aCat;
     }
 
     /**

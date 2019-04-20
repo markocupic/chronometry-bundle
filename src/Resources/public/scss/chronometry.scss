@@ -1,0 +1,176 @@
+body {
+  padding: 2rem;
+}
+
+.mod_chronometryList {
+  #sidebarContainer {
+    background-color: #333;
+    padding: 1rem;
+    position: fixed;
+    min-width: 290px;
+    height: 100%;
+    top: 0;
+    right: 0;
+    opacity: 1;
+    z-index: 2000;
+    overflow-y: scroll;
+
+    &.hidden-sidebar {
+      min-width: auto;
+      height: auto;
+      overflow-y: hidden;
+
+      .inner {
+        display: none;
+      }
+
+      .close-nav:before {
+        content: "\f085";
+      }
+    }
+
+    .toggle-sidebar {
+      color: #fff;
+      font-size: 20px;
+    }
+    .clock {
+      font-size: 60px;
+      color: #fff;
+    }
+
+    #toolContainer {
+      label {
+        color: #eee;
+      }
+
+      ul {
+        list-style-type: none;
+        padding: 0;
+        li {
+          color: #eee;
+        }
+      }
+
+      .card-header {
+        border-bottom-color: #eeeeee;
+        button {
+          color: #eee;
+          font-weight: bold;
+          text-decoration: none;
+          font-size: 1rem;
+        }
+        collapse:before {
+          font-family: "Font Awesome 5 Free";
+          content: "\f068";
+        }
+        collapse.show:before {
+          content: "\f067";
+        }
+      }
+
+      .dropdown.suggest {
+        position: relative;
+        top: 100%;
+        left: -1px;
+        ul {
+          padding: 0;
+          margin: 0;
+          li {
+            border-bottom: 1px solid #ddd;
+            line-height: 2rem;
+            padding: 0 5px;
+            z-index: 99999;
+            color: #333 !important;
+
+            &:hover {
+              cursor: pointer;
+              background-color: #ccc;
+              color: #333 !important;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .table-container {
+    table {
+      thead {
+        th[data-sort] {
+          cursor: pointer;
+        }
+      }
+      tr td.number:after {
+        font-family: "Font Awesome 5 Free";
+        padding-left: 10px;
+      }
+
+      tr[data-arrived="true"] {
+        td.number:after {
+          content: "\f14a";
+          color: green;
+        }
+      }
+
+      tr[data-abandoned="true"] {
+        td.number:after {
+          content: "\f556";
+          color: red;
+        }
+      }
+
+      tr.requesting {
+        td.number:after {
+          content: "\f14d";
+          color: blue;
+        }
+      }
+    }
+  }
+
+  .modal {
+    .modal-header {
+      position: relative;
+      .close {
+        font-size: 4rem;
+      }
+    }
+    .modal-body {
+      color: black;
+      .modal-endtime {
+        font-size: 2rem;
+      }
+      .large-icon {
+        font-size: 2rem;
+      }
+      #endtimeCtrl {
+        font-size: 2rem;
+        background-color: darkseagreen;
+        color: #000;
+      }
+    }
+    .modal-title {
+      font-size: 3rem;
+      color: black;
+    }
+    .modal-content {
+      top: 60px;
+    }
+    .clockStyle {
+      font-size: 2rem;
+      color: red !important;
+      text-align: left;
+    }
+  }
+
+  .modal.arrived {
+    #infoArrived {
+      display: block !important;
+      font-size: 2rem;
+    }
+    #endtimeCtrl {
+      background-color: #ac2925;
+      color: #fff;
+    }
+  }
+}
