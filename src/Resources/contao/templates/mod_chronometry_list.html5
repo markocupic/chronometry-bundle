@@ -1,10 +1,10 @@
-<?php $GLOBALS['TL_CSS'][] = 'system/modules/chronometry/assets/bootstrap/css/bootstrap.min.css'; ?>
-<?php $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/chronometry/assets/bootstrap/js/bootstrap.min.js'; ?>
-<?php $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/chronometry/assets/stupid-table/stupidtable.min.js'; ?>
-<?php $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/chronometry/assets/table-sorter/table-sorter.js'; ?>
-<?php $GLOBALS['TL_CSS'][] = 'system/modules/chronometry/assets/fontawesome/css/all.css'; ?>
-<?php $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/chronometry/assets/vue/vue.min.js'; ?>
-<?php $GLOBALS['TL_CSS'][] = 'system/modules/chronometry/assets/css/chronometry.css'; ?>
+<?php $GLOBALS['TL_CSS'][] = 'bundles/markocupicchronometry/bootstrap/css/bootstrap.min.css'; ?>
+<?php $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/markocupicchronometry/bootstrap/js/bootstrap.min.js'; ?>
+<?php $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/markocupicchronometry/stupid-table/stupidtable.min.js'; ?>
+<?php $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/markocupicchronometry/table-sorter/table-sorter.js'; ?>
+<?php $GLOBALS['TL_CSS'][] = 'bundles/markocupicchronometry/fontawesome/css/all.css'; ?>
+<?php $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/markocupicchronometry/vue/vue.min.js'; ?>
+<?php $GLOBALS['TL_CSS'][] = 'bundles/markocupicchronometry/css/chronometry.css'; ?>
 
 
 <?php $this->extend('block_unsearchable'); ?>
@@ -198,7 +198,3 @@
 
 
 <?php $this->endblock(); ?>
-
-
-
-
