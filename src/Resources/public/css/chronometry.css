@@ -30,7 +30,7 @@
 }
 .mod_chronometryList #sidebarContainer .toggle-sidebar {
     color: #fff;
-    font-size: 20px;
+    font-size: 26px;
 }
 .mod_chronometryList #sidebarContainer .clock {
     font-size: 60px;
@@ -141,4 +141,7 @@
 .mod_chronometryList #chronometryModal.modal.runner-is-finisher #endtimeCtrl {
     background-color: #ac2925;
     color: #fff;
+}
+.mod_chronometryList [role=button] {
+    cursor: pointer;
 }

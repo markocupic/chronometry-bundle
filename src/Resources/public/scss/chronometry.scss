@@ -1,4 +1,5 @@
 .mod_chronometryList {
+
   #chronometry-app .application {
     visibility: hidden;
   }
@@ -33,7 +34,7 @@
 
     .toggle-sidebar {
       color: #fff;
-      font-size: 20px;
+      font-size: 26px;
     }
     .clock {
       font-size: 60px;
@@ -174,5 +175,9 @@
       background-color: #ac2925;
       color: #fff;
     }
+  }
+
+  [role="button"]{
+    cursor:pointer;
   }
 }
