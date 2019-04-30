@@ -1,8 +1,10 @@
-body {
-  padding: 2rem;
-}
-
 .mod_chronometryList {
+  #chronometry-app .application{
+    visibility:hidden;
+  }
+  #chronometry-app.is-ready .application{
+    visibility:visible;
+  } 
   #sidebarContainer {
     background-color: #333;
     padding: 1rem;

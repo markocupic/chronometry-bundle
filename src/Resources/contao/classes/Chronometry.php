@@ -1,27 +1,155 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: Marko
- * Date: 15.05.2016
- * Time: 22:59
+ * Chronometry Module for Contao CMS
+ * Copyright (c) 2008-2019 Marko Cupic
+ * @package chronometry-bundle
+ * @author Marko Cupic m.cupic@gmx.ch, 2019
+ * @link https://github.com/markocupic/chronometry-bundle
  */
 
 namespace Markocupic;
 
+use Contao\ChronometryModel;
+use Contao\Controller;
+use Contao\Config;
+use Contao\Database;
 
-class Chronometry extends \System
+/**
+ * Class Chronometry
+ * @package Markocupic
+ */
+class Chronometry
 {
+
+    /**
+     * @param $row
+     * @return \stdClass
+     */
+    public static function getRowAsObject($row)
+    {
+        $objRow = new \stdClass();
+        foreach ($row as $k => $v)
+        {
+            $objRow->{$k} = $v;
+        }
+        $objRow->fullname = $row['firstname'] . ' ' . $row['lastname'];
+        $objRow->runningtimeUnix = static::makeTimestamp($row['runningtime']);
+        $objRow->starttimeUnix = static::makeTimestamp($row['starttime']);
+        $objRow->endtimeUnix = static::makeTimestamp($row['endtime']);
+        $objRow->rank = static::getRank($row['id']);
+        $objRow->requesting = false;
+
+
+        return $objRow;
+    }
+
+    /**
+     * @param $id
+     * @return int|string
+     */
+    public static function getRank($id)
+    {
+        $objAthlete = ChronometryModel::findByPk($id);
+
+        if ($objAthlete !== null)
+        {
+            if ($objAthlete->runningtimeUnix < 1)
+            {
+                return 0;
+            }
+
+            $objDb = Database::getInstance()->prepare('SELECT * FROM tl_chronometry WHERE runningtimeUnix > 0 AND published=? AND category=? ORDER BY runningtimeUnix ASC')->execute(1, $objAthlete->category);
+            $values = $objDb->fetchEach('runningtimeUnix');
+
+            $i = 1;
+            $dupl = 0;
+            $lastScore = '';
+            foreach ($values as $k => $score)
+            {
+                if ($lastScore == $score)
+                {
+                    $dupl++;
+                }
+                else
+                {
+                    $dupl = 0;
+                }
+                if ($score == $objAthlete->runningtimeUnix)
+                {
+                    return $i - $dupl;
+                }
+                $i++;
+                $lastScore = $score;
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * @return \stdClass
+     */
+    public static function getStats()
+    {
+        $objChronometry = Database::getInstance()->prepare('SELECT * FROM tl_chronometry WHERE published=?')->execute(0);
+        $dispensed = $objChronometry->numRows;
+
+        $objChronometry = Database::getInstance()->prepare('SELECT * FROM tl_chronometry')->execute();
+        $total = $objChronometry->numRows;
+
+        $objChronometry = Database::getInstance()->prepare('SELECT * FROM tl_chronometry WHERE published=? AND aufgegeben=?')->execute(1, 1);
+        $abandoned = $objChronometry->numRows;
+
+        $objChronometry = Database::getInstance()->prepare('SELECT * FROM tl_chronometry WHERE published=? AND runningtimeUnix > 0 AND aufgegeben!=?')->execute(1, 1);
+        $arrived = $objChronometry->numRows;
+
+        $objChronometry = Database::getInstance()->prepare('SELECT * FROM tl_chronometry WHERE published=? AND runningtimeUnix = 0 AND aufgegeben!=?')->execute(1, 1);
+        $running = $objChronometry->numRows;
+
+        $runnerstotal = $total - $dispensed;
+
+        $objStats = new \stdClass();
+        $objStats->total = $total;
+        $objStats->dispensed = $dispensed;
+        $objStats->arrived = $arrived;
+        $objStats->running = $running;
+        $objStats->abandoned = $abandoned;
+        $objStats->runnerstotal = $runnerstotal;
+
+        return $objStats;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getCategories()
+    {
+        Controller::loadLanguageFile('tl_chronometry');
+        $aCat = array();
+        $arrCats = Config::get('chronometry_categories');
+        if(!empty($arrCats) && is_array($arrCats)){
+            foreach($arrCats as $cat){
+                $objCat = new \stdClass();
+                $objCat->id = $cat;
+                $objCat->label = $GLOBALS['TL_LANG']['tl_chronometry']['categories'][$cat] != '' ? $GLOBALS['TL_LANG']['tl_chronometry']['categories'][$cat] : 'undefined';
+                $aCat[] = $objCat;
+            }
+        }
+        return $aCat;
+    }
+
+
     /**
      * @param $strRegexp
      * @param $varValue
      * @param \Widget $objWidget
      * @return bool
      */
-    public function customRegexp($strRegexp, $varValue, \Widget $objWidget)
+    public static function customRegexp($strRegexp, $varValue, \Widget $objWidget)
     {
         if ($strRegexp == 'chronometryTime')
         {
-            if (!self::isValidTimeFormat($varValue))
+            if (!static::isValidTimeFormat($varValue))
             {
                 $objWidget->addError('Field ' . $objWidget->label . ' should be a valid time like hh:mm:ss.');
             }
@@ -105,27 +233,27 @@ class Chronometry extends \System
         );
 
         // Set valid timestamps
-        \Database::getInstance()->prepare('UPDATE tl_chronometry %s WHERE endtime=? OR runningtime=? OR runningtime=?')->set($set)->execute('', '', 0);
+        Database::getInstance()->prepare('UPDATE tl_chronometry %s WHERE endtime=? OR runningtime=? OR runningtime=?')->set($set)->execute('', '', 0);
 
 
-        $objChronometry = \Database::getInstance()->prepare('SELECT * FROM tl_chronometry WHERE endtime!=?')->execute('');
+        $objChronometry = Database::getInstance()->prepare('SELECT * FROM tl_chronometry WHERE endtime!=?')->execute('');
         while ($objChronometry->next())
         {
-            $objChronometryModel = \ChronometryModel::findByPk($objChronometry->id);
+            $objChronometryModel = ChronometryModel::findByPk($objChronometry->id);
             if ($objChronometryModel !== null)
             {
-                $objChronometryModel->runningtime = self::getTimeDifference($objChronometry->starttime, $objChronometry->endtime);
+                $objChronometryModel->runningtime = static::getTimeDifference($objChronometry->starttime, $objChronometry->endtime);
                 $objChronometryModel->save();
             }
         }
 
-        $objChronometry = \Database::getInstance()->prepare('SELECT * FROM tl_chronometry WHERE runningtime!=?')->execute('');
+        $objChronometry = Database::getInstance()->prepare('SELECT * FROM tl_chronometry WHERE runningtime!=?')->execute('');
         while ($objChronometry->next())
         {
-            $objChronometryModel = \ChronometryModel::findByPk($objChronometry->id);
+            $objChronometryModel = ChronometryModel::findByPk($objChronometry->id);
             if ($objChronometryModel !== null)
             {
-                $objChronometryModel->runningtimeUnix = self::makeTimestamp($objChronometry->runningtime);
+                $objChronometryModel->runningtimeUnix = static::makeTimestamp($objChronometry->runningtime);
                 $objChronometryModel->save();
             }
         }

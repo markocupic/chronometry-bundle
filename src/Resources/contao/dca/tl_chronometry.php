@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Contao Open Source CMS
- *
- * Copyright (c) 2005-2016 Leo Feyer
- *
- * @license LGPL-3.0+
+ * Chronometry Module for Contao CMS
+ * Copyright (c) 2008-2019 Marko Cupic
+ * @package chronometry-bundle
+ * @author Marko Cupic m.cupic@gmx.ch, 2019
+ * @link https://github.com/markocupic/chronometry-bundle
  */
 
 

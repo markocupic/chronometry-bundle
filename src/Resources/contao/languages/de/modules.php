@@ -1,9 +1,11 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: Marko
- * Date: 15.05.2016
- * Time: 23:45
+ * Chronometry Module for Contao CMS
+ * Copyright (c) 2008-2019 Marko Cupic
+ * @package chronometry-bundle
+ * @author Marko Cupic m.cupic@gmx.ch, 2019
+ * @link https://github.com/markocupic/chronometry-bundle
  */
 
 

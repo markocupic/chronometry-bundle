@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Chronometry Module for Contao CMS
+ * Copyright (c) 2008-2019 Marko Cupic
+ * @package chronometry-bundle
+ * @author Marko Cupic m.cupic@gmx.ch, 2019
+ * @link https://github.com/markocupic/chronometry-bundle
+ */
+
 // References
 $GLOBALS['TL_LANG']['tl_chronometry']['categories'][1] = 'PS boys';
 $GLOBALS['TL_LANG']['tl_chronometry']['categories'][2] = 'PS girls';

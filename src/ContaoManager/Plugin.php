@@ -1,22 +1,22 @@
 <?php
+
 /**
- * @copyright  Marko Cupic 2017 <m.cupic@gmx.ch>
- * @author     Marko Cupic
- * @package    ImportFromCsvBundle
- * @license    LGPL-3.0+
- * @see	       https://github.com/markocupic/import-from-csv-bundle
- *
+ * Chronometry Module for Contao CMS
+ * Copyright (c) 2008-2019 Marko Cupic
+ * @package chronometry-bundle
+ * @author Marko Cupic m.cupic@gmx.ch, 2019
+ * @link https://github.com/markocupic/chronometry-bundle
  */
+
 namespace Markocupic\ChronometryBundle\ContaoManager;
 
-use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
+use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
 
 /**
- * Plugin for the Contao Manager.
- *
- * @author Marko Cupic
+ * Class Plugin
+ * @package Markocupic\ChronometryBundle\ContaoManager
  */
 class Plugin implements BundlePluginInterface
 {

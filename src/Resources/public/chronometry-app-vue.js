@@ -1,6 +1,16 @@
+/**
+ * Chronometry Module for Contao CMS
+ * Copyright (c) 2008-2019 Marko Cupic
+ * @package chronometry-bundle
+ * @author Marko Cupic m.cupic@gmx.ch, 2019
+ * @link https://github.com/markocupic/chronometry-bundle
+ */
 var chronometryApp = new Vue({
     el: '#chronometry-app',
     data: {
+        requestToken: '',
+        isReady: false,
+        isOnline: '',
         currentTime: '',
         runners: null,
         categories: null,
@@ -32,9 +42,21 @@ var chronometryApp = new Vue({
     },
     created: function () {
         let self = this;
+        self.requestToken = CHRONOMETRY.requestToken;
+
+        window.setTimeout(function () {
+            self.isReady = true;
+        }, 2000);
+
         window.setInterval(function () {
             self.setTime();
         }, 1000);
+
+        self.checkOnlineStatus();
+        window.setInterval(function () {
+            self.checkOnlineStatus();
+        }, 15000);
+
         self.getDataAll();
         $(document).ready(function () {
             // Make table sortable
@@ -49,11 +71,11 @@ var chronometryApp = new Vue({
             let self = this;
             let xhr = $.ajax({
                 url: window.location.href,
-                type: 'get',
+                type: 'post',
                 dataType: 'json',
                 data: {
-                    'ajaxRequest': 'true',
-                    'getAll': 'true'
+                    'REQUEST_TOKEN': self.requestToken,
+                    'action': 'getDataAll'
                 }
             });
             xhr.done(function (response) {
@@ -120,7 +142,38 @@ var chronometryApp = new Vue({
          * Save data to server
          * @param index
          */
-        saveData: function (index) {
+        checkOnlineStatus: function () {
+            let self = this;
+            let xhr = $.ajax({
+                url: window.location.href,
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    'action': 'checkOnlineStatus',
+                    'REQUEST_TOKEN': self.requestToken,
+                }
+            });
+            xhr.done(function (response) {
+                if (response.status === 'success') {
+                    self.isOnline = true;
+                } else {
+                    self.isOnline = false;
+                }
+            });
+            xhr.fail(function () {
+                self.isOnline = false;
+            });
+            xhr.always(function () {
+                //
+            });
+
+        },
+
+        /**
+         * Save data to server
+         * @param index
+         */
+        saveRow: function (index) {
             let self = this;
             let runner = self.runners[index];
             let modal = self.modal;
@@ -142,11 +195,11 @@ var chronometryApp = new Vue({
                 runner.requesting = true;
                 let xhr = $.ajax({
                     url: window.location.href,
-                    type: 'get',
+                    type: 'post',
                     dataType: 'json',
                     data: {
-                        'ajaxRequest': 'true',
-                        'saveRow': 'true',
+                        'action': 'saveRow',
+                        'REQUEST_TOKEN': self.requestToken,
                         'id': id,
                         'index': index,
                         'endtime': endtime,
@@ -208,7 +261,6 @@ var chronometryApp = new Vue({
             var d = new Date();
             var formatedTime = self.getFormatedTime(d);
             modal.endTime = formatedTime;
-            console.log(modal.endTime);
         },
 
         /**
