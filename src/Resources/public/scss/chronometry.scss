@@ -1,10 +1,10 @@
 .mod_chronometryList {
-  #chronometry-app .application{
-    visibility:hidden;
+  #chronometry-app .application {
+    visibility: hidden;
   }
-  #chronometry-app.is-ready .application{
-    visibility:visible;
-  } 
+  #chronometry-app.is-ready .application {
+    visibility: visible;
+  }
   #sidebarContainer {
     background-color: #333;
     padding: 1rem;
@@ -14,7 +14,7 @@
     top: 0;
     right: 0;
     opacity: 1;
-    z-index: 2000;
+    z-index: 1040;
     overflow-y: scroll;
 
     &.hidden-sidebar {
@@ -114,7 +114,7 @@
         }
       }
 
-      tr[data-abandoned="true"] {
+      tr[data-hasGivenUp="true"] {
         td.number:after {
           content: "\f556";
           color: red;
@@ -130,7 +130,7 @@
     }
   }
 
-  .modal {
+  #chronometryModal.modal {
     .modal-header {
       position: relative;
       .close {
@@ -165,8 +165,8 @@
     }
   }
 
-  .modal.arrived {
-    #infoArrived {
+  #chronometryModal.modal.runner-is-finisher {
+    #infoRunnerHasFinished {
       display: block !important;
       font-size: 2rem;
     }

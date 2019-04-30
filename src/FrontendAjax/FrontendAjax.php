@@ -12,6 +12,7 @@ namespace Markocupic\ChronometryBundle\FrontendAjax;
 
 use Contao\ChronometryModel;
 use Contao\Database;
+use Contao\Folder;
 use Contao\Input;
 use Markocupic\Chronometry;
 use Markocupic\ExportTable\ExportTable;
@@ -76,9 +77,9 @@ class FrontendAjax
             {
                 $objChronometry->endtime = Input::post('endtime');
 
-                // Athlet has abandoned the race
-                $objChronometry->aufgegeben = Input::post('aufgegeben');
-                if (Input::post('aufgegeben') == 1)
+                // Athlet has given up the race
+                $objChronometry->hasGivenUp = Input::post('hasGivenUp');
+                if (Input::post('hasGivenUp') == 1)
                 {
                     $objChronometry->endtime = '';
                 }
@@ -102,7 +103,8 @@ class FrontendAjax
                 $arrJson['categories'] = Chronometry::getCategories();
 
                 // Do backup
-                ExportTable::exportTable('tl_chronometry', array('strDestination' => 'files/chronometry'));
+                new Folder('files/chronometry-backup');
+                ExportTable::exportTable('tl_chronometry', array('strDestination' => 'files/chronometry-backup'));
                 $response = new JsonResponse($arrJson);
                 return $response->send();
             }

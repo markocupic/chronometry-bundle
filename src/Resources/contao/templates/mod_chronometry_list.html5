@@ -93,11 +93,11 @@
                             <div class="card-body">
                                 <ul class="p-0">
                                     <li class="total" data-text="Total">Gemeldet: {{ stats.total }}</li>
-                                    <li class="runnersTotal" data-text="Gemeldet">Am Start: {{ stats.runnerstotal }}</li>
-                                    <li class="exempted" data-text="Dispensiert">Nicht am Start: {{ stats.dispensed }}</li>
-                                    <li class="arrived" data-text="Im Ziel">Bereits im Ziel: {{ stats.arrived }}</li>
+                                    <li class="runnersTotal" data-text="Gemeldet">Am Start: {{ stats.runnersTotal }}</li>
+                                    <li class="dispensed" data-text="Dispensiert">Nicht am Start: {{ stats.dispensed }}</li>
+                                    <li class="haveFinished" data-text="Im Ziel">Bereits im Ziel: {{ stats.haveFinished }}</li>
                                     <li class="running" data-text="Noch nicht im Ziel">Noch nicht im Ziel: {{ stats.running }}</li>
-                                    <li class="aufgegeben" data-text="Wettkampf aufgegeben">Wettkampf aufgegeben: {{ stats.abandoned }}</li>
+                                    <li class="haveGivenUp" data-text="Wettkampf aufgegeben">Wettkampf aufgegeben: {{ stats.haveGivenUp }}</li>
                                 </ul>
                             </div>
                         </div>
@@ -134,7 +134,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="(runner, index) in runners" v-bind:data-index="index" v-bind:id="runner.id" v-bind:data-number="runner.number" v-bind:data-fullname="runner.fullname" v-bind:data-category="runner.category" v-bind:data-abandoned="runner.aufgegeben ? true : false" v-bind:data-arrived="runner.endtime != '' ? true : false" v-bind:class="runner.requesting === true ? 'requesting' : ''">
+                    <tr v-for="(runner, index) in runners" v-bind:data-index="index" v-bind:id="runner.id" v-bind:data-number="runner.number" v-bind:data-fullname="runner.fullname" v-bind:data-category="runner.category" v-bind:data-hasGivenUp="runner.hasGivenUp ? true : false" v-bind:data-arrived="runner.endtime != '' ? true : false" v-bind:class="runner.requesting === true ? 'requesting' : ''">
                         <td class="number">{{ runner.number }}</td>
                         <td class="firstname">{{ runner.firstname }}</td>
                         <td class="lastname">{{ runner.lastname }}</td>
@@ -152,18 +152,18 @@
                 </table>
             </div>
         </div>
-        <div class="modal fade" v-bind:class="modal.arrived ? 'arrived' : ''">
+        <div id="chronometryModal" class="modal fade" v-bind:class="modal.runnerIsFinisher ? 'runner-is-finisher' : ''">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">{{ modal.title }}</h4>
+                        <h4 class="modal-title">Startnummer {{ modal.runnerNumber }}</h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body">
 
-                        <h2 class="mb-4">{{ modal.fullname }}</h2>
+                        <h1 class="mb-4 text-uppercase text-danger">{{ modal.runnerFullname }}</h1>
 
-                        <div id="infoArrived" v-if="modal.runnerIsFinisher">Athlet ist bereits im Ziel!</div>
+                        <div id="infoRunnerHasFinished" class="info-runner-has-finished" v-if="modal.runnerIsFinisher"><i class="fas fa-check"></i> Athlet ist bereits im Ziel!</div>
 
                         <div class="modal-endtime input-group mb-3">
                             <div class="input-group-prepend">
@@ -177,8 +177,8 @@
                         <input type="hidden" id="idCtrl" v-bind:value="modal.runnerId"/>
 
                         <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="aufgegebenCtrl" value="1" :checked="modal.hasAbandoned === true">
-                            <label class="custom-control-label" for="aufgegebenCtrl">Wettkampf aufgegeben</label>
+                            <input type="checkbox" class="custom-control-input" id="runnerHasGivenUpCtrl" value="1" :checked="modal.runnerHasGivenUp === true">
+                            <label class="custom-control-label" for="runnerHasGivenUpCtrl">Wettkampf aufgegeben</label>
                         </div>
 
                         <div id="lastChange" class="mt-3 text-right lastChange">{{ modal.lastChange }}</div>

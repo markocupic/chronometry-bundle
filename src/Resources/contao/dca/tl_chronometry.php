@@ -90,7 +90,7 @@ $GLOBALS['TL_DCA']['tl_chronometry'] = array(
     // Palettes
     'palettes' => array(
         //'__selector__' => array('addImage', 'addImage', 'addGallery', 'source'),
-        'default' => '{published_legend},published;{name_legend},firstname,lastname,stufe,gender,number,category,teachername,notice;{time_legend},starttime,endtime,runningtime,runningtimeUnix,aufgegeben',
+        'default' => '{published_legend},published;{name_legend},firstname,lastname,stufe,gender,number,category,teachername,notice;{time_legend},starttime,endtime,runningtime,runningtimeUnix,hasGivenUp',
         // Subpalettes
         //'subpalettes' => array()
     ),
@@ -228,8 +228,8 @@ $GLOBALS['TL_DCA']['tl_chronometry'] = array(
             'eval' => array('submitOnChange' => true, 'doNotCopy' => true, 'tl_class' => 'clr'),
             'sql' => "char(1) NOT NULL default ''",
         ),
-        'aufgegeben' => array(
-            'label' => &$GLOBALS['TL_LANG']['tl_chronometry']['aufgegeben'],
+        'hasGivenUp' => array(
+            'label' => &$GLOBALS['TL_LANG']['tl_chronometry']['hasGivenUp'],
             'exclude' => true,
             'search' => true,
             'sorting' => true,

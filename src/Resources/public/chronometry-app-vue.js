@@ -8,22 +8,21 @@
 var chronometryApp = new Vue({
     el: '#chronometry-app',
     data: {
-        requestToken: '',
         isReady: false,
         isOnline: '',
+        requestToken: '',
         currentTime: '',
         runners: null,
         categories: null,
         modal: {
             runnerIndex: null,
-            arrived: false,
-            title: '',
-            fullname: '',
+            runnerNumber: '',
+            runnerFullname: '',
             runnerId: null,
             runnerIsFinisher: false,
+            runnerHasGivenUp: false,
             lastChange: '',
             endTime: '',
-            hasAbandoned: false
         },
         searchForm: {
             showNumberDropdown: false,
@@ -34,10 +33,10 @@ var chronometryApp = new Vue({
         stats: {
             total: 0,
             dispensed: 0,
-            arrived: 0,
+            haveFinished: 0,
             running: 0,
-            abandoned: 0,
-            runnerstotal: 0,
+            haveGivenUp: 0,
+            runnersTotal: 0,
         }
     },
     created: function () {
@@ -100,9 +99,8 @@ var chronometryApp = new Vue({
             let modal = self.modal;
 
             modal.runnerIndex = index;
-            modal.arrived = runner.endtime != '' ? true : false;
-            modal.title = 'Startnummer ' + runner.number;
-            modal.fullname = runner.fullname;
+            modal.runnerNumber = runner.number;
+            modal.runnerFullname = runner.fullname;
             modal.runnerIsFinisher = runner.endtime != '' ? true : false;
             modal.runnerId = runner.id;
 
@@ -110,10 +108,10 @@ var chronometryApp = new Vue({
             modal.lastChange = 'Letzte Änderung: ' + self.getFormatedTime(d);
 
             modal.endTime = runner.endtime == '' ? self.currentTime : runner.endtime;
-            modal.endTime = runner.aufgegeben ? '' : modal.endTime;
+            modal.endTime = runner.hasGivenUp ? '' : modal.endTime;
 
-            // If athlete has abandoned the race
-            modal.hasAbandoned = runner.aufgegeben ? true : false;
+            // If athlete has given up the race
+            modal.runnerHasGivenUp = runner.hasGivenUp ? true : false;
 
             // Get Focus on the Input Field
             $('.modal ').on('hidden.bs.modal', function (e) {
@@ -181,7 +179,7 @@ var chronometryApp = new Vue({
 
             var id = modal.runnerId;
             var endtime = $('#endtimeCtrl').val();
-            var aufgegeben = $('.modal #aufgegebenCtrl').is(':checked') ? 1 : '';
+            var hasGivenUp = $('.modal #runnerHasGivenUpCtrl').is(':checked') ? 1 : '';
 
             // Check for a valid input f.ex. 22:12:59
             var regex = /^(([0|1][0-9])|([2][0-3])):([0-5][0-9]):([0-5][0-9])$/;
@@ -203,7 +201,7 @@ var chronometryApp = new Vue({
                         'id': id,
                         'index': index,
                         'endtime': endtime,
-                        'aufgegeben': aufgegeben
+                        'hasGivenUp': hasGivenUp
                     }
                 });
                 xhr.done(function (response) {

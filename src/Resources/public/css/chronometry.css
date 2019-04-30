@@ -14,7 +14,7 @@
     top: 0;
     right: 0;
     opacity: 1;
-    z-index: 2000;
+    z-index: 1040;
     overflow-y: scroll;
 }
 .mod_chronometryList #sidebarContainer.hidden-sidebar {
@@ -94,7 +94,7 @@
     content: "";
     color: green;
 }
-.mod_chronometryList .table-container table tr[data-abandoned=true] td.number:after {
+.mod_chronometryList .table-container table tr[data-hasGivenUp=true] td.number:after {
     content: "";
     color: red;
 }
@@ -102,43 +102,43 @@
     content: "";
     color: blue;
 }
-.mod_chronometryList .modal .modal-header {
+.mod_chronometryList #chronometryModal.modal .modal-header {
     position: relative;
 }
-.mod_chronometryList .modal .modal-header .close {
+.mod_chronometryList #chronometryModal.modal .modal-header .close {
     font-size: 4rem;
 }
-.mod_chronometryList .modal .modal-body {
+.mod_chronometryList #chronometryModal.modal .modal-body {
     color: black;
 }
-.mod_chronometryList .modal .modal-body .modal-endtime {
+.mod_chronometryList #chronometryModal.modal .modal-body .modal-endtime {
     font-size: 2rem;
 }
-.mod_chronometryList .modal .modal-body .large-icon {
+.mod_chronometryList #chronometryModal.modal .modal-body .large-icon {
     font-size: 2rem;
 }
-.mod_chronometryList .modal .modal-body #endtimeCtrl {
+.mod_chronometryList #chronometryModal.modal .modal-body #endtimeCtrl {
     font-size: 2rem;
     background-color: darkseagreen;
     color: #000;
 }
-.mod_chronometryList .modal .modal-title {
+.mod_chronometryList #chronometryModal.modal .modal-title {
     font-size: 3rem;
     color: black;
 }
-.mod_chronometryList .modal .modal-content {
+.mod_chronometryList #chronometryModal.modal .modal-content {
     top: 60px;
 }
-.mod_chronometryList .modal .clockStyle {
+.mod_chronometryList #chronometryModal.modal .clockStyle {
     font-size: 2rem;
     color: red !important;
     text-align: left;
 }
-.mod_chronometryList .modal.arrived #infoArrived {
+.mod_chronometryList #chronometryModal.modal.runner-is-finisher #infoRunnerHasFinished {
     display: block !important;
     font-size: 2rem;
 }
-.mod_chronometryList .modal.arrived #endtimeCtrl {
+.mod_chronometryList #chronometryModal.modal.runner-is-finisher #endtimeCtrl {
     background-color: #ac2925;
     color: #fff;
 }
