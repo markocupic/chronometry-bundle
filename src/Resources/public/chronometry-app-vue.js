@@ -14,6 +14,9 @@ var chronometryApp = new Vue({
         currentTime: '',
         runners: null,
         categories: null,
+        sidebar: {
+            status: 'closed',
+        },
         modal: {
             runnerIndex: null,
             runnerNumber: '',
@@ -391,9 +394,14 @@ var chronometryApp = new Vue({
          * Toggle sidebar
          */
         toggleSidebar: function () {
-            $('#sidebarContainer .inner').toggle(500, function () {
-                $('#sidebarContainer').toggleClass('hidden-sidebar');
-            });
+            let self = this;
+            if (self.sidebar.status === 'closed') {
+                self.sidebar.status = 'open';
+            } else {
+                self.sidebar.status = 'closed';
+            }
+
+            $('#sidebarContainer').toggleClass('hidden-sidebar');
         },
 
         /**

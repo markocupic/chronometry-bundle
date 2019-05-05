@@ -5,8 +5,8 @@
 <?php $GLOBALS['TL_CSS'][] = MOD_CHRONOMETRY_ASSET_PATH . '/fontawesome/css/all.css'; ?>
 <?php $GLOBALS['TL_CSS'][] = MOD_CHRONOMETRY_ASSET_PATH . '/fontawesome/css/brands.css'; ?>
 <?php $GLOBALS['TL_JAVASCRIPT'][] = MOD_CHRONOMETRY_ASSET_PATH . '/vue/vue.min.js'; ?>
+<?php $GLOBALS['TL_JAVASCRIPT'][] = MOD_CHRONOMETRY_ASSET_PATH . '/popper/popper.js'; ?>
 <?php $GLOBALS['TL_CSS'][] = MOD_CHRONOMETRY_ASSET_PATH . '/css/chronometry.css'; ?>
-
 
 <?php $this->extend('block_unsearchable'); ?>
 
@@ -14,7 +14,7 @@
 
 <div id="chronometry-app" v-bind:class="{ 'is-ready': isReady }">
 
-    <div class="container text-center mt-5" v-if="isReady === false">
+    <div class="text-center mt-5" v-if="isReady === false">
         <div class="spinner-border" role="status">
             <span class="sr-only">Loading...</span>
         </div>
@@ -24,8 +24,8 @@
     <div class="application">
 
         <!-- Sidebar container -->
-        <div id="sidebarContainer" class="hidden-sidebar hidden-sm-down">
-            <div class="toggle-sidebar" role="button" v-on:click="toggleSidebar"><i class="fas fa-bars"></i></div>
+        <div id="sidebarContainer" v-bind:data-toggle="sidebar.status">
+            <div class="toggle-sidebar" role="button" v-on:click="toggleSidebar" v-bind:title="sidebar.status === 'closed' ? 'Sidebar öffnen' : 'Sidebar schliessen'"><i class="fas" v-bind:class="sidebar.status === 'closed' ? 'fa-bars' : 'fa-times'"></i></div>
             <div class="inner">
                 <div class="clock">{{ currentTime }}</div>
 
@@ -118,34 +118,34 @@
             </div>
 
             <div class="table-container table-responsive">
-                <table id="startlistTable" class="startlist-table table">
+                <table id="startlistTable" class="startlist-table table table-striped">
                     <thead>
                     <tr>
-                        <th data-field="number" data-sort="int">Start-Nr.</th>
-                        <th data-field="firstname" data-sort="string">Vorname</th>
-                        <th data-field="lastname" data-sort="string">Nachname</th>
-                        <th data-field="stufe" data-sort="int">Klasse</th>
-                        <th data-field="teachername" data-sort="string">KLP</th>
-                        <th data-field="starttime" data-sort="int">Start</th>
-                        <th data-field="endtime" data-sort="int">Ziel</th>
-                        <th data-field="rank" data-sort="int">Rang</th>
-                        <th data-field="runningtime" data-sort="int">Laufzeit</th>
-                        <th></th>
+                        <th class="align-middle" data-field="number" data-sort="int">Start-Nr.</th>
+                        <th class="align-middle" data-field="firstname" data-sort="string">Vorname</th>
+                        <th class="align-middle" data-field="lastname" data-sort="string">Nachname</th>
+                        <th class="align-middle" data-field="stufe" data-sort="int">Klasse</th>
+                        <th class="align-middle" data-field="teachername" data-sort="string">KLP</th>
+                        <th class="align-middle" data-field="starttime" data-sort="int">Start</th>
+                        <th class="align-middle" data-field="endtime" data-sort="int">Ziel</th>
+                        <th class="align-middle" data-field="rank" data-sort="int">Rang</th>
+                        <th class="align-middle" data-field="runningtime" data-sort="int">Laufzeit</th>
+                        <th class="align-middle"></th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="(runner, index) in runners" v-bind:data-index="index" v-bind:id="runner.id" v-bind:data-number="runner.number" v-bind:data-fullname="runner.fullname" v-bind:data-category="runner.category" v-bind:data-hasGivenUp="runner.hasGivenUp ? true : false" v-bind:data-arrived="runner.endtime != '' ? true : false" v-bind:class="runner.requesting === true ? 'requesting' : ''">
-                        <td class="number">{{ runner.number }}</td>
-                        <td class="firstname">{{ runner.firstname }}</td>
-                        <td class="lastname">{{ runner.lastname }}</td>
-                        <td class="stufe">{{ runner.stufe }}</td>
-                        <td class="teachername">{{ runner.teachername }}</td>
-                        <td class="starttime" v-bind:data-sort-value="runner.starttimeUnix">{{ runner.starttime }}</td>
-                        <td class="endtime" v-bind:data-sort-value="runner.endtimeUnix">{{ runner.endtime }}</td>
-                        <td class="rank" v-bind:data-sort-value="runner.rank > 0 ? runner.rank : 999999999999999">{{ runner.rank > 0 ? runner.rank : 'd.n.f' }}</td>
-                        <td class="runningtime" v-bind:data-sort-value="runner.runningtimeUnix == 0 ? 999999999999999 : runner.runningtimeUnix">{{ runner.runningtime }}</td>
-                        <td class="edit-button">
-                            <button v-on:click="openModal(index)" class="btn btn-primary editButton"><i class="far fa-clock"></i></button>
+                    <tr v-for="(runner, index) in runners" v-bind:data-index="index" v-bind:id="runner.id" v-bind:data-number="runner.number" v-bind:data-fullname="runner.fullname" v-bind:data-category="runner.category" v-bind:data-runnerHasGivenUpRace="runner.hasGivenUp ? true : false" v-bind:data-runnerHasFinishedRace="runner.endtime != '' ? true : false" v-bind:class="runner.requesting === true ? 'requesting' : ''">
+                        <td class="align-middle number"><span role="button" v-on:click="openModal(index)" title="Datensatz bearbeiten">{{ runner.number }}</span></td>
+                        <td class="align-middle firstname"><span role="button" v-on:click="openModal(index)" title="Datensatz bearbeiten">{{ runner.firstname }}</span></td>
+                        <td class="align-middle lastname"><span role="button" v-on:click="openModal(index)" title="Datensatz bearbeiten">{{ runner.lastname }}</span></td>
+                        <td class="align-middle stufe">{{ runner.stufe }}</td>
+                        <td class="align-middle teachername">{{ runner.teachername }}</td>
+                        <td class="align-middle starttime" v-bind:data-sort-value="runner.starttimeUnix">{{ runner.starttime }}</td>
+                        <td class="align-middle endtime" v-bind:data-sort-value="runner.endtimeUnix"><span role="button" v-on:click="openModal(index)" title="Datensatz bearbeiten">{{ runner.endtime }}</span></td>
+                        <td class="align-middle rank" v-bind:data-sort-value="runner.rank > 0 ? runner.rank : 999999999999999">{{ runner.rank > 0 ? runner.rank : 'd.n.f' }}</td>
+                        <td class="align-middle runningtime" v-bind:data-sort-value="runner.runningtimeUnix == 0 ? 999999999999999 : runner.runningtimeUnix"><span role="button" v-on:click="openModal(index)" title="Datensatz bearbeiten">{{ runner.runningtime }}</span></td>
+                        <td class="align-middle edit-button">
+                            <button v-on:click="openModal(index)" title="Datensatz bearbeiten" class="btn btn-primary editButton"><i class="far fa-clock"></i></button>
                         </td>
                     </tr>
                     </tbody>

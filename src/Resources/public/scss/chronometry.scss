@@ -16,19 +16,14 @@
     right: 0;
     opacity: 1;
     z-index: 1040;
-    overflow-y: scroll;
+    overflow-y: auto;
 
-    &.hidden-sidebar {
+    &[data-toggle="closed"] {
       min-width: auto;
       height: auto;
       overflow-y: hidden;
-
       .inner {
         display: none;
-      }
-
-      .close-nav:before {
-        content: "\f085";
       }
     }
 
@@ -36,6 +31,7 @@
       color: #fff;
       font-size: 26px;
     }
+
     .clock {
       font-size: 60px;
       color: #fff;
@@ -56,19 +52,21 @@
 
       .card-header {
         border-bottom-color: #eeeeee;
-        button {
+        padding-left: 0.5rem;
+        button[data-toggle="collapse"] {
           color: #eee;
           font-weight: bold;
           text-decoration: none;
           font-size: 1rem;
+          &:before {
+            font-family: "Font Awesome 5 Free";
+            content: "\f068";
+          }
+          &.collapsed:before {
+            content: "\f067";
+          }
         }
-        collapse:before {
-          font-family: "Font Awesome 5 Free";
-          content: "\f068";
-        }
-        collapse.show:before {
-          content: "\f067";
-        }
+
       }
 
       .dropdown.suggest {
@@ -103,19 +101,20 @@
           cursor: pointer;
         }
       }
+
       tr td.number:after {
         font-family: "Font Awesome 5 Free";
         padding-left: 10px;
       }
 
-      tr[data-arrived="true"] {
+      tr[data-runnerHasFinishedRace="true"] {
         td.number:after {
           content: "\f14a";
           color: green;
         }
       }
 
-      tr[data-hasGivenUp="true"] {
+      tr[data-runnerHasGivenUpRace="true"] {
         td.number:after {
           content: "\f556";
           color: red;
@@ -139,7 +138,7 @@
       }
     }
     .modal-body {
-      color: black;
+      color: #000;
       .modal-endtime {
         font-size: 2rem;
       }
@@ -177,7 +176,7 @@
     }
   }
 
-  [role="button"]{
-    cursor:pointer;
+  [role="button"] {
+    cursor: pointer;
   }
 }
