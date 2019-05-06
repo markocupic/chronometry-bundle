@@ -1,7 +1,6 @@
 <?php $GLOBALS['TL_CSS'][] = MOD_CHRONOMETRY_ASSET_PATH . '/bootstrap/css/bootstrap.min.css'; ?>
 <?php $GLOBALS['TL_JAVASCRIPT'][] = MOD_CHRONOMETRY_ASSET_PATH . '/bootstrap/js/bootstrap.min.js'; ?>
 <?php $GLOBALS['TL_JAVASCRIPT'][] = MOD_CHRONOMETRY_ASSET_PATH . '/stupid-table/stupidtable.min.js'; ?>
-<?php $GLOBALS['TL_JAVASCRIPT'][] = MOD_CHRONOMETRY_ASSET_PATH . '/table-sorter/table-sorter.js'; ?>
 <?php $GLOBALS['TL_CSS'][] = MOD_CHRONOMETRY_ASSET_PATH . '/fontawesome/css/all.css'; ?>
 <?php $GLOBALS['TL_CSS'][] = MOD_CHRONOMETRY_ASSET_PATH . '/fontawesome/css/brands.css'; ?>
 <?php $GLOBALS['TL_JAVASCRIPT'][] = MOD_CHRONOMETRY_ASSET_PATH . '/vue/vue.min.js'; ?>
@@ -174,7 +173,6 @@
                                 <button id="inputClear" class="btn btn-secondary btn-danger" v-on:click="clearEndTime(modal.runnerIndex)" title="Zeit zurücksetzen" type="button"><i class="large-icon fa fa-times-circle"></i></button>
                             </div>
                         </div>
-                        <input type="hidden" id="idCtrl" v-bind:value="modal.runnerId"/>
 
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="runnerHasGivenUpCtrl" value="1" :checked="modal.runnerHasGivenUp === true">
