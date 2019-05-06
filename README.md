@@ -4,8 +4,10 @@ Zeiterfassungs Tool für Ausdauerwettkämpfe programmiert für die Schule Ettisw
 * vue.js
 * Font Awesome 5 Free
 * Bootstrap Framework
-* jquery (muss im theme eingebunden werden)
+* jQuery (muss im Theme im Contao Backend eingebunden werden)
 * popper.js
-* stupid-table
-* table-sorter
+* [stupid-table table sorter](https://github.com/joequery/Stupid-Table-Plugin)
+
+
+
 
