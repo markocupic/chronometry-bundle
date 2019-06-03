@@ -1,0 +1,5 @@
+id;tstamp;number;gender;stufe;category;firstname;lastname;teachername;starttime;endtime;runningtime;runningtimeUnix;published;dnf;notice
+1;;501;female;5;1;Jana;Doux;Alfons Meier;08:15:00;;;;;;
+2;;603;female;6;2;Sarah;Frei;Dieter Ramsch;09:15:00;;;;;;
+3;;703;male;7;3;Jan;Vonwyl;Hans Werner;10:15:00;;;;;;
+4;;804;male;8;4;Elmar;Erni;Angelika Holzer;11:15:00;;;;;;

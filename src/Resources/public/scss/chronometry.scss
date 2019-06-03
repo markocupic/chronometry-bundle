@@ -114,7 +114,7 @@
         }
       }
 
-      tr[data-runnerHasGivenUpRace="true"] {
+      tr[data-runnerdnfRace="true"] {
         td.number:after {
           content: "\f556";
           color: red;

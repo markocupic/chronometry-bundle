@@ -78,8 +78,8 @@ class FrontendAjax
                 $objChronometry->endtime = Input::post('endtime');
 
                 // Athlet has given up the race
-                $objChronometry->hasGivenUp = Input::post('hasGivenUp');
-                if (Input::post('hasGivenUp') == 1)
+                $objChronometry->dnf = Input::post('dnf');
+                if (Input::post('dnf') == 1)
                 {
                     $objChronometry->endtime = '';
                 }

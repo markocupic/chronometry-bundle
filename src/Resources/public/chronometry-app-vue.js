@@ -23,7 +23,7 @@ var chronometryApp = new Vue({
             runnerFullname: '',
             runnerId: null,
             runnerIsFinisher: false,
-            runnerHasGivenUp: false,
+            runnerdnf: false,
             lastChange: '',
             endTime: '',
         },
@@ -43,7 +43,7 @@ var chronometryApp = new Vue({
         }
     },
     created: function () {
-        let self = this;
+        var self = this;
         self.requestToken = CHRONOMETRY.requestToken;
 
         window.setTimeout(function () {
@@ -70,8 +70,8 @@ var chronometryApp = new Vue({
          * Get all rows from server
          */
         getDataAll: function () {
-            let self = this;
-            let xhr = $.ajax({
+            var self = this;
+            var xhr = $.ajax({
                 url: window.location.href,
                 type: 'post',
                 dataType: 'json',
@@ -97,9 +97,9 @@ var chronometryApp = new Vue({
          * @param index
          */
         openModal: function (index) {
-            let self = this;
-            let runner = self.runners[index];
-            let modal = self.modal;
+            var self = this;
+            var runner = self.runners[index];
+            var modal = self.modal;
 
             modal.runnerIndex = index;
             modal.runnerNumber = runner.number;
@@ -107,20 +107,20 @@ var chronometryApp = new Vue({
             modal.runnerIsFinisher = runner.endtime != '' ? true : false;
             modal.runnerId = runner.id;
 
-            let d = new Date(runner.tstamp * 1000);
-            modal.lastChange = 'Letzte Änderung: ' + self.getFormatedTime(d);
+            var d = new Date(runner.tstamp * 1000);
+            modal.lastChange = 'varzte Änderung: ' + self.getFormatedTime(d);
 
             modal.endTime = runner.endtime == '' ? self.currentTime : runner.endtime;
             modal.endTime = runner.hasGivenUp ? '' : modal.endTime;
 
-            // If athlete has given up the race
+            // If athvare has given up the race
             modal.runnerHasGivenUp = runner.hasGivenUp ? true : false;
 
             // Get Focus on the Input Field
             $('.modal ').on('hidden.bs.modal', function (e) {
                 $('html, body').animate({
                         //scrollTop: $('body').offset().top
-                    }, 500, function () {
+                    }, 50, function () {
                         $('#searchNumber').val('').focus();
                     }
                 );
@@ -139,13 +139,38 @@ var chronometryApp = new Vue({
                 modal.endTime = '';
             });
         },
+
+        /**
+         * Scroll to number
+         * @param event
+         */
+        scrollToNumber: function (event) {
+            var self = this;
+            var input = event.target;
+            if ($(input).val() > 1) {
+                var tr = $("tr[data-number='" + $(input).val() + "']");
+                if ($(tr).length) {
+                    $('html, body').animate({
+                            scrollTop: $(tr).offset().top - 40
+                        }, 400, function () {
+                            // On animate end
+                        }
+                    );
+
+                    //Open modal
+                    var index = $(tr).data('index');
+                    self.openModal(index);
+                }
+            }
+        },
+
         /**
          * Save data to server
          * @param index
          */
         checkOnlineStatus: function () {
-            let self = this;
-            let xhr = $.ajax({
+            var self = this;
+            var xhr = $.ajax({
                 url: window.location.href,
                 type: 'post',
                 dataType: 'json',
@@ -175,14 +200,14 @@ var chronometryApp = new Vue({
          * @param index
          */
         saveRow: function (index) {
-            let self = this;
-            let runner = self.runners[index];
-            let modal = self.modal;
+            var self = this;
+            var runner = self.runners[index];
+            var modal = self.modal;
 
 
             var id = modal.runnerId;
             var endtime = $('#endtimeCtrl').val();
-            var hasGivenUp = $('.modal #runnerHasGivenUpCtrl').is(':checked') ? 1 : '';
+            var dnf = $('.modal #runnerdnfCtrl').is(':checked') ? 1 : '';
 
             // Check for a valid input f.ex. 22:12:59
             var regex = /^(([0|1][0-9])|([2][0-3])):([0-5][0-9]):([0-5][0-9])$/;
@@ -194,7 +219,7 @@ var chronometryApp = new Vue({
 
                 // Xhr
                 runner.requesting = true;
-                let xhr = $.ajax({
+                var xhr = $.ajax({
                     url: window.location.href,
                     type: 'post',
                     dataType: 'json',
@@ -204,7 +229,7 @@ var chronometryApp = new Vue({
                         'id': id,
                         'index': index,
                         'endtime': endtime,
-                        'hasGivenUp': hasGivenUp
+                        'dnf': dnf
                     }
                 });
                 xhr.done(function (response) {
@@ -257,8 +282,8 @@ var chronometryApp = new Vue({
          * @param index
          */
         setEndTimeFromCurrentTime: function () {
-            let self = this;
-            let modal = self.modal;
+            var self = this;
+            var modal = self.modal;
             var d = new Date();
             var formatedTime = self.getFormatedTime(d);
             modal.endTime = formatedTime;
@@ -269,9 +294,9 @@ var chronometryApp = new Vue({
          * @param index
          */
         clearEndTime: function (index) {
-            let self = this;
-            //let runner = self.runners[index];
-            let modal = self.modal;
+            var self = this;
+            //var runner = self.runners[index];
+            var modal = self.modal;
             modal.endTime = '';
         },
 
@@ -280,9 +305,9 @@ var chronometryApp = new Vue({
          * @param event
          */
         showNumberDropdownSuggest: function (event) {
-            let self = this;
-            let dropdown = $('#searchNumberDropdown');
-            let input = event.target;
+            var self = this;
+            var dropdown = $('#searchNumberDropdown');
+            var input = event.target;
 
             if ($(input).val() == '') {
                 return;
@@ -296,7 +321,7 @@ var chronometryApp = new Vue({
             rows.each(function () {
                 if (regex.test($(this).attr('data-number'))) {
 
-                    let runner = {
+                    var runner = {
                         index: $(this).attr('data-index'),
                         number: $(this).attr('data-number'),
                         fullname: $(this).attr('data-fullname')
@@ -313,13 +338,13 @@ var chronometryApp = new Vue({
          * @param event
          */
         removeNumberDropdownSuggest: function (event) {
-            let self = this;
-            let input = event.target;
+            var self = this;
+            var input = event.target;
             window.setTimeout(function () {
                 $(input).val('');
                 self.searchForm.numberSuggests = [];
                 self.searchForm.showNumberDropdown = false;
-            }, 200);
+            }, 50);
         },
 
         /**
@@ -327,9 +352,9 @@ var chronometryApp = new Vue({
          * @param event
          */
         showNameDropdownSuggest: function (event) {
-            let self = this;
-            let dropdown = $('#searchNameDropdown');
-            let input = event.target;
+            var self = this;
+            var dropdown = $('#searchNameDropdown');
+            var input = event.target;
 
             if ($(input).val() == '') {
                 return;
@@ -343,7 +368,7 @@ var chronometryApp = new Vue({
             rows.each(function () {
                 if (regex.test($(this).attr('data-fullname'))) {
 
-                    let runner = {
+                    var runner = {
                         index: $(this).attr('data-index'),
                         number: $(this).attr('data-number'),
                         fullname: $(this).attr('data-fullname')
@@ -360,41 +385,20 @@ var chronometryApp = new Vue({
          * @param event
          */
         removeNameDropdownSuggest: function (event) {
-            let self = this;
-            let input = event.target;
+            var self = this;
+            var input = event.target;
             window.setTimeout(function () {
                 $(input).val('');
                 self.searchForm.nameSuggests = [];
                 self.searchForm.showNameDropdown = false;
-            }, 200);
+            }, 50);
         },
 
-        /**
-         * Scroll to number
-         * @param event
-         */
-        scrollToNumber: function (event) {
-            let self = this;
-            let input = event.target;
-            if ($(input).val() > 1) {
-                var tr = $("tr[data-number='" + $(input).val() + "']");
-                if ($(tr).length) {
-                    $('html, body').animate({
-                            scrollTop: $(tr).offset().top - 40
-                        }, 500, function () {
-                            //Open modal
-                            let index = $(tr).data('index');
-                            self.openModal(index);
-                        }
-                    );
-                }
-            }
-        },
         /**
          * Toggle sidebar
          */
         toggleSidebar: function () {
-            let self = this;
+            var self = this;
             if (self.sidebar.status === 'closed') {
                 self.sidebar.status = 'open';
             } else {
@@ -409,7 +413,7 @@ var chronometryApp = new Vue({
          * @param event
          */
         applyFilter: function (event) {
-            let select = event.target;
+            var select = event.target;
             // Filter option
             var $filterCat = $(select).val();
             var rows = $('.startlist-table tbody tr');
@@ -430,9 +434,9 @@ var chronometryApp = new Vue({
          * @returns {string}
          */
         getFormatedTime: function (d) {
-            let hours = d.getHours() < 10 ? '0' + d.getHours() : d.getHours();
-            let minutes = d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes();
-            let seconds = d.getSeconds() < 10 ? '0' + d.getSeconds() : d.getSeconds();
+            var hours = d.getHours() < 10 ? '0' + d.getHours() : d.getHours();
+            var minutes = d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes();
+            var seconds = d.getSeconds() < 10 ? '0' + d.getSeconds() : d.getSeconds();
             return hours + ":" + minutes + ":" + seconds;
         }
     }

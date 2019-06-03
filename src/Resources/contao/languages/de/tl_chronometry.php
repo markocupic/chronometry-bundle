@@ -33,4 +33,4 @@ $GLOBALS['TL_LANG']['tl_chronometry']['endtime'] = array('Zielzeit');
 $GLOBALS['TL_LANG']['tl_chronometry']['runningtime'] = array('Laufzeit');
 $GLOBALS['TL_LANG']['tl_chronometry']['runningtimeUnix'] = array('Laufzeit in Sekunden');
 $GLOBALS['TL_LANG']['tl_chronometry']['notice'] = array('Bemerkungen');
-$GLOBALS['TL_LANG']['tl_chronometry']['hasGivenUp'] = array('Aufgegeben');
+$GLOBALS['TL_LANG']['tl_chronometry']['dnf'] = array('Aufgegeben');

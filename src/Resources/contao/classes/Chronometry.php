@@ -97,13 +97,13 @@ class Chronometry
         $objChronometry = Database::getInstance()->prepare('SELECT * FROM tl_chronometry')->execute();
         $total = $objChronometry->numRows;
 
-        $objChronometry = Database::getInstance()->prepare('SELECT * FROM tl_chronometry WHERE published=? AND hasGivenUp=?')->execute(1, 1);
-        $hasGivenUp = $objChronometry->numRows;
+        $objChronometry = Database::getInstance()->prepare('SELECT * FROM tl_chronometry WHERE published=? AND dnf=?')->execute(1, 1);
+        $dnf = $objChronometry->numRows;
 
-        $objChronometry = Database::getInstance()->prepare('SELECT * FROM tl_chronometry WHERE published=? AND runningtimeUnix > 0 AND hasGivenUp!=?')->execute(1, 1);
+        $objChronometry = Database::getInstance()->prepare('SELECT * FROM tl_chronometry WHERE published=? AND runningtimeUnix > 0 AND dnf!=?')->execute(1, 1);
         $haveFinished = $objChronometry->numRows;
 
-        $objChronometry = Database::getInstance()->prepare('SELECT * FROM tl_chronometry WHERE published=? AND runningtimeUnix = 0 AND hasGivenUp!=?')->execute(1, 1);
+        $objChronometry = Database::getInstance()->prepare('SELECT * FROM tl_chronometry WHERE published=? AND runningtimeUnix = 0 AND dnf!=?')->execute(1, 1);
         $running = $objChronometry->numRows;
 
         $runnerstotal = $total - $dispensed;
@@ -113,7 +113,7 @@ class Chronometry
         $objStats->dispensed = $dispensed;
         $objStats->haveFinished = $haveFinished;
         $objStats->running = $running;
-        $objStats->haveGivenUp = $hasGivenUp;
+        $objStats->haveGivenUp = $dnf;
         $objStats->runnersTotal = $runnerstotal;
 
         return $objStats;

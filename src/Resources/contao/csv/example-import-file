@@ -1,4 +1,4 @@
-id;tstamp;number;gender;stufe;category;firstname;lastname;teachername;starttime;endtime;runningtime;runningtimeUnix;published;hasGivenUp;notice
+id;tstamp;number;gender;stufe;category;firstname;lastname;teachername;starttime;endtime;runningtime;runningtimeUnix;published;dnf;notice
 1;1556628048;501;female;5;2;Arina;Dousse;Benita Zekaj;08:15:00;;;0;1;;
 2;1556628048;502;female;5;2;Sarah;Troxler;Benita Zekaj;08:15:00;;;0;1;;
 3;1556628048;503;female;5;2;Sarah;Vonwyl;Benita Zekaj;08:15:00;;;0;1;;
