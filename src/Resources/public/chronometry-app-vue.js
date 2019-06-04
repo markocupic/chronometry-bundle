@@ -425,13 +425,13 @@ var chronometryApp = new Vue({
             // Filter option
             var $filterCat = $(select).val();
             var rows = $('.startlist-table tbody tr');
-            rows.removeClass('invisible');
+            rows.removeClass('d-none');
 
             if ($filterCat == 0) return;
 
             rows.each(function () {
                 if ($(this).attr('data-category') != $filterCat) {
-                    $(this).addClass('invisible');
+                    $(this).addClass('d-none');
                 }
             });
         },
