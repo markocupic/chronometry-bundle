@@ -27,14 +27,16 @@
     "php": ">=7.1",
     "contao/core-bundle": "^4.5",
     "markocupic/export_table": "^3.1",
-    "markocupic/import-from-csv-bundle": "^4.4"
+    "markocupic/import-from-csv-bundle": "^4.4",
+    "phpoffice/phpword": "^0.16"
   },
   "autoload": {
     "psr-4": {
       "Markocupic\\ChronometryBundle\\": "src/"
     },
     "classmap": [
-      "src/Resources/contao"
+      "src/Resources/contao",
+      "src/Services"
     ],
     "exclude-from-classmap": [
       "src/Resources/contao/assets",
