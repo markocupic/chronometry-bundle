@@ -1,11 +1,10 @@
 <?php
-
 /**
- * SAC Event Tool Web Plugin for Contao
+ * Chronometry Module for Contao CMS
  * Copyright (c) 2008-2019 Marko Cupic
- * @package sac-event-tool-bundle
- * @author Marko Cupic m.cupic@gmx.ch, 2017-2019
- * @link https://github.com/markocupic/sac-event-tool-bundle
+ * @package chronometry-bundle
+ * @author Marko Cupic m.cupic@gmx.ch, 2019
+ * @link https://github.com/markocupic/chronometry-bundle
  */
 
 declare(strict_types=1);
@@ -29,12 +28,11 @@ use Contao\Folder;
 use Contao\System;
 use Contao\Config;
 
-
 /**
- * Class ExportEvents2Docx
- * @package Markocupic\SacEventToolBundle
+ * Class PrintCertificate
+ * @package Markocupic\SacEventToolBundle\Services\Docx
  */
-class ExportEvents2Docx
+class PrintCertificate
 {
 
     /**
