@@ -9,10 +9,10 @@
  */
 
 // References
-$GLOBALS['TL_LANG']['tl_chronometry']['categories'][1] = 'PS boys';
-$GLOBALS['TL_LANG']['tl_chronometry']['categories'][2] = 'PS girls';
-$GLOBALS['TL_LANG']['tl_chronometry']['categories'][3] = 'ISS boys';
-$GLOBALS['TL_LANG']['tl_chronometry']['categories'][4] = 'ISS girls';
+$GLOBALS['TL_LANG']['tl_chronometry']['categories'][1] = 'Primar Boys';
+$GLOBALS['TL_LANG']['tl_chronometry']['categories'][2] = 'Primar Girls';
+$GLOBALS['TL_LANG']['tl_chronometry']['categories'][3] = 'ISS Boys';
+$GLOBALS['TL_LANG']['tl_chronometry']['categories'][4] = 'ISS Girls';
 
 // Legends
 $GLOBALS['TL_LANG']['tl_chronometry']['published_legend'] = 'Veröffentlichen';

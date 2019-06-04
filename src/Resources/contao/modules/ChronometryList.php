@@ -13,6 +13,7 @@ namespace Markocupic;
 use Contao\Environment;
 use Contao\Input;
 use Markocupic\ChronometryBundle\FrontendAjax\FrontendAjax;
+use Markocupic\SacEventToolBundle\Services\Docx\PrintCertificate;
 use Patchwork\Utf8;
 
 /**
@@ -53,6 +54,15 @@ class ChronometryList extends \Module
             // Send backup to browser (charset Windows-1252)
             ExportTable\ExportTable::exportTable('tl_chronometry', array('strDestinationCharset' => 'Windows-1252'));
             exit();
+        }
+
+        // Print certificate
+        if (\Input::get('printCertificate') == 'true' && \Input::get('id') != '')
+        {
+            $objCertificate = new PrintCertificate();
+            $strTemplate = 'vendor/markocupic/chronometry-bundle/src/Resources/contao/templates/docx/certificate.docx';
+            $objCertificate->sendToBrowser(\Input::get('id'), $strTemplate);
+            exit;
         }
 
         // Handle ajax requests

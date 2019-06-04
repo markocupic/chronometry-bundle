@@ -1,10 +1,10 @@
 <?php
 /**
- * Chronometry Module for Contao CMS
+ * SAC Event Tool Web Plugin for Contao
  * Copyright (c) 2008-2019 Marko Cupic
- * @package chronometry-bundle
- * @author Marko Cupic m.cupic@gmx.ch, 2019
- * @link https://github.com/markocupic/chronometry-bundle
+ * @package sac-event-tool-bundle
+ * @author Marko Cupic m.cupic@gmx.ch, 2017-2019
+ * @link https://github.com/markocupic/sac-event-tool-bundle
  */
 
 declare(strict_types=1);

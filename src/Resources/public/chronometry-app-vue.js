@@ -256,6 +256,14 @@ var chronometryApp = new Vue({
         },
 
         /**
+         * Print certificate
+         * @param runnerId
+         */
+        printCertificate: function (runnerId) {
+            window.location.href = window.location.href + '?printCertificate=true&id=' + runnerId;
+        },
+
+        /**
          * Set current time
          */
         setTime: function () {

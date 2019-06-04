@@ -7,6 +7,8 @@ Im Verzeichnis src/Resources/csv befindet sich eine Beispiel CSV-Datei, welche z
 ### Seitentemplate
 Neben dem Modul-Verzeichnis gibt es in src/Resources/contao/templates/frontend/fe_page_chronometry.html5 ein Seitentemplate, welches bereits etwas für Bootstrap vorbereitet ist.
 
+### Diplom
+Über das Modalfenster kann anlässlich einer Siegerehrung ein Diplom ausgedruckt werden.
 
 ### Abhängigkeiten
 Diese Ressourcen werden im Template eingebunden und befinden sich src/Resources/public

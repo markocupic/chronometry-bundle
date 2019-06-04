@@ -186,7 +186,7 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Schliessen</button>
-                        <a href="" class="btn btn-success" title="Zertifikat drucken"><i class="fas fa-trophy"></i></a>
+                        <button v-on:click="printCertificate(modal.runnerId)" class="btn btn-success" title="Zertifikat drucken"><i class="fas fa-trophy"></i></button>
                         <button id="saveChanges" v-on:click="saveRow(modal.runnerIndex)" type="button" class="btn btn-primary">Speichern</button>
                     </div>
                 </div>
