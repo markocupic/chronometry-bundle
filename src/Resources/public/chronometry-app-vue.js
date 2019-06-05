@@ -108,7 +108,7 @@ var chronometryApp = new Vue({
             modal.runnerId = runner.id;
 
             var d = new Date(runner.tstamp * 1000);
-            modal.lastChange = 'varzte Änderung: ' + self.getFormatedTime(d);
+            modal.lastChange = 'letzte Änderung: ' + self.getFormatedTime(d);
 
             modal.endTime = runner.endtime == '' ? self.currentTime : runner.endtime;
             modal.endTime = runner.hasGivenUp ? '' : modal.endTime;
