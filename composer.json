@@ -28,7 +28,7 @@
     "contao/core-bundle": "^4.5",
     "markocupic/export_table": "^3.1",
     "markocupic/import-from-csv-bundle": "^4.4",
-    "phpoffice/phpword": "^0.16"
+    "markocupic/create-docx-from-template-bundle": "^1.0"
   },
   "autoload": {
     "psr-4": {
