@@ -13,17 +13,10 @@ namespace Markocupic\SacEventToolBundle\Services\Docx;
 
 use Contao\ChronometryModel;
 use Markocupic\Chronometry;
-use Markocupic\SacEventToolBundle\CalendarEventsHelper;
-use PhpOffice\PhpWord\CreateDocxFromTemplate;
-use PhpOffice\PhpWord\PhpWord;
-use PhpOffice\PhpWord\IOFactory;
 use Contao\Controller;
 use Contao\Config;
-use Contao\CourseMainTypeModel;
-use Contao\CourseSubTypeModel;
 use Contao\Date;
-
-
+use Markocupic\PhpOffice\PhpWord\GenerateDocxFromTemplate;
 
 /**
  * Class PrintCertificate
@@ -67,7 +60,7 @@ class PrintCertificate
         $strTargetSrc = sprintf('system/tmp/certificate_cat%s_rank%s_%s_%s.docx', $objChronometry->category, $rank, $objChronometry->firstname, $objChronometry->lastname);
 
         // Create & download
-        CreateDocxFromTemplate::create($arrData, $strTemplateSrc, $strTargetSrc)
+        GenerateDocxFromTemplate::create($arrData, $strTemplateSrc, $strTargetSrc)
             ->sendToBrowser(true)
             ->generateUncached(true)
             ->generate();
