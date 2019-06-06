@@ -14,6 +14,7 @@ use Contao\Environment;
 use Contao\Input;
 use Markocupic\ChronometryBundle\FrontendAjax\FrontendAjax;
 use Markocupic\SacEventToolBundle\Services\Docx\PrintCertificate;
+use Markocupic\SacEventToolBundle\Services\Docx\PrintRanklist;
 use Patchwork\Utf8;
 
 /**
@@ -62,6 +63,15 @@ class ChronometryList extends \Module
             $objCertificate = new PrintCertificate();
             $strTemplate = 'vendor/markocupic/chronometry-bundle/src/Resources/contao/templates/docx/certificate.docx';
             $objCertificate->sendToBrowser(\Input::get('id'), $strTemplate);
+            exit;
+        }
+
+        // Print certificate
+        if (\Input::get('printRanklist') == 'true' && \Input::get('id') != '')
+        {
+            $objRanklist = new PrintRanklist();
+            $strTemplate = 'vendor/markocupic/chronometry-bundle/src/Resources/contao/templates/docx/ranklist.docx';
+            $objRanklist->sendToBrowser(\Input::get('id'), $strTemplate);
             exit;
         }
 
