@@ -43,20 +43,20 @@
                                 <div id="searchForm">
                                     <!-- search for runners starting number -->
                                     <label for="searchNumber">Gehe zu Start-Nr.</label>{{br}}
-                                    <input type="number" class="form-control" id="searchNumber" placeholder="123" autocomplete="off" v-on:keydown.enter="scrollToNumber" v-on:input="showNumberDropdownSuggest" v-on:blur="removeNumberDropdownSuggest">
+                                    <input type="number" class="form-control" id="searchNumber" placeholder="123" autocomplete="off" v-on:keydown.enter="scrollToNumber" v-on:input="showNumberDropdownSuggest">
 
                                     <div class="search-dropdown dropdown suggest" data-key="#">
                                         <ul id="searchNumberDropdown" class="dropdown-menu" role="menu" v-if="searchForm.showNumberDropdown" v-bind:class="searchForm.showNumberDropdown ? 'show' : ''">
-                                            <li v-for="(runner, index) in searchForm.numberSuggests" v-bind:data-index="runner.index" v-on:click="openModal(runner.index)">{{ runner.number }} {{ runner.fullname }}</li>
+                                            <li v-for="(runner, index) in searchForm.numberSuggests" v-bind:data-index="runner.index" v-on:click="openModal(runner.index)"><a href="#" v-on:click.prevent="openModal(runner.index)" v-on:click="removeNameDropdownSuggest">{{ runner.number }} {{ runner.fullname }}</a></li>
                                         </ul>
                                     </div>
                                     {{br}} {{br}}
                                     <!-- search for runners name -->
                                     <label for="searchName">Suche nach Namen:</label>
-                                    <input type="text" class="form-control" id="searchName" placeholder="Namen eingeben" autocomplete="off" v-on:input="showNameDropdownSuggest" v-on:blur="removeNameDropdownSuggest">
+                                    <input type="text" class="form-control" id="searchName" placeholder="Namen eingeben" autocomplete="off" v-on:input="showNameDropdownSuggest">
                                     <div class="search-dropdown dropdown suggest" data-key="#">
                                         <ul id="searchNameDropdown" class="dropdown-menu" role="menu" v-if="searchForm.showNameDropdown" v-bind:class="searchForm.showNameDropdown ? 'show' : ''">
-                                            <li v-for="(runner, index) in searchForm.nameSuggests" v-bind:data-index="runner.index" v-on:click="openModal(runner.index)">{{ runner.number }} {{ runner.fullname }}</li>
+                                            <li v-for="(runner, index) in searchForm.nameSuggests" v-bind:data-index="runner.index"><a href="#" v-on:click.prevent="openModal(runner.index)" v-on:click="removeNameDropdownSuggest">{{ runner.number }} {{ runner.fullname }}</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -101,6 +101,45 @@
                             </div>
                         </div>
                     </div>
+                    <div class="accordion-item">
+                        <div class="card-header" id="headingFour">
+                            <h5 class="mb-0">
+                                <button class="p-0 btn btn-link collapsed" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                    Ranglisten Download
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#toolContainer">
+                            <div class="card-body">
+                                <form action="{{env::request}}" method="post">
+                                <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
+                                <select class="form-control" id="rankListSelect" name="printRanklistCat">
+                                    <option v-for="(category, index) in categories" v-bind:value="category.id">{{ category.label }}</option>
+                                </select>
+                                {{br}}
+                                <button class="btn btn-sm btn-info">Rangliste downloaden</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="card-header" id="headingFive">
+                            <h5 class="mb-0">
+                                <button class="p-0 btn btn-link collapsed" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                    CSV Download
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#toolContainer">
+                            <div class="card-body">
+                                <form action="{{env::request}}" method="post">
+                                    <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
+                                    <input type="hidden" name="downloadDatabaseDump" value="true">
+                                    <button class="btn btn-sm btn-info">CSV Download</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -110,10 +149,6 @@
         <div class="container">
             <div id="onlineStatusInfoBox" class="alert alert-warning" role="alert" class="" v-if="isOnline === false">
                 Im Moment kann keine Verbindung zum Server aufgebaut werden. Bitte überprüfen Sie die Verbindung.
-            </div>
-
-            <div class="top-row">
-                <a class="download-link" href="{{env::request}}?downloadCsv=true"><span class="fa fa-table"></span> Download CSV</a>
             </div>
 
             <div class="table-container table-responsive">
@@ -177,6 +212,10 @@
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="runnerdnfCtrl" value="1" :checked="modal.runnerdnf === true">
                             <label class="custom-control-label" for="runnerdnfCtrl">Wettkampf aufgegeben</label>
+                        </div>
+
+                        <div v-if="modal.runnerHasNotice" class="mt-4 runnerNotice alert alert-info">
+                            <span v-html="modal.runnerNotice"></span>
                         </div>
 
                         <div id="lastChange" class="mt-3 text-right lastChange">{{ modal.lastChange }}</div>

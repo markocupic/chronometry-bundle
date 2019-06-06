@@ -50,7 +50,7 @@ class ChronometryList extends \Module
         }
 
         // Send Backup to Browser
-        if (\Input::get('downloadCsv'))
+        if (\Input::post('downloadDatabaseDump'))
         {
             // Send backup to browser (charset Windows-1252)
             ExportTable\ExportTable::exportTable('tl_chronometry', array('strDestinationCharset' => 'Windows-1252'));
@@ -67,11 +67,11 @@ class ChronometryList extends \Module
         }
 
         // Print certificate
-        if (\Input::get('printRanklist') == 'true' && \Input::get('id') != '')
+        if (\Input::post('printRanklistCat') != '')
         {
             $objRanklist = new PrintRanklist();
             $strTemplate = 'vendor/markocupic/chronometry-bundle/src/Resources/contao/templates/docx/ranklist.docx';
-            $objRanklist->sendToBrowser(\Input::get('id'), $strTemplate);
+            $objRanklist->sendToBrowser(\Input::post('printRanklistCat'), $strTemplate);
             exit;
         }
 

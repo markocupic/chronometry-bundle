@@ -105,6 +105,9 @@ var chronometryApp = new Vue({
             modal.runnerNumber = runner.number;
             modal.runnerFullname = runner.fullname;
             modal.runnerIsFinisher = runner.endtime != '' ? true : false;
+            modal.runnerHasNotice = runner.notice != '' ? true : false;
+            modal.runnerNotice = runner.notice.replace(/\&\a\m\p\;/g, '&');
+
             modal.runnerId = runner.id;
 
             var d = new Date(runner.tstamp * 1000);
@@ -113,7 +116,7 @@ var chronometryApp = new Vue({
             modal.endTime = runner.endtime == '' ? self.currentTime : runner.endtime;
             modal.endTime = runner.hasGivenUp ? '' : modal.endTime;
 
-            // If athvare has given up the race
+            // If runner has given up the race
             modal.runnerHasGivenUp = runner.hasGivenUp ? true : false;
 
             // Get Focus on the Input Field
@@ -122,6 +125,11 @@ var chronometryApp = new Vue({
                         //scrollTop: $('body').offset().top
                     }, 50, function () {
                         $('#searchNumber').val('').focus();
+                        $('#searchName').val('');
+                        self.searchForm.numberSuggests = [];
+                        self.searchForm.nameSuggests = [];
+                        self.searchForm.showNumberDropdown = false;
+                        self.searchForm.showNameDropdown = false;
                     }
                 );
             });
@@ -318,8 +326,14 @@ var chronometryApp = new Vue({
             var input = event.target;
 
             if ($(input).val() == '') {
+                self.searchForm.numberSuggests = [];
+                self.searchForm.showNumberDropdown = false;
                 return;
             }
+            // Clean name input
+            $('#searchName').val('');
+            self.searchForm.nameSuggests = [];
+            self.searchForm.showNameDropdown = false;
 
             var rows = $('#startlistTable tbody tr');
 
@@ -365,14 +379,21 @@ var chronometryApp = new Vue({
             var input = event.target;
 
             if ($(input).val() == '') {
+                self.searchForm.nameSuggests = [];
+                self.searchForm.showNameDropdown = false;
                 return;
             }
+            // Clean number input
+            $('#searchNumber').val('');
+            self.searchForm.numberSuggests = [];
+            self.searchForm.showNumberDropdown = false;
 
             var rows = $('#startlistTable tbody tr');
 
             var regex = new RegExp($(input).val() + '(.*)', 'i');
 
             self.searchForm.nameSuggests = [];
+
             rows.each(function () {
                 if (regex.test($(this).attr('data-fullname'))) {
 
