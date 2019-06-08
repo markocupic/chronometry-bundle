@@ -1,4 +1,4 @@
-<?php $GLOBALS['TL_JAVASCRIPT'][] = 'assets/contao-component-popper-js/popper.js/dist/popper.js|static'; ?>
+<?php $GLOBALS['TL_JAVASCRIPT'][] = 'assets/contao-component-popper-js/popper.min.js'; ?>
 <?php $GLOBALS['TL_CSS'][] =  'assets/contao-component-bootstrap/bootstrap/dist/css/bootstrap.min.css|static'; ?>
 <?php $GLOBALS['TL_JAVASCRIPT'][] = 'assets/contao-component-bootstrap/bootstrap/dist/js/bootstrap.min.js|static'; ?>
 <?php $GLOBALS['TL_CSS'][] = 'assets/contao-component-fontawesome-free/css/all.css|static'; ?>
