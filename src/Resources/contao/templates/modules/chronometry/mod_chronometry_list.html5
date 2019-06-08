@@ -1,10 +1,10 @@
+<?php $GLOBALS['TL_JAVASCRIPT'][] = 'assets/contao-component-popper-js/popper.js/dist/popper.js|static'; ?>
 <?php $GLOBALS['TL_CSS'][] =  'assets/contao-component-bootstrap/bootstrap/dist/css/bootstrap.min.css|static'; ?>
 <?php $GLOBALS['TL_JAVASCRIPT'][] = 'assets/contao-component-bootstrap/bootstrap/dist/js/bootstrap.min.js|static'; ?>
-<?php $GLOBALS['TL_JAVASCRIPT'][] = MOD_CHRONOMETRY_ASSET_PATH . '/stupid-table/stupidtable.min.js|static'; ?>
 <?php $GLOBALS['TL_CSS'][] = 'assets/contao-component-fontawesome-free/css/all.css|static'; ?>
 <?php $GLOBALS['TL_CSS'][] = 'assets/contao-component-fontawesome-free/css/brands.css|static'; ?>
+<?php $GLOBALS['TL_JAVASCRIPT'][] = MOD_CHRONOMETRY_ASSET_PATH . '/stupid-table/stupidtable.min.js|static'; ?>
 <?php $GLOBALS['TL_JAVASCRIPT'][] = MOD_CHRONOMETRY_ASSET_PATH . '/vue/vue.min.js|static'; ?>
-<?php $GLOBALS['TL_JAVASCRIPT'][] = MOD_CHRONOMETRY_ASSET_PATH . '/popper/popper.js|static'; ?>
 <?php $GLOBALS['TL_CSS'][] = MOD_CHRONOMETRY_ASSET_PATH . '/css/chronometry.css|static'; ?>
 
 <?php $this->extend('block_unsearchable'); ?>
