@@ -26,17 +26,18 @@ class PrintRanklist
 {
 
     /**
-     * @param $rowId
+     * @param $catId
      * @param $strTemplateSrc
-     * @return bool
+     * @throws \PhpOffice\PhpWord\Exception\CopyFileException
+     * @throws \PhpOffice\PhpWord\Exception\CreateTemporaryFileException
      */
     public function sendToBrowser($catId, $strTemplateSrc)
     {
         $strTable = 'tl_chronometry';
         Controller::loadLanguageFile($strTable);
+        $strTargetSrc = sprintf('system/tmp/rangliste_cat%s.docx', $catId);
+        $objPhpWord = GenerateDocxFromTemplate::create($strTemplateSrc, $strTargetSrc);
 
-        $arrData = [];
-        $rows = [];
         $objRow = Database::getInstance()->prepare('SELECT * FROM tl_chronometry WHERE category=? AND runningtimeUnix > ? ORDER BY runningTimeUnix')->execute($catId, 0);
 
         while ($objRow->next())
@@ -44,41 +45,38 @@ class PrintRanklist
             date_default_timezone_set('UTC');
             $time = Date::parse('H:i:s', $objRow->runningtimeUnix);
             date_default_timezone_set(Config::get('timeZone'));
-            $rows[] = array(
+            $row = array(
                 array('key' => 'rank', 'value' => Chronometry::getRank($objRow->id), 'options' => array('multiline' => false)),
                 array('key' => 'number', 'value' => $objRow->number, 'options' => array('multiline' => false)),
                 array('key' => 'firstname', 'value' => $objRow->firstname, 'options' => array('multiline' => false)),
                 array('key' => 'lastname', 'value' => $objRow->lastname, 'options' => array('multiline' => false)),
                 array('key' => 'time', 'value' => $time, 'options' => array('multiline' => false)),
             );
+            $objPhpWord->pushClone('rank', $row);
         }
 
         // dnf
         $objRow = Database::getInstance()->prepare('SELECT * FROM tl_chronometry WHERE category=? AND dnf = ? ORDER BY lastname')->execute($catId, '1');
         while ($objRow->next())
         {
-            $rows[] = array(
+            $row = array(
                 array('key' => 'rank', 'value' => '--', 'options' => array('multiline' => false)),
                 array('key' => 'number', 'value' => $objRow->number, 'options' => array('multiline' => false)),
                 array('key' => 'firstname', 'value' => $objRow->firstname, 'options' => array('multiline' => false)),
                 array('key' => 'lastname', 'value' => $objRow->lastname, 'options' => array('multiline' => false)),
                 array('key' => 'time', 'value' => 'dnf', 'options' => array('multiline' => false)),
             );
+            $objPhpWord->pushClone('rank', $row);
         }
-
-        $arrData[] = array('clone' => 'rank', 'rows' => $rows);
 
         // Category
         $category = isset($GLOBALS['TL_LANG']['tl_chronometry']['categories'][$catId]) ? $GLOBALS['TL_LANG']['tl_chronometry']['categories'][$catId] : $catId;
-        $arrData[] = array('key' => 'category', 'value' => $category, 'options' => array('multiline' => false));
-
-        $strTargetSrc = sprintf('system/tmp/rangliste_cat%s.docx', $catId);
+        $objPhpWord->pushData('category', $category, array('multiline' => false));
 
         // Create & download
-        GenerateDocxFromTemplate::create($arrData, $strTemplateSrc, $strTargetSrc)
-            ->sendToBrowser(true)
+        $objPhpWord->sendToBrowser(true)
             ->generateUncached(true)
             ->generate();
     }
-
+   
 }
