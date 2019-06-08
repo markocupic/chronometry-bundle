@@ -28,7 +28,8 @@
     "contao/core-bundle": "^4.5",
     "markocupic/export_table": "^3.1",
     "markocupic/import-from-csv-bundle": "^4.4",
-    "markocupic/docx-from-template-bundle": "^1.0"
+    "markocupic/docx-from-template-bundle": "^1.0",
+    "markocupic/contao-component-bootstrap": "^4.3"
   },
   "autoload": {
     "psr-4": {

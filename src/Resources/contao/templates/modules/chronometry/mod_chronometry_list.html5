@@ -1,5 +1,5 @@
-<?php $GLOBALS['TL_CSS'][] = MOD_CHRONOMETRY_ASSET_PATH . '/bootstrap/css/bootstrap.min.css|static'; ?>
-<?php $GLOBALS['TL_JAVASCRIPT'][] = MOD_CHRONOMETRY_ASSET_PATH . '/bootstrap/js/bootstrap.min.js|static'; ?>
+<?php $GLOBALS['TL_CSS'][] =  'assets/bootstrap/dist/css/bootstrap.min.css|static'; ?>
+<?php $GLOBALS['TL_JAVASCRIPT'][] = 'assets/bootstrap/dist/js/bootstrap.min.js|static'; ?>
 <?php $GLOBALS['TL_JAVASCRIPT'][] = MOD_CHRONOMETRY_ASSET_PATH . '/stupid-table/stupidtable.min.js|static'; ?>
 <?php $GLOBALS['TL_CSS'][] = MOD_CHRONOMETRY_ASSET_PATH . '/fontawesome/css/all.css|static'; ?>
 <?php $GLOBALS['TL_CSS'][] = MOD_CHRONOMETRY_ASSET_PATH . '/fontawesome/css/brands.css|static'; ?>
