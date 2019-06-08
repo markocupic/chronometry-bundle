@@ -1,8 +1,8 @@
-<?php $GLOBALS['TL_CSS'][] =  'assets/bootstrap/dist/css/bootstrap.min.css|static'; ?>
-<?php $GLOBALS['TL_JAVASCRIPT'][] = 'assets/bootstrap/dist/js/bootstrap.min.js|static'; ?>
+<?php $GLOBALS['TL_CSS'][] =  'assets/contao-component-bootstrap/bootstrap/dist/css/bootstrap.min.css|static'; ?>
+<?php $GLOBALS['TL_JAVASCRIPT'][] = 'assets/contao-component-bootstrap/bootstrap/dist/js/bootstrap.min.js|static'; ?>
 <?php $GLOBALS['TL_JAVASCRIPT'][] = MOD_CHRONOMETRY_ASSET_PATH . '/stupid-table/stupidtable.min.js|static'; ?>
-<?php $GLOBALS['TL_CSS'][] = MOD_CHRONOMETRY_ASSET_PATH . '/fontawesome/css/all.css|static'; ?>
-<?php $GLOBALS['TL_CSS'][] = MOD_CHRONOMETRY_ASSET_PATH . '/fontawesome/css/brands.css|static'; ?>
+<?php $GLOBALS['TL_CSS'][] = 'assets/contao-component-fontawesome-free/css/all.css|static'; ?>
+<?php $GLOBALS['TL_CSS'][] = 'assets/contao-component-fontawesome-free/css/brands.css|static'; ?>
 <?php $GLOBALS['TL_JAVASCRIPT'][] = MOD_CHRONOMETRY_ASSET_PATH . '/vue/vue.min.js|static'; ?>
 <?php $GLOBALS['TL_JAVASCRIPT'][] = MOD_CHRONOMETRY_ASSET_PATH . '/popper/popper.js|static'; ?>
 <?php $GLOBALS['TL_CSS'][] = MOD_CHRONOMETRY_ASSET_PATH . '/css/chronometry.css|static'; ?>
@@ -112,12 +112,12 @@
                         <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#toolContainer">
                             <div class="card-body">
                                 <form action="{{env::request}}" method="post">
-                                <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
-                                <select class="form-control" id="rankListSelect" name="printRanklistCat">
-                                    <option v-for="(category, index) in categories" v-bind:value="category.id">{{ category.label }}</option>
-                                </select>
-                                {{br}}
-                                <button class="btn btn-sm btn-info">Rangliste downloaden</button>
+                                    <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
+                                    <select class="form-control" id="rankListSelect" name="printRanklistCat">
+                                        <option v-for="(category, index) in categories" v-bind:value="category.id">{{ category.label }}</option>
+                                    </select>
+                                    {{br}}
+                                    <button class="btn btn-sm btn-info">Rangliste downloaden</button>
                                 </form>
                             </div>
                         </div>
