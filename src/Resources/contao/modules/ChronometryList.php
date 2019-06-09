@@ -13,8 +13,8 @@ namespace Markocupic;
 use Contao\Environment;
 use Contao\Input;
 use Markocupic\ChronometryBundle\FrontendAjax\FrontendAjax;
-use Markocupic\SacEventToolBundle\Services\Docx\PrintCertificate;
-use Markocupic\SacEventToolBundle\Services\Docx\PrintRanklist;
+use Markocupic\SacEventToolBundle\Services\PhpOffice\PrintCertificate;
+use Markocupic\SacEventToolBundle\Services\PhpOffice\PrintRankingList;
 use Patchwork\Utf8;
 
 /**
@@ -67,11 +67,11 @@ class ChronometryList extends \Module
         }
 
         // Print certificate
-        if (\Input::post('printRanklistCat') != '')
+        if (\Input::post('printRankingListCat') != '')
         {
-            $objRanklist = new PrintRanklist();
+            $objRanklist = new PrintRankingList();
             $strTemplate = 'vendor/markocupic/chronometry-bundle/src/Resources/contao/templates/docx/ranklist.docx';
-            $objRanklist->sendToBrowser(\Input::post('printRanklistCat'), $strTemplate);
+            $objRanklist->sendToBrowser(\Input::post('printRankingListCat'), $strTemplate);
             exit;
         }
 

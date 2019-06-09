@@ -113,7 +113,7 @@
                             <div class="card-body">
                                 <form action="{{env::request}}" method="post">
                                     <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
-                                    <select class="form-control" id="rankListSelect" name="printRanklistCat">
+                                    <select class="form-control" id="rankingListSelect" name="printRankingListCat">
                                         <option v-for="(category, index) in categories" v-bind:value="category.id">{{ category.label }}</option>
                                     </select>
                                     {{br}}

@@ -9,20 +9,20 @@
 
 declare(strict_types=1);
 
-namespace Markocupic\SacEventToolBundle\Services\Docx;
+namespace Markocupic\SacEventToolBundle\Services\PhpOffice;
 
 use Markocupic\Chronometry;
 use Contao\Controller;
 use Contao\Config;
 use Contao\Database;
 use Contao\Date;
-use Markocupic\PhpOffice\PhpWord\GenerateDocxFromTemplate;
+use Markocupic\PhpOffice\PhpWord\MsWordTemplateProcessor;
 
 /**
- * Class PrintRanklist
- * @package Markocupic\SacEventToolBundle\Services\Docx
+ * Class PrintRankingList
+ * @package Markocupic\SacEventToolBundle\Services\PhpOffice
  */
-class PrintRanklist
+class PrintRankingList
 {
 
     /**
@@ -36,7 +36,7 @@ class PrintRanklist
         $strTable = 'tl_chronometry';
         Controller::loadLanguageFile($strTable);
         $strTargetSrc = sprintf('system/tmp/rangliste_cat%s.docx', $catId);
-        $objPhpWord = GenerateDocxFromTemplate::create($strTemplateSrc, $strTargetSrc);
+        $objPhpWord = MsWordTemplateProcessor::create($strTemplateSrc, $strTargetSrc);
 
         $objRow = Database::getInstance()->prepare('SELECT * FROM tl_chronometry WHERE category=? AND runningtimeUnix > ? ORDER BY runningTimeUnix')->execute($catId, 0);
 
@@ -78,5 +78,5 @@ class PrintRanklist
             ->generateUncached(true)
             ->generate();
     }
-   
+
 }
