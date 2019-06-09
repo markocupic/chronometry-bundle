@@ -58,12 +58,11 @@ class PrintCertificate
 
         // Instantiate template processor
         $objPhpWord = MsWordTemplateProcessor::create($strTemplateSrc, $strTargetSrc);
-
-        $objPhpWord->pushData('firstname', $objChronometry->firstname, array('multiline' => false));
-        $objPhpWord->pushData('lastname', $objChronometry->lastname, array('multiline' => false));
-        $objPhpWord->pushData('category', $category, array('multiline' => false));
-        $objPhpWord->pushData('rank', $rank, array('multiline' => false));
-        $objPhpWord->pushData('time', $time, array('multiline' => false));
+        $objPhpWord->replace('firstname', $objChronometry->firstname, array('multiline' => false));
+        $objPhpWord->replace('lastname', $objChronometry->lastname, array('multiline' => false));
+        $objPhpWord->replace('category', $category, array('multiline' => false));
+        $objPhpWord->replace('rank', $rank, array('multiline' => false));
+        $objPhpWord->replace('time', $time, array('multiline' => false));
 
         // Generate & send to browser
         $objPhpWord->sendToBrowser(true)->generateUncached(true)->generate();

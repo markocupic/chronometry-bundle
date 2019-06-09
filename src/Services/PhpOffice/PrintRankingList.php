@@ -52,7 +52,7 @@ class PrintRankingList
                 array('key' => 'lastname', 'value' => $objRow->lastname, 'options' => array('multiline' => false)),
                 array('key' => 'time', 'value' => $time, 'options' => array('multiline' => false)),
             );
-            $objPhpWord->pushClone('rank', $row);
+            $objPhpWord->replaceAndClone('rank', $row);
         }
 
         // dnf
@@ -66,12 +66,12 @@ class PrintRankingList
                 array('key' => 'lastname', 'value' => $objRow->lastname, 'options' => array('multiline' => false)),
                 array('key' => 'time', 'value' => 'dnf', 'options' => array('multiline' => false)),
             );
-            $objPhpWord->pushClone('rank', $row);
+            $objPhpWord->replaceAndClone('rank', $row);
         }
 
         // Category
         $category = isset($GLOBALS['TL_LANG']['tl_chronometry']['categories'][$catId]) ? $GLOBALS['TL_LANG']['tl_chronometry']['categories'][$catId] : $catId;
-        $objPhpWord->pushData('category', $category, array('multiline' => false));
+        $objPhpWord->replace('category', $category, array('multiline' => false));
 
         // Create & download
         $objPhpWord->sendToBrowser(true)
