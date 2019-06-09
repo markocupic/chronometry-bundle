@@ -40,17 +40,21 @@ class PrintRankingList
 
         $objRow = Database::getInstance()->prepare('SELECT * FROM tl_chronometry WHERE category=? AND runningtimeUnix > ? ORDER BY runningTimeUnix')->execute($catId, 0);
 
+        $objPhpWord->replaceWithImage('my-best-image', 'files/test.jpg', array('width'=>'160mm'));
+
         while ($objRow->next())
         {
             date_default_timezone_set('UTC');
             $time = Date::parse('H:i:s', $objRow->runningtimeUnix);
             date_default_timezone_set(Config::get('timeZone'));
             $row = array(
-                array('key' => 'rank', 'value' => Chronometry::getRank($objRow->id), 'options' => array('multiline' => false)),
-                array('key' => 'number', 'value' => $objRow->number, 'options' => array('multiline' => false)),
-                array('key' => 'firstname', 'value' => $objRow->firstname, 'options' => array('multiline' => false)),
-                array('key' => 'lastname', 'value' => $objRow->lastname, 'options' => array('multiline' => false)),
-                array('key' => 'time', 'value' => $time, 'options' => array('multiline' => false)),
+                array('rank', Chronometry::getRank($objRow->id), array('multiline' => false)),
+                array('number', $objRow->number, array('multiline' => false)),
+                array('firstname', $objRow->firstname, array('multiline' => false)),
+                array('lastname', $objRow->lastname, array('multiline' => false)),
+                array('time', $time, array('multiline' => false)),
+                array('image', 'files/test.jpg', array('type' => 'image', 'width' => '', 'height' => '50mm')),
+
             );
             $objPhpWord->replaceAndClone('rank', $row);
         }
@@ -60,11 +64,12 @@ class PrintRankingList
         while ($objRow->next())
         {
             $row = array(
-                array('key' => 'rank', 'value' => '--', 'options' => array('multiline' => false)),
-                array('key' => 'number', 'value' => $objRow->number, 'options' => array('multiline' => false)),
-                array('key' => 'firstname', 'value' => $objRow->firstname, 'options' => array('multiline' => false)),
-                array('key' => 'lastname', 'value' => $objRow->lastname, 'options' => array('multiline' => false)),
-                array('key' => 'time', 'value' => 'dnf', 'options' => array('multiline' => false)),
+                array('rank', '--', array('multiline' => false)),
+                array('number', $objRow->number, array('multiline' => false)),
+                array('firstname', $objRow->firstname, array('multiline' => false)),
+                array('lastname', $objRow->lastname, array('multiline' => false)),
+                array('time', 'dnf', array('multiline' => false)),
+                array('image', 'files/test.jpg', array('type' => 'image', 'width' => '2cm', 'height' => '2cm')),
             );
             $objPhpWord->replaceAndClone('rank', $row);
         }
