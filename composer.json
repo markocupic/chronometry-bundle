@@ -7,7 +7,7 @@
     "Zeitmessung",
     "duathlon",
     "triathlon",
-    "vue",
+    "vue.js",
     "ranking list"
   ],
   "type": "contao-module",
@@ -31,8 +31,7 @@
     "markocupic/import-from-csv-bundle": "^4.4",
     "markocupic/docx-from-template-bundle": "^1.0",
     "markocupic/contao-component-bootstrap": "^4.3",
-    "markocupic/contao-component-fontawesome-free": "^5.9",
-    "markocupic/contao-component-popper-js": "^1.14"
+    "markocupic/contao-component-fontawesome-free": "^5.9"
   },
   "autoload": {
     "psr-4": {
