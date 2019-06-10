@@ -36,7 +36,7 @@ class PrintRankingList
         $strTable = 'tl_chronometry';
         Controller::loadLanguageFile($strTable);
         $strTargetSrc = sprintf('system/tmp/rangliste_cat%s.docx', $catId);
-        $objPhpWord = MsWordTemplateProcessor::create($strTemplateSrc, $strTargetSrc);
+        $objPhpWord = new MsWordTemplateProcessor($strTemplateSrc, $strTargetSrc);
 
         $objRow = Database::getInstance()->prepare('SELECT * FROM tl_chronometry WHERE category=? AND runningtimeUnix > ? ORDER BY runningTimeUnix')->execute($catId, 0);
 

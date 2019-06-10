@@ -57,7 +57,8 @@ class PrintCertificate
         $strTargetSrc = sprintf('system/tmp/certificate_cat%s_rank%s_%s_%s.docx', $objChronometry->category, $rank, $objChronometry->firstname, $objChronometry->lastname);
 
         // Instantiate template processor
-        $objPhpWord = MsWordTemplateProcessor::create($strTemplateSrc, $strTargetSrc);
+        $objPhpWord = new MsWordTemplateProcessor($strTemplateSrc, $strTargetSrc);
+
         $objPhpWord->replace('firstname', $objChronometry->firstname, array('multiline' => false));
         $objPhpWord->replace('lastname', $objChronometry->lastname, array('multiline' => false));
         $objPhpWord->replace('category', $category, array('multiline' => false));
