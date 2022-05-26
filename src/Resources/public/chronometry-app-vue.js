@@ -5,12 +5,13 @@
  * @author Marko Cupic m.cupic@gmx.ch, 2019
  * @link https://github.com/markocupic/chronometry-bundle
  */
-var chronometryApp = new Vue({
+const chronometryApp = new Vue({
     el: '#chronometry-app',
     data: {
         isReady: false,
         isOnline: '',
         requestToken: '',
+        modalId: null,
         currentTime: '',
         runners: null,
         categories: null,
@@ -43,8 +44,9 @@ var chronometryApp = new Vue({
         }
     },
     created: function () {
-        var self = this;
+        const self = this;
         self.requestToken = CHRONOMETRY.requestToken;
+        self.modalId = CHRONOMETRY.modalId;
 
         window.setTimeout(function () {
             self.isReady = true;
@@ -70,8 +72,8 @@ var chronometryApp = new Vue({
          * Get all rows from server
          */
         getDataAll: function () {
-            var self = this;
-            var xhr = $.ajax({
+            const self = this;
+            const xhr = $.ajax({
                 url: window.location.href,
                 type: 'post',
                 dataType: 'json',
@@ -97,30 +99,31 @@ var chronometryApp = new Vue({
          * @param index
          */
         openModal: function (index) {
-            var self = this;
-            var runner = self.runners[index];
-            var modal = self.modal;
+            const self = this;
+            const runner = self.runners[index];
+            const modal = self.modal;
 
             modal.runnerIndex = index;
             modal.runnerNumber = runner.number;
             modal.runnerFullname = runner.fullname;
-            modal.runnerIsFinisher = runner.endtime != '' ? true : false;
-            modal.runnerHasNotice = runner.notice != '' ? true : false;
-            modal.runnerNotice = runner.notice.replace(/\&\a\m\p\;/g, '&');
+            modal.runnerIsFinisher = runner.endtime !== '';
+            modal.runnerHasNotice = runner.notice !== '';
+            modal.runnerNotice = runner.notice.replace(/&\am\p;/g, '&');
 
             modal.runnerId = runner.id;
 
-            var d = new Date(runner.tstamp * 1000);
-            modal.lastChange = 'letzte Änderung: ' + self.getFormatedTime(d);
+            const d = new Date(runner.tstamp * 1000);
+            modal.lastChange = 'Letzte Änderung: ' + self.getFormatedTime(d);
 
-            modal.endTime = runner.endtime == '' ? self.currentTime : runner.endtime;
+            modal.endTime = runner.endtime === '' ? self.currentTime : runner.endtime;
             modal.endTime = runner.hasGivenUp ? '' : modal.endTime;
 
             // If runner has given up the race
-            modal.runnerHasGivenUp = runner.hasGivenUp ? true : false;
+            modal.runnerHasGivenUp = !!runner.hasGivenUp;
 
-            // Get Focus on the Input Field
-            $('.modal ').on('hidden.bs.modal', function (e) {
+            let modalElement = document.getElementById(self.modalId);
+
+            modalElement.addEventListener('hidden.bs.modal', function () {
                 $('html, body').animate({
                         //scrollTop: $('body').offset().top
                     }, 50, function () {
@@ -134,29 +137,32 @@ var chronometryApp = new Vue({
                 );
             });
 
-            // Get Focus on the Input Field
-            $('.modal ').on('shown.bs.modal', function (e) {
+            modalElement.addEventListener('shown.bs.modal', function () {
                 $('#endtimeCtrl').focus();
             });
 
+            let bsModalWindow = bootstrap.Modal.getOrCreateInstance(modalElement, {
+                keyboard: false
+            });
+
             // Open modal
-            $('.modal').modal({});
+            bsModalWindow.show();
 
             // Clear Input Field
             $("#inputClear").click(function () {
                 modal.endTime = '';
             });
         },
-
         /**
          * Scroll to number
          * @param event
          */
         scrollToNumber: function (event) {
-            var self = this;
-            var input = event.target;
+            const self = this;
+
+            const input = event.target;
             if ($(input).val() > 1) {
-                var tr = $("tr[data-number='" + $(input).val() + "']");
+                const tr = $("tr[data-number='" + $(input).val() + "']");
                 if ($(tr).length) {
                     $('html, body').animate({
                             scrollTop: $(tr).offset().top - 40
@@ -165,8 +171,8 @@ var chronometryApp = new Vue({
                         }
                     );
 
-                    //Open modal
-                    var index = $(tr).data('index');
+                    // Open modal
+                    const index = $(tr).data('index');
                     self.openModal(index);
                 }
             }
@@ -174,11 +180,10 @@ var chronometryApp = new Vue({
 
         /**
          * Save data to server
-         * @param index
          */
         checkOnlineStatus: function () {
-            var self = this;
-            var xhr = $.ajax({
+            const self = this;
+            const xhr = $.ajax({
                 url: window.location.href,
                 type: 'post',
                 dataType: 'json',
@@ -187,16 +192,15 @@ var chronometryApp = new Vue({
                     'REQUEST_TOKEN': self.requestToken,
                 }
             });
+
             xhr.done(function (response) {
-                if (response.status === 'success') {
-                    self.isOnline = true;
-                } else {
-                    self.isOnline = false;
-                }
+                self.isOnline = response.status === 'success';
             });
+
             xhr.fail(function () {
                 self.isOnline = false;
             });
+
             xhr.always(function () {
                 //
             });
@@ -208,26 +212,32 @@ var chronometryApp = new Vue({
          * @param index
          */
         saveRow: function (index) {
-            var self = this;
-            var runner = self.runners[index];
-            var modal = self.modal;
+            const self = this;
+            const runner = self.runners[index];
+            const modal = self.modal;
 
 
-            var id = modal.runnerId;
-            var endtime = $('#endtimeCtrl').val();
-            var dnf = $('.modal #runnerdnfCtrl').is(':checked') ? 1 : '';
+            const id = modal.runnerId;
+            const endtime = $('#endtimeCtrl').val();
+            const dnf = $('.modal #runnerdnfCtrl').is(':checked') ? 1 : '';
 
             // Check for a valid input f.ex. 22:12:59
-            var regex = /^(([0|1][0-9])|([2][0-3])):([0-5][0-9]):([0-5][0-9])$/;
+            const regex = /^(([0|1][0-9])|([2][0-3])):([0-5][0-9]):([0-5][0-9])$/;
 
-            if (regex.test(endtime) || endtime == '') {
+            if (regex.test(endtime) || endtime === '') {
 
-                // Close modal and fîre xhr
-                $('.modal').modal('hide');
+                // Close modal
+                let modalElement = document.getElementById(self.modalId);
 
-                // Xhr
+                let bsModalWindow = bootstrap.Modal.getOrCreateInstance(modalElement, {
+                    keyboard: false
+                });
+
+                bsModalWindow.hide();
+
+                // Fire xhr
                 runner.requesting = true;
-                var xhr = $.ajax({
+                const xhr = $.ajax({
                     url: window.location.href,
                     type: 'post',
                     dataType: 'json',
@@ -240,9 +250,10 @@ var chronometryApp = new Vue({
                         'dnf': dnf
                     }
                 });
+
                 xhr.done(function (response) {
 
-                    if (response.status == 'success') {
+                    if (response.status === 'success') {
                         runner.requesting = false;
                         self.runners = response.data;
                         self.stats = response.stats;
@@ -251,9 +262,11 @@ var chronometryApp = new Vue({
                         alert('Fehler');
                     }
                 });
+
                 xhr.fail(function () {
                     alert("XHR-Request für id " + id + " fehlgeschlagen!!!");
                 });
+
                 xhr.always(function () {
                     runner.requesting = false;
                 });
@@ -276,10 +289,10 @@ var chronometryApp = new Vue({
          */
         setTime: function () {
 
-            var currentTime = new Date();
-            var h = currentTime.getHours();
-            var m = currentTime.getMinutes();
-            var s = currentTime.getSeconds();
+            let currentTime = new Date();
+            let h = currentTime.getHours();
+            let m = currentTime.getMinutes();
+            let s = currentTime.getSeconds();
             if (h < 10) {
                 h = '0' + h;
             }
@@ -295,25 +308,20 @@ var chronometryApp = new Vue({
 
         /**
          * Set end time from current time
-         * @param index
          */
         setEndTimeFromCurrentTime: function () {
-            var self = this;
-            var modal = self.modal;
-            var d = new Date();
-            var formatedTime = self.getFormatedTime(d);
-            modal.endTime = formatedTime;
+            const self = this;
+            const modal = self.modal;
+            const d = new Date();
+            modal.endTime = self.getFormatedTime(d);
         },
 
         /**
          * Clear end time
-         * @param index
          */
-        clearEndTime: function (index) {
-            var self = this;
-            //var runner = self.runners[index];
-            var modal = self.modal;
-            modal.endTime = '';
+        clearEndTime: function () {
+            const self = this;
+            self.modal.endTime = '';
         },
 
         /**
@@ -321,11 +329,10 @@ var chronometryApp = new Vue({
          * @param event
          */
         showNumberDropdownSuggest: function (event) {
-            var self = this;
-            var dropdown = $('#searchNumberDropdown');
-            var input = event.target;
+            const self = this;
+            const input = event.target;
 
-            if ($(input).val() == '') {
+            if ($(input).val() === '') {
                 self.searchForm.numberSuggests = [];
                 self.searchForm.showNumberDropdown = false;
                 return;
@@ -335,15 +342,15 @@ var chronometryApp = new Vue({
             self.searchForm.nameSuggests = [];
             self.searchForm.showNameDropdown = false;
 
-            var rows = $('#startlistTable tbody tr');
+            const rows = $('#startlistTable tbody tr');
 
-            var regex = new RegExp('^' + $(input).val() + '(.*)', 'i');
+            const regex = new RegExp('^' + $(input).val() + '(.*)', 'i');
 
             self.searchForm.numberSuggests = [];
             rows.each(function () {
                 if (regex.test($(this).attr('data-number'))) {
 
-                    var runner = {
+                    const runner = {
                         index: $(this).attr('data-index'),
                         number: $(this).attr('data-number'),
                         fullname: $(this).attr('data-fullname')
@@ -360,8 +367,8 @@ var chronometryApp = new Vue({
          * @param event
          */
         removeNumberDropdownSuggest: function (event) {
-            var self = this;
-            var input = event.target;
+            const self = this;
+            const input = event.target;
             window.setTimeout(function () {
                 $(input).val('');
                 self.searchForm.numberSuggests = [];
@@ -374,11 +381,10 @@ var chronometryApp = new Vue({
          * @param event
          */
         showNameDropdownSuggest: function (event) {
-            var self = this;
-            var dropdown = $('#searchNameDropdown');
-            var input = event.target;
+            const self = this;
+            const input = event.target;
 
-            if ($(input).val() == '') {
+            if ($(input).val() === '') {
                 self.searchForm.nameSuggests = [];
                 self.searchForm.showNameDropdown = false;
                 return;
@@ -388,16 +394,16 @@ var chronometryApp = new Vue({
             self.searchForm.numberSuggests = [];
             self.searchForm.showNumberDropdown = false;
 
-            var rows = $('#startlistTable tbody tr');
+            const rows = $('#startlistTable tbody tr');
 
-            var regex = new RegExp($(input).val() + '(.*)', 'i');
+            const regex = new RegExp($(input).val() + '(.*)', 'i');
 
             self.searchForm.nameSuggests = [];
 
             rows.each(function () {
                 if (regex.test($(this).attr('data-fullname'))) {
 
-                    var runner = {
+                    const runner = {
                         index: $(this).attr('data-index'),
                         number: $(this).attr('data-number'),
                         fullname: $(this).attr('data-fullname')
@@ -414,8 +420,8 @@ var chronometryApp = new Vue({
          * @param event
          */
         removeNameDropdownSuggest: function (event) {
-            var self = this;
-            var input = event.target;
+            const self = this;
+            const input = event.target;
             window.setTimeout(function () {
                 $(input).val('');
                 self.searchForm.nameSuggests = [];
@@ -427,7 +433,7 @@ var chronometryApp = new Vue({
          * Toggle sidebar
          */
         toggleSidebar: function () {
-            var self = this;
+            const self = this;
             if (self.sidebar.status === 'closed') {
                 self.sidebar.status = 'open';
             } else {
@@ -442,16 +448,17 @@ var chronometryApp = new Vue({
          * @param event
          */
         applyFilter: function (event) {
-            var select = event.target;
+            const select = event.target;
+
             // Filter option
-            var $filterCat = $(select).val();
-            var rows = $('.startlist-table tbody tr');
+            const $filterCat = $(select).val();
+            const rows = $('.startlist-table tbody tr');
             rows.removeClass('d-none');
 
-            if ($filterCat == 0) return;
+            if ($filterCat === '0') return;
 
             rows.each(function () {
-                if ($(this).attr('data-category') != $filterCat) {
+                if ($(this).attr('data-category') !== $filterCat) {
                     $(this).addClass('d-none');
                 }
             });
@@ -463,9 +470,9 @@ var chronometryApp = new Vue({
          * @returns {string}
          */
         getFormatedTime: function (d) {
-            var hours = d.getHours() < 10 ? '0' + d.getHours() : d.getHours();
-            var minutes = d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes();
-            var seconds = d.getSeconds() < 10 ? '0' + d.getSeconds() : d.getSeconds();
+            const hours = d.getHours() < 10 ? '0' + d.getHours() : d.getHours();
+            const minutes = d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes();
+            const seconds = d.getSeconds() < 10 ? '0' + d.getSeconds() : d.getSeconds();
             return hours + ":" + minutes + ":" + seconds;
         }
     }

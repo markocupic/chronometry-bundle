@@ -1,26 +1,21 @@
 <?php
 
-/**
- * Chronometry Module for Contao CMS
- * Copyright (c) 2008-2019 Marko Cupic
- * @package chronometry-bundle
- * @author Marko Cupic m.cupic@gmx.ch, 2019
+declare(strict_types=1);
+
+/*
+ * This file is part of Chronometry Bundle.
+ *
+ * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * @license LGPL-3.0+
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/chronometry-bundle
  */
 
-namespace Contao;
+namespace Markocupic\ChronometryBundle\Model;
 
-/**
- * Class ChronometryModel
- * @package Contao
- */
 class ChronometryModel extends \Model
 {
 
-	/**
-	 * Table name
-	 * @var string
-	 */
-	protected static $strTable = 'tl_chronometry';
-
+    protected static $strTable = 'tl_chronometry';
 }

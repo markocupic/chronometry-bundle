@@ -1,11 +1,30 @@
-.mod_chronometryList {
+/** dark mode */
+
+$text-red: #fa9696;
+$text-green: #84fd84;
+
+body {
+  background-color: #1c1c1c;
+}
+
+.mod_chronometry_list {
+
+  .text-red {
+    color: $text-red;
+  }
+
+  .text-green {
+    color: $text-green;
+  }
 
   #chronometry-app .application {
     visibility: hidden;
   }
+
   #chronometry-app.is-ready .application {
     visibility: visible;
   }
+
   #sidebarContainer {
     background-color: #333;
     padding: 1rem;
@@ -22,6 +41,7 @@
       min-width: auto;
       height: auto;
       overflow-y: hidden;
+
       .inner {
         display: none;
       }
@@ -38,55 +58,52 @@
     }
 
     #toolContainer {
-      label {
-        color: #eee;
+      .accordion-header > button {
+        color: #eee !important;
+      }
+
+      .accordion-button {
+        color: var(--bs-gray-400) !important;
       }
 
       ul {
         list-style-type: none;
         padding: 0;
+
         li {
           color: #eee;
         }
-      }
-
-      .card-header {
-        border-bottom-color: #eeeeee;
-        padding-left: 0.5rem;
-        button[data-toggle="collapse"] {
-          color: #eee;
-          font-weight: bold;
-          text-decoration: none;
-          font-size: 1rem;
-          &:before {
-            font-family: "Font Awesome 5 Free";
-            content: "\f068";
-          }
-          &.collapsed:before {
-            content: "\f067";
-          }
-        }
-
       }
 
       .dropdown.suggest {
         position: relative;
         top: 100%;
         left: -1px;
+
         ul {
           padding: 0;
           margin: 0;
+          width: 100%;
+
           li {
-            border-bottom: 1px solid #ddd;
+            border: none;
             line-height: 2rem;
             padding: 0 5px;
             z-index: 99999;
-            color: #333 !important;
+            color: var(--bs-gray-400);
+            background-color: var(--bs-dark);
+
+            a {
+              color: var(--bs-gray-400);
+            }
 
             &:hover {
               cursor: pointer;
-              background-color: #ccc;
-              color: #333 !important;
+              background-color: #32373FFF;
+
+              a {
+                color: #fff !important;
+              }
             }
           }
         }
@@ -102,28 +119,16 @@
         }
       }
 
-      tr td.number:after {
-        font-family: "Font Awesome 5 Free";
-        padding-left: 10px;
+      tr td.number .icon-finisher {
+        color: $text-green;
       }
 
-      tr[data-runnerHasFinishedRace="true"] {
-        td.number:after {
-          content: "\f14a";
-          color: green;
-        }
-      }
-
-      tr[data-runnerdnfRace="true"] {
-        td.number:after {
-          content: "\f556";
-          color: red;
-        }
+      tr td.number .icon-dnf {
+        color: $text-red;
       }
 
       tr.requesting {
-        td.number:after {
-          content: "\f14d";
+        td.number {
           color: blue;
         }
       }
@@ -133,36 +138,47 @@
   #chronometryModal.modal {
     .modal-header {
       position: relative;
+
       .close {
         font-size: 4rem;
       }
     }
+
     .modal-body {
       color: #000;
+
       .modal-endtime {
-        font-size: 2rem;
+        input, button {
+          font-size: 2rem;
+        }
       }
+
       .large-icon {
         font-size: 2rem;
       }
+
       #endtimeCtrl {
-        font-size: 2rem;
-        background-color: darkseagreen;
-        color: #000;
+        background-color: var(--bs-bg-dark);
+        border-color: var(--bs-bg-dark);
+        color: var(--bs-light);
       }
     }
+
     .modal-title {
       font-size: 3rem;
       color: black;
     }
+
     .modal-content {
       top: 60px;
     }
+
     .clockStyle {
       font-size: 2rem;
-      color: red !important;
+      color: $text-red !important;
       text-align: left;
     }
+
   }
 
   #chronometryModal.modal.runner-is-finisher {
@@ -170,8 +186,10 @@
       display: block !important;
       font-size: 2rem;
     }
+
     #endtimeCtrl {
       background-color: #ac2925;
+      border-color: #ac2925;
       color: #fff;
     }
   }

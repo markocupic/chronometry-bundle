@@ -12,13 +12,17 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/chronometry-bundle
  */
 
-namespace Markocupic\ChronometryBundle;
+namespace Markocupic\ChronometryBundle\DataContainer;
 
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Markocupic\ChronometryBundle\Helper\ChronometryHelper;
 
-/**
- * Class MarkocupicChronometryBundle.
- */
-class MarkocupicChronometryBundle extends Bundle
+class Chronometry
 {
+    /**
+     * @Callback(table="tl_chronometery", target="config.onload")
+     */
+    public static function synchronizeTime(): void
+    {
+        ChronometryHelper::synchronizeTime();
+    }
 }

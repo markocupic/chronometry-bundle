@@ -12,13 +12,9 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/chronometry-bundle
  */
 
-namespace Markocupic\ChronometryBundle;
+namespace Markocupic\ChronometryBundle\Model;
 
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-
-/**
- * Class MarkocupicChronometryBundle.
- */
-class MarkocupicChronometryBundle extends Bundle
+class ChronometryModel extends \Model
 {
+    protected static $strTable = 'tl_chronometry';
 }

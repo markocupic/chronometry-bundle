@@ -1,0 +1,14 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: true
+    bind:
+      $projectDir: '%kernel.project_dir%'
+
+  Markocupic\ChronometryBundle\:
+    resource: ../../
+    exclude: ../../{DependencyInjection,Resources,Model}
+
+
+
