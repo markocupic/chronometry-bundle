@@ -15,7 +15,7 @@
 
   <div class="text-center align-middle align-middle text-light mt-5 fa-3x" v-if="isReady === false">
     <i class="fas fa-sync fa-spin"></i>
-    <br><br>...Loading...
+    {{br}}{{br}}...Loading...
   </div>
 
   <!-- Application container -->
@@ -50,14 +50,17 @@
                   <!-- search for runners starting number -->
                   <label for="searchNumber">Gehe zu Start-Nr.</label>{{br}}
 
-                  <input x-webkit-speech type="number" class="form-control" id="searchNumber" placeholder="123" autocomplete="off" v-on:change="validateNumberOnInput" v-on:keyup="validateNumberOnInput" v-on:keydown.enter="scrollToNumber" v-on:input="showNumberDropdownSuggest">
+                  <!-- speech input -->
+                  <input x-webkit-speech type="number" class="form-control" id="searchNumber" placeholder="123" autocomplete="off" v-on:input="validateNumberOnInput" v-on:change="validateNumberOnInput" v-on:keyup="validateNumberOnInput" v-on:keydown.enter="scrollToNumber" v-on:input="showNumberDropdownSuggest">
 
                   <div class="search-dropdown dropdown suggest" data-key="#">
                     <ul id="searchNumberDropdown" class="dropdown-menu" role="menu" v-if="searchForm.showNumberDropdown" v-bind:class="searchForm.showNumberDropdown ? 'show' : ''">
                       <li v-for="(runner, index) in searchForm.numberSuggests" v-bind:data-index="runner.index" v-on:click="openModal(runner.index)"><a href="#" v-on:click.prevent="openModal(runner.index)" v-on:click="removeNameDropdownSuggest">{{ runner.number }} {{ runner.fullname }}</a></li>
                     </ul>
                   </div>
+
                   {{br}} {{br}}
+
                   <!-- search for runners name -->
                   <label for="searchName">Suche nach Namen:</label>
                   <input type="text" class="form-control" id="searchName" placeholder="Namen eingeben" autocomplete="off" v-on:input="showNameDropdownSuggest">
@@ -235,6 +238,6 @@
     }
 </script>
 
-<script src="<?= MOD_CHRONOMETRY_ASSET_PATH ?>/chronometry-app-vue.js"></script>
+<script src="<?= MOD_CHRONOMETRY_ASSET_PATH ?>/chronometry-app-vue.min.js"></script>
 
 <?php $this->endblock(); ?>

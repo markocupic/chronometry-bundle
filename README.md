@@ -18,7 +18,7 @@ Neben dem Modul-Verzeichnis gibt es in src/Resources/contao/templates/frontend/f
 Über das Modalfenster kann anlässlich einer Siegerehrung ein Diplom (MS-Word-Dokument) ausgedruckt werden.
 
 ### Abhängigkeiten
-Diese Ressourcen werden im Template eingebunden und befinden sich src/Resources/public
+Diese Ressourcen werden im Template eingebunden und befinden sich in src/Resources/public
 * vue.js
 * Font Awesome 5 Free
 * Bootstrap Framework

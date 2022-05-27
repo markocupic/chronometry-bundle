@@ -1,8 +1,10 @@
-/**
- * Chronometry Module for Contao CMS
- * Copyright (c) 2008-2019 Marko Cupic
- * @package chronometry-bundle
- * @author Marko Cupic m.cupic@gmx.ch, 2019
+/*
+ * This file is part of Chronometry Bundle.
+ *
+ * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * @license LGPL-3.0+
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/chronometry-bundle
  */
 const chronometryApp = new Vue({
@@ -41,6 +43,7 @@ const chronometryApp = new Vue({
             runnersTotal: 0,
         }
     },
+
     created: function () {
         const self = this;
         self.requestToken = CHRONOMETRY.requestToken;
@@ -66,6 +69,7 @@ const chronometryApp = new Vue({
             $('#startlistTable').stupidtable();
         });
     },
+
     methods: {
         /**
          * Get all rows from server
@@ -93,6 +97,7 @@ const chronometryApp = new Vue({
                 //
             });
         },
+
         /**
          * Open modal
          * @param index
@@ -118,11 +123,7 @@ const chronometryApp = new Vue({
             modal.endTime = runner.endtime === '' ? self.currentTime : runner.endtime;
             modal.endTime = runner.dnf === '1' ? '' : modal.endTime;
 
-            if (runner.dnf === '1') {
-                document.getElementById('runnerDnfCtrl').checked = true;
-            } else {
-                document.getElementById('runnerDnfCtrl').checked = false;
-            }
+            document.getElementById('runnerDnfCtrl').checked = runner.dnf === '1';
 
             let modalElement = document.getElementById(self.modalId);
 
@@ -156,6 +157,7 @@ const chronometryApp = new Vue({
                 modal.endTime = '';
             });
         },
+
         /**
          * Scroll to number
          * @param event
@@ -211,14 +213,12 @@ const chronometryApp = new Vue({
         },
 
         /**
-         * Validate number on input
+         * Remove non-natural numbers
          * @param event
          */
         validateNumberOnInput: function (event) {
             const inputEl = event.target;
-            if (isNaN(inputEl.value)) {
-                select.value = '';
-            }
+            inputEl.value = inputEl.value.replace(/[^0-9]/g, '');
         },
 
         /**
@@ -442,8 +442,6 @@ const chronometryApp = new Vue({
                 self.searchForm.showNameDropdown = false;
             }, 50);
         },
-
-
 
         /**
          * Apply filter
