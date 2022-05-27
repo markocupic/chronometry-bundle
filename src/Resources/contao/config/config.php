@@ -32,11 +32,6 @@ ArrayUtil::arrayInsert($GLOBALS['BE_MOD']['content'], 1, [
 $GLOBALS['TL_MODELS']['tl_chronometry'] = ChronometryModel::class;
 
 /*
- * Hooks
- */
-$GLOBALS['TL_HOOKS']['addCustomRegexp'][] = ['Markocupic\Chronometry', 'customRegexp'];
-
-/*
  * Asset path
  */
 define('MOD_CHRONOMETRY_ASSET_PATH', 'bundles/markocupicchronometry');

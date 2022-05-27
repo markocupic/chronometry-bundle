@@ -17,7 +17,6 @@ namespace Markocupic\ChronometryBundle\Helper;
 use Contao\Config;
 use Contao\Controller;
 use Contao\Database;
-use Contao\Widget;
 use Markocupic\ChronometryBundle\Model\ChronometryModel;
 
 class ChronometryHelper
@@ -138,35 +137,6 @@ class ChronometryHelper
         }
 
         return $aCat;
-    }
-
-    /**
-     * @param $varValue
-     */
-    public static function customRegexp(string $strRegexp, $varValue, Widget $objWidget): bool
-    {
-        if ('chronometryTime' === $strRegexp) {
-            if (!static::isValidTimeFormat($varValue)) {
-                $objWidget->addError('Field '.$objWidget->label.' should be a valid time like hh:mm:ss.');
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public static function isValidTimeFormat(string $strFormattedTime = ''): bool
-    {
-        if ('' === $strFormattedTime) {
-            return true;
-        }
-
-        if (preg_match('/^(([0|1][0-9])|([2][0-3])):([0-5][0-9]):([0-5][0-9])$/', $strFormattedTime)) {
-            return true;
-        }
-
-        return false;
     }
 
     public static function makeTimestamp(string $time = ''): int

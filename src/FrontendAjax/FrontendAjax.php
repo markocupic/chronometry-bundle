@@ -60,7 +60,7 @@ class FrontendAjax
 
         $arrJson['status'] = 'success';
         $arrJson['stats'] = ChronometryHelper::getStats();
-        $arrJson['data'] = $arrItems;
+        $arrJson['runners'] = $arrItems;
         $arrJson['categories'] = ChronometryHelper::getCategories();
 
         $response = new JsonResponse($arrJson);
@@ -116,7 +116,7 @@ class FrontendAjax
 
                 $arrJson['status'] = 'success';
                 $arrJson['stats'] = ChronometryHelper::getStats();
-                $arrJson['data'] = $arrItems;
+                $arrJson['runners'] = $arrItems;
                 $arrJson['categories'] = ChronometryHelper::getCategories();
 
                 // Do backup

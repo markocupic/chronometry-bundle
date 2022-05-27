@@ -25,32 +25,27 @@ body {
     visibility: visible;
   }
 
-  #sidebarContainer {
-    background-color: #333;
-    padding: 1rem;
+  #toggleSidebar {
     position: fixed;
-    min-width: 290px;
-    height: 100%;
     top: 0;
     right: 0;
     opacity: 1;
     z-index: 1040;
-    overflow-y: auto;
 
-    &[data-toggle="closed"] {
-      min-width: auto;
-      height: auto;
-      overflow-y: hidden;
+    button {
+      border: 0;
+      background: none;
+      padding: 1rem;
 
-      .inner {
-        display: none;
+      .sidebar-toggle-icon {
+        color: #fff;
       }
     }
+  }
 
-    .toggle-sidebar {
-      color: #fff;
-      font-size: 26px;
-    }
+  #sidebarContainer {
+    background-color: var(--bs-dark);
+    min-width: 290px;
 
     .clock {
       font-size: 60px;
@@ -62,7 +57,7 @@ body {
         color: #eee !important;
       }
 
-      .accordion-button {
+      .accordion-button:after {
         color: var(--bs-gray-400) !important;
       }
 
@@ -119,6 +114,20 @@ body {
         }
       }
 
+      .runner-status-icon {
+        display: none;
+      }
+
+      tr[data-runnerhasfinishedrace="true"] .runner-status-icon {
+        display: inline;
+        color: $text-green;
+      }
+
+      tr[data-runnerdnfrace="true"] .runner-status-icon {
+        display: inline;
+        color: $text-red;
+      }
+
       tr td.number .icon-finisher {
         color: $text-green;
       }
@@ -169,6 +178,28 @@ body {
       color: black;
     }
 
+    .blinking-runner-has-finished {
+      animation: blinkingText 1.2s infinite;
+    }
+
+    @keyframes blinkingText {
+      0% {
+        color: $text-green;
+      }
+      49% {
+        color: $text-green;
+      }
+      60% {
+        color: transparent;
+      }
+      99% {
+        color: transparent;
+      }
+      100% {
+        color: $text-green;
+      }
+    }
+
     .modal-content {
       top: 60px;
     }
@@ -196,5 +227,29 @@ body {
 
   [role="button"] {
     cursor: pointer;
+  }
+}
+
+.scroll-to-top {
+  width: 50px;
+  height: auto;
+  //padding: 10px $spacer;
+  //text-align: center;
+  background: $text-red;
+  color: #fff;
+  text-decoration: none;
+  position: fixed;
+  bottom: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 10px;
+  border-radius: 0;
+  aspect-ratio: 1/1;
+  opacity: 1;
+  -webkit-transition: background-color ease-in-out 0.4s;
+
+  a, .fa {
+    color: #fff;
   }
 }

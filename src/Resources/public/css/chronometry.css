@@ -15,29 +15,24 @@ body {
 .mod_chronometry_list #chronometry-app.is-ready .application {
     visibility: visible;
 }
-.mod_chronometry_list #sidebarContainer {
-    background-color: #333;
-    padding: 1rem;
+.mod_chronometry_list #toggleSidebar {
     position: fixed;
-    min-width: 290px;
-    height: 100%;
     top: 0;
     right: 0;
     opacity: 1;
     z-index: 1040;
-    overflow-y: auto;
 }
-.mod_chronometry_list #sidebarContainer[data-toggle=closed] {
-    min-width: auto;
-    height: auto;
-    overflow-y: hidden;
+.mod_chronometry_list #toggleSidebar button {
+    border: 0;
+    background: none;
+    padding: 1rem;
 }
-.mod_chronometry_list #sidebarContainer[data-toggle=closed] .inner {
-    display: none;
-}
-.mod_chronometry_list #sidebarContainer .toggle-sidebar {
+.mod_chronometry_list #toggleSidebar button .sidebar-toggle-icon {
     color: #fff;
-    font-size: 26px;
+}
+.mod_chronometry_list #sidebarContainer {
+    background-color: var(--bs-dark);
+    min-width: 290px;
 }
 .mod_chronometry_list #sidebarContainer .clock {
     font-size: 60px;
@@ -46,7 +41,7 @@ body {
 .mod_chronometry_list #sidebarContainer #toolContainer .accordion-header > button {
     color: #eee !important;
 }
-.mod_chronometry_list #sidebarContainer #toolContainer .accordion-button {
+.mod_chronometry_list #sidebarContainer #toolContainer .accordion-button:after {
     color: var(--bs-gray-400) !important;
 }
 .mod_chronometry_list #sidebarContainer #toolContainer ul {
@@ -87,6 +82,17 @@ body {
 .mod_chronometry_list .table-container table thead th[data-sort] {
     cursor: pointer;
 }
+.mod_chronometry_list .table-container table .runner-status-icon {
+    display: none;
+}
+.mod_chronometry_list .table-container table tr[data-runnerhasfinishedrace=true] .runner-status-icon {
+    display: inline;
+    color: #84fd84;
+}
+.mod_chronometry_list .table-container table tr[data-runnerdnfrace=true] .runner-status-icon {
+    display: inline;
+    color: #fa9696;
+}
 .mod_chronometry_list .table-container table tr td.number .icon-finisher {
     color: #84fd84;
 }
@@ -112,13 +118,33 @@ body {
     font-size: 2rem;
 }
 .mod_chronometry_list #chronometryModal.modal .modal-body #endtimeCtrl {
-    background-color: var(--bs-dark);
-    border-color: var(--bs-dark);
+    background-color: var(--bs-bg-dark);
+    border-color: var(--bs-bg-dark);
     color: var(--bs-light);
 }
 .mod_chronometry_list #chronometryModal.modal .modal-title {
     font-size: 3rem;
     color: black;
+}
+.mod_chronometry_list #chronometryModal.modal .blinking-runner-has-finished {
+    animation: blinkingText 1.2s infinite;
+}
+@keyframes blinkingText {
+    0% {
+        color: #84fd84;
+    }
+    49% {
+        color: #84fd84;
+    }
+    60% {
+        color: transparent;
+    }
+    99% {
+        color: transparent;
+    }
+    100% {
+        color: #84fd84;
+    }
 }
 .mod_chronometry_list #chronometryModal.modal .modal-content {
     top: 60px;
@@ -134,9 +160,30 @@ body {
 }
 .mod_chronometry_list #chronometryModal.modal.runner-is-finisher #endtimeCtrl {
     background-color: #ac2925;
-    border-color: #ac2925 !important;
+    border-color: #ac2925;
     color: #fff;
 }
 .mod_chronometry_list [role=button] {
     cursor: pointer;
+}
+
+.scroll-to-top {
+    width: 50px;
+    height: auto;
+    background: #fa9696;
+    color: #fff;
+    text-decoration: none;
+    position: fixed;
+    bottom: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    left: 10px;
+    border-radius: 0;
+    aspect-ratio: 1/1;
+    opacity: 1;
+    -webkit-transition: background-color ease-in-out 0.4s;
+}
+.scroll-to-top a, .scroll-to-top .fa {
+    color: #fff;
 }

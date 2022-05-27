@@ -15,9 +15,7 @@ const chronometryApp = new Vue({
         currentTime: '',
         runners: null,
         categories: null,
-        sidebar: {
-            status: 'closed',
-        },
+
         modal: {
             runnerIndex: null,
             runnerNumber: '',
@@ -62,6 +60,7 @@ const chronometryApp = new Vue({
         }, 15000);
 
         self.getDataAll();
+
         $(document).ready(function () {
             // Make table sortable
             $('#startlistTable').stupidtable();
@@ -83,7 +82,7 @@ const chronometryApp = new Vue({
                 }
             });
             xhr.done(function (response) {
-                self.runners = response.data;
+                self.runners = response.runners;
                 self.stats = response.stats;
                 self.categories = response.categories;
             });
@@ -108,6 +107,7 @@ const chronometryApp = new Vue({
             modal.runnerFullname = runner.fullname;
             modal.runnerIsFinisher = runner.endtime !== '';
             modal.runnerHasNotice = runner.notice !== '';
+            modal.runnerdnf = runner.dnf === '1';
             modal.runnerNotice = runner.notice.replace(/&\am\p;/g, '&');
 
             modal.runnerId = runner.id;
@@ -116,10 +116,13 @@ const chronometryApp = new Vue({
             modal.lastChange = 'Letzte Änderung: ' + self.getFormatedTime(d);
 
             modal.endTime = runner.endtime === '' ? self.currentTime : runner.endtime;
-            modal.endTime = runner.hasGivenUp ? '' : modal.endTime;
+            modal.endTime = runner.dnf === '1' ? '' : modal.endTime;
 
-            // If runner has given up the race
-            modal.runnerHasGivenUp = !!runner.hasGivenUp;
+            if (runner.dnf === '1') {
+                document.getElementById('runnerDnfCtrl').checked = true;
+            } else {
+                document.getElementById('runnerDnfCtrl').checked = false;
+            }
 
             let modalElement = document.getElementById(self.modalId);
 
@@ -208,6 +211,17 @@ const chronometryApp = new Vue({
         },
 
         /**
+         * Validate number on input
+         * @param event
+         */
+        validateNumberOnInput: function (event) {
+            const inputEl = event.target;
+            if (isNaN(inputEl.value)) {
+                select.value = '';
+            }
+        },
+
+        /**
          * Save data to server
          * @param index
          */
@@ -215,11 +229,9 @@ const chronometryApp = new Vue({
             const self = this;
             const runner = self.runners[index];
             const modal = self.modal;
-
-
             const id = modal.runnerId;
             const endtime = $('#endtimeCtrl').val();
-            const dnf = $('.modal #runnerdnfCtrl').is(':checked') ? 1 : '';
+            const dnf = $('.modal #runnerDnfCtrl').is(':checked') ? 1 : '';
 
             // Check for a valid input f.ex. 22:12:59
             const regex = /^(([0|1][0-9])|([2][0-3])):([0-5][0-9]):([0-5][0-9])$/;
@@ -252,10 +264,9 @@ const chronometryApp = new Vue({
                 });
 
                 xhr.done(function (response) {
-
                     if (response.status === 'success') {
                         runner.requesting = false;
-                        self.runners = response.data;
+                        self.runners = response.runners;
                         self.stats = response.stats;
                         self.categories = response.categories;
                     } else {
@@ -293,12 +304,15 @@ const chronometryApp = new Vue({
             let h = currentTime.getHours();
             let m = currentTime.getMinutes();
             let s = currentTime.getSeconds();
+
             if (h < 10) {
                 h = '0' + h;
             }
+
             if (m < 10) {
                 m = '0' + m;
             }
+
             if (s < 10) {
                 s = '0' + s;
             }
@@ -429,19 +443,7 @@ const chronometryApp = new Vue({
             }, 50);
         },
 
-        /**
-         * Toggle sidebar
-         */
-        toggleSidebar: function () {
-            const self = this;
-            if (self.sidebar.status === 'closed') {
-                self.sidebar.status = 'open';
-            } else {
-                self.sidebar.status = 'closed';
-            }
 
-            $('#sidebarContainer').toggleClass('hidden-sidebar');
-        },
 
         /**
          * Apply filter
