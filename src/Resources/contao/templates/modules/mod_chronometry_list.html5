@@ -51,7 +51,7 @@
                   <label for="searchNumber">Gehe zu Start-Nr.</label>{{br}}
 
                   <!-- speech input -->
-                  <input x-webkit-speech type="number" class="form-control" id="searchNumber" placeholder="123" autocomplete="off" v-on:input="validateNumberOnInput" v-on:change="validateNumberOnInput" v-on:keyup="validateNumberOnInput" v-on:keydown.enter="scrollToNumber" v-on:input="showNumberDropdownSuggest">
+                  <input x-webkit-speech type="number" class="form-control" id="searchNumber" placeholder="123" autocomplete="off" v-on:input="onInputNumber" v-on:keydown.enter="scrollToNumber">
 
                   <div class="search-dropdown dropdown suggest" data-key="#">
                     <ul id="searchNumberDropdown" class="dropdown-menu" role="menu" v-if="searchForm.showNumberDropdown" v-bind:class="searchForm.showNumberDropdown ? 'show' : ''">
@@ -124,10 +124,10 @@
                     <option v-for="(category, index) in categories" v-bind:value="category.id">{{ category.label }}</option>
                   </select>
                   {{br}}
-                  <button type="submit" class="w-100 btn btn-sm btn-primary btn-sm">Rangliste downloaden</button>
+                  <button type="submit" class="w-100 btn btn-sm btn-dark btn-sm">Rangliste downloaden</button>
                 </form>
                 {{br}}
-                <a href="{{env::request}}?action=csvExport" class="w-100 btn btn-sm btn-primary btn-sm">CSV-Export</a>
+                <a href="{{env::request}}?action=csvExport" class="w-100 btn btn-sm btn-dark btn-sm">CSV-Export</a>
               </div>
             </div>
           </div>
@@ -199,7 +199,7 @@
 
             <div class="modal-endtime input-group mb-3">
               <button class="btn btn-lg btn-secondary btn-warning btnGetTime" v-on:click="setEndTimeFromCurrentTime" title="Zielzeit setzen" type="button"><i class="large-icon far fa-clock"></i></button>
-              <input type="text" class="form-control" id="endtimeCtrl" v-model="modal.endTime" v-on:keydown.enter="saveRow(modal.runnerIndex)" placeholder="00:00:00"/>
+              <input type="text" class="form-control" id="endtimeCtrl" maxlength="8" v-model="modal.endTime" v-on:keydown.enter="saveRow(modal.runnerIndex)" placeholder="00:00:00"/>
               <button id="inputClear" class="btn btn-lg btn-secondary btn-danger" v-on:click="clearEndTime()" title="Zeit zurücksetzen" type="button"><i class="large-icon fa fa-times-circle"></i></button>
             </div>
 

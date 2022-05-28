@@ -205,15 +205,6 @@ const chronometryApp = new Vue({
         },
 
         /**
-         * Remove non-natural numbers
-         * @param event
-         */
-        validateNumberOnInput: function (event) {
-            const inputEl = event.target;
-            inputEl.value = inputEl.value.replace(/[^0-9]/g, '');
-        },
-
-        /**
          * Save data to server
          * @param index
          */
@@ -312,6 +303,24 @@ const chronometryApp = new Vue({
         clearEndTime: function () {
             const self = this;
             self.modal.endTime = '';
+        },
+
+        /**
+         * Remove non-natural numbers
+         * @param event
+         */
+        onInputNumber: function (event) {
+            this.validateNumberOnInput(event);
+            this.showNumberDropdownSuggest(event);
+        },
+
+        /**
+         * Remove non-natural numbers
+         * @param event
+         */
+        validateNumberOnInput: function (event) {
+            const inputEl = event.target;
+            inputEl.value = inputEl.value.replace(/[^0-9]/g, '');
         },
 
         /**

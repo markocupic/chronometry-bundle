@@ -44,8 +44,16 @@ body {
   }
 
   #sidebarContainer {
-    background-color: var(--bs-dark);
+    background-color: darkred;
     min-width: 290px;
+
+    .bg-dark {
+      background-color: darkred !important;
+    }
+
+    label {
+      color: #fff;
+    }
 
     .clock {
       font-size: 60px;
@@ -53,6 +61,10 @@ body {
     }
 
     #toolContainer {
+      .accordion-item {
+        border-color: #fff;
+      }
+
       .accordion-header > button {
         color: #eee !important;
       }
@@ -79,22 +91,23 @@ body {
           padding: 0;
           margin: 0;
           width: 100%;
+          background-color: #460000;
 
           li {
             border: none;
-            line-height: 2rem;
+            line-height: 2.5rem;
             padding: 0 5px;
             z-index: 99999;
             color: var(--bs-gray-400);
-            background-color: var(--bs-dark);
+            background-color: darkred;
 
             a {
-              color: var(--bs-gray-400);
+              color: #fff;
             }
 
             &:hover {
               cursor: pointer;
-              background-color: #32373FFF;
+              background-color: #460000FF;
 
               a {
                 color: #fff !important;
