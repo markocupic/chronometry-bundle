@@ -159,7 +159,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr v-for="(runner, index) in runners" v-bind:data-index="index" v-bind:id="runner.id" v-bind:data-number="runner.number" v-bind:data-fullname="runner.fullname" v-bind:data-category="runner.category" v-bind:data-runnerdnfRace="runner.dnf ? true : false" v-bind:data-runnerHasFinishedRace="runner.endtime != '' ? true : false">
+          <tr v-for="(runner, index) in runners" v-bind:data-index="index" v-bind:id="runner.id" v-bind:data-number="runner.number" v-bind:data-fullname="runner.fullname" v-bind:data-category="runner.category" v-bind:data-runnerdnfRace="runner.dnf === '1' ? 'true' : 'false'" v-bind:data-runnerHasFinishedRace="runner.endtime != '' ? true : false">
             <td class="text-center align-middle number">
               <span><i class="fas fa-circle runner-status-icon"></i></span>
             </td>

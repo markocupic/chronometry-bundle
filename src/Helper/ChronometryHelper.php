@@ -148,7 +148,7 @@ class ChronometryHelper
         return (int) ($time[0]) * 60 * 60 + (int) ($time[1]) * 60 + (int) ($time[2]);
     }
 
-    public static function getTimeDifference(string $strStartTime, string $strEndTime): string
+    public static function getTimeSpan(string $strStartTime, string $strEndTime): string
     {
         if ('' === $strStartTime || '' === $strEndTime) {
             return '';
@@ -181,7 +181,7 @@ class ChronometryHelper
             $objChronometryModel = ChronometryModel::findByPk($objChronometry->id);
 
             if (null !== $objChronometryModel) {
-                $objChronometryModel->runningtime = static::getTimeDifference($objChronometry->starttime, $objChronometry->endtime);
+                $objChronometryModel->runningtime = static::getTimeSpan($objChronometry->starttime, $objChronometry->endtime);
                 $objChronometryModel->save();
             }
         }

@@ -63,8 +63,7 @@ class FrontendAjax
             ->executeQuery(
                 'SELECT * FROM tl_chronometry WHERE published = ? ORDER BY starttime, stufe, teachername, gender',
                 ['1'],
-            )
-        ;
+            );
 
         while (false !== ($row = $result->fetchAssociative())) {
             $arrRows[] = $this->chronometryHelper->getRowAsObject($row);
@@ -88,52 +87,54 @@ class FrontendAjax
         $arrJson = [];
         $arrJson['status'] = 'error';
 
+        $arrSet = $this->connection->fetchAssociative('SELECT * FROM tl_chronometry WHERE id = ?', [$id]);
+
         // Save endtime
-        if ($id > 0) {
-            $objChronometry = $this->chronometryModel->findByPk($id);
+        if ($arrSet) {
 
-            if (null !== $objChronometry) {
-                $objChronometry->endtime = $endtime;
 
-                // Athlete did not finish the challenge
-                $objChronometry->dnf = $dnf ? '1' : '';
+            if ($dnf) {
+                $arrSet['dnf'] = '1';
+                $arrSet['endtime'] = '';
+                $arrSet['runningtime'] = '';
+                $arrSet['runningtimeUnix'] = 0;
 
-                if ('1' === $dnf) {
-                    $objChronometry->endtime = '';
-                }
+            }else{
+                $arrSet['dnf'] = '';
+                $arrSet['endtime'] = $endtime;
+                $arrSet['runningtime'] = $this->chronometryHelper->getTimeSpan($arrSet['starttime'], $endtime);
+                $arrSet['runningtimeUnix'] = $this->chronometryHelper->makeTimestamp($arrSet['runningtime']);
 
-                $objChronometry->runningtime = $this->chronometryHelper->getTimeDifference($objChronometry->starttime, $objChronometry->endtime);
-                $objChronometry->runningtimeUnix = $this->chronometryHelper->makeTimestamp($objChronometry->runningtime);
-                $objChronometry->tstamp = time();
-                $objChronometry->save();
-
-                $arrItems = [];
-                $arrJson = [];
-
-                // Get data
-                $result = $this->connection
-                    ->executeQuery(
-                        'SELECT * FROM tl_chronometry WHERE published = ? ORDER BY starttime, stufe, teachername, gender',
-                        ['1'],
-                    )
-                ;
-
-                while (false !== ($row = $result->fetchAssociative())) {
-                    $arrItems[] = $this->chronometryHelper->getRowAsObject($row);
-                }
-
-                $arrJson['status'] = 'success';
-                $arrJson['stats'] = $this->chronometryHelper->getStats();
-                $arrJson['runners'] = $arrItems;
-                $arrJson['categories'] = $this->chronometryHelper->getCategories();
-
-                // Do backup
-                $strDatim = date('Ymd_H_i_s_', time());
-                $backupPath = $this->config->get('chronometry_bundle_backup_path');
-                $path = sprintf($backupPath, $strDatim);
-
-                $this->csvWriter->saveToFile($path);
             }
+
+            $this->connection->update('tl_chronometry', $arrSet, ['id' => $id]);
+
+            $arrItems = [];
+            $arrJson = [];
+
+            // Get data
+            $result = $this->connection
+                ->executeQuery(
+                    'SELECT * FROM tl_chronometry WHERE published = ? ORDER BY starttime, stufe, teachername, gender',
+                    ['1'],
+                );
+
+            while (false !== ($row = $result->fetchAssociative())) {
+                $arrItems[] = $this->chronometryHelper->getRowAsObject($row);
+            }
+
+            $arrJson['status'] = 'success';
+            $arrJson['stats'] = $this->chronometryHelper->getStats();
+            $arrJson['runners'] = $arrItems;
+            $arrJson['categories'] = $this->chronometryHelper->getCategories();
+
+            // Do backup
+            $strDatim = date('Ymd_H_i_s_', time());
+            $backupPath = $this->config->get('chronometry_bundle_backup_path');
+            $path = sprintf($backupPath, $strDatim);
+
+            $this->csvWriter->saveToFile($path);
+
         }
 
         $response = new JsonResponse($arrJson);
