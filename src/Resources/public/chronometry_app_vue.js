@@ -77,13 +77,9 @@ const chronometryApp = new Vue({
         getDataAll: function () {
             const self = this;
             const xhr = $.ajax({
-                url: window.location.href,
-                type: 'post',
+                url: window.location.href + '?action=getDataAll',
+                type: 'get',
                 dataType: 'json',
-                data: {
-                    'REQUEST_TOKEN': self.requestToken,
-                    'action': 'getDataAll'
-                }
             });
             xhr.done(function (response) {
                 self.runners = response.runners;
@@ -189,13 +185,9 @@ const chronometryApp = new Vue({
         checkOnlineStatus: function () {
             const self = this;
             const xhr = $.ajax({
-                url: window.location.href,
-                type: 'post',
+                url: window.location.href + '?action=checkOnlineStatus',
+                type: 'get',
                 dataType: 'json',
-                data: {
-                    'action': 'checkOnlineStatus',
-                    'REQUEST_TOKEN': self.requestToken,
-                }
             });
 
             xhr.done(function (response) {
@@ -248,13 +240,11 @@ const chronometryApp = new Vue({
                 bsModalWindow.hide();
 
                 // Fire xhr
-                runner.requesting = true;
                 const xhr = $.ajax({
-                    url: window.location.href,
+                    url: window.location.href + '?action=saveRow',
                     type: 'post',
                     dataType: 'json',
                     data: {
-                        'action': 'saveRow',
                         'REQUEST_TOKEN': self.requestToken,
                         'id': id,
                         'index': index,
@@ -265,7 +255,6 @@ const chronometryApp = new Vue({
 
                 xhr.done(function (response) {
                     if (response.status === 'success') {
-                        runner.requesting = false;
                         self.runners = response.runners;
                         self.stats = response.stats;
                         self.categories = response.categories;
@@ -277,22 +266,9 @@ const chronometryApp = new Vue({
                 xhr.fail(function () {
                     alert("XHR-Request für id " + id + " fehlgeschlagen!!!");
                 });
-
-                xhr.always(function () {
-                    runner.requesting = false;
-                });
-
             } else {
                 alert('Ungültige Eingabe: ' + endtime);
             }
-        },
-
-        /**
-         * Print certificate
-         * @param runnerId
-         */
-        printCertificate: function (runnerId) {
-            window.location.href = window.location.href + '?printCertificate=true&id=' + runnerId;
         },
 
         /**

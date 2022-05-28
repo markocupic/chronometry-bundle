@@ -35,7 +35,7 @@ class AddCustomRegexpListener
      */
     public function __invoke(string $strRegexp, $varValue, Widget $objWidget): bool
     {
-        if ('chronometryTime' === $strRegexp) {
+        if ('time_format_H:i:s' === $strRegexp) {
             if (!$this->validatorTime->isValidTimeFormat($varValue)) {
                 $objWidget->addError('Field '.$objWidget->label.' should be a valid time like hh:mm:ss.');
             }

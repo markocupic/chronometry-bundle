@@ -113,19 +113,21 @@
           <div class="accordion-item bg-dark">
             <h5 class="accordion-header bg-dark" id="headingFour">
               <button class="accordion-button btn btn-sm bg-dark btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                Rangliste
+                Downloads
               </button>
             </h5>
             <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#toolContainer" aria-labelledby="headingFour">
               <div class="accordion-body">
-                <form action="{{env::request}}" method="post">
-                  <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
+                <form action="{{env::request}}" method="get">
+                  <input type="hidden" name="action" value="printRankingList">
                   <select class="form-control" id="rankingListSelect" name="printRankingListCat">
                     <option v-for="(category, index) in categories" v-bind:value="category.id">{{ category.label }}</option>
                   </select>
                   {{br}}
                   <button type="submit" class="w-100 btn btn-sm btn-primary btn-sm">Rangliste downloaden</button>
                 </form>
+                {{br}}
+                <a href="{{env::request}}?action=csvExport" class="w-100 btn btn-sm btn-primary btn-sm">CSV-Export</a>
               </div>
             </div>
           </div>
@@ -135,7 +137,7 @@
     <!-- End sidebar container -->
 
     <div class="container">
-      <div id="onlineStatusInfoBox" class="alert alert-warning" role="alert" class="" v-if="isOnline === false">
+      <div id="onlineStatusInfoBox" class="m-b-4 alert alert-warning" role="alert" v-if="isOnline === false">
         Im Moment kann keine Verbindung zum Server aufgebaut werden. Bitte überprüfen Sie die Verbindung.
       </div>
 
@@ -157,7 +159,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr v-for="(runner, index) in runners" v-bind:data-index="index" v-bind:id="runner.id" v-bind:data-number="runner.number" v-bind:data-fullname="runner.fullname" v-bind:data-category="runner.category" v-bind:data-runnerdnfRace="runner.dnf ? true : false" v-bind:data-runnerHasFinishedRace="runner.endtime != '' ? true : false" v-bind:class="runner.requesting === true ? 'requesting' : ''">
+          <tr v-for="(runner, index) in runners" v-bind:data-index="index" v-bind:id="runner.id" v-bind:data-number="runner.number" v-bind:data-fullname="runner.fullname" v-bind:data-category="runner.category" v-bind:data-runnerdnfRace="runner.dnf ? true : false" v-bind:data-runnerHasFinishedRace="runner.endtime != '' ? true : false">
             <td class="text-center align-middle number">
               <span><i class="fas fa-circle runner-status-icon"></i></span>
             </td>
@@ -219,7 +221,7 @@
 
           <div class="modal-footer">
             <button type="button" class="btn btn-lg btn-secondary" data-bs-dismiss="modal"><i class="me-2 fas fa-door-closed"></i>Schliessen</button>
-            <button v-on:click="printCertificate(modal.runnerId)" class="btn btn-lg btn-success" title="Zertifikat drucken"><i class="me-2 fas fa-trophy"></i>Diplom</button>
+            <a v-bind:href="'{{env::request}}?action=printCertificate&id=' + modal.runnerId" title="Zertifikat drucken" class="btn btn-lg btn-success"><i class="me-2 fas fa-trophy"></i>Zertifikat</a>
             <button id="saveChanges" v-on:click="saveRow(modal.runnerIndex)" type="button" class="btn btn-lg btn-primary"><i class="me-2 fas fa-save"></i>Speichern</button>
           </div>
         </div>
@@ -238,6 +240,6 @@
     }
 </script>
 
-<script src="<?= MOD_CHRONOMETRY_ASSET_PATH ?>/chronometry-app-vue.min.js"></script>
+<script src="<?= MOD_CHRONOMETRY_ASSET_PATH ?>/chronometry_app_vue.min.js"></script>
 
 <?php $this->endblock(); ?>

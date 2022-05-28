@@ -40,4 +40,9 @@ define('MOD_CHRONOMETRY_ASSET_PATH', 'bundles/markocupicchronometry');
  * Categories
  * @see references in $GLOBALS['TL_LANG']['tl_chronometry']['categories']
  */
-$GLOBALS['TL_CONFIG']['chronometry_categories'] = ['1', '2', '3', '4'];
+$GLOBALS['TL_CONFIG']['chronometry_bundle_categories'] = ['1', '2', '3', '4'];
+
+/*
+ * Backup path
+ */
+$GLOBALS['TL_CONFIG']['chronometry_bundle_backup_path'] = 'files/chronometry_backup/%schronometry.csv';

@@ -14,28 +14,35 @@ declare(strict_types=1);
 
 namespace Markocupic\ChronometryBundle\FrontendAjax;
 
-use Contao\Database;
-use Contao\File;
-use Contao\Folder;
+use Contao\Config;
+use Contao\CoreBundle\Framework\Adapter;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Doctrine\DBAL\Connection;
-use League\Csv\ByteSequence;
-use League\Csv\Writer;
+use Markocupic\ChronometryBundle\Csv\CsvWriter;
 use Markocupic\ChronometryBundle\Helper\ChronometryHelper;
 use Markocupic\ChronometryBundle\Model\ChronometryModel;
-use Markocupic\ExportTable\Export\ExportTable;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class FrontendAjax
 {
+    private ContaoFramework $framework;
     private Connection $connection;
-    private ExportTable $exportTable;
-    private string $projectDir;
+    private CsvWriter $csvWriter;
 
-    public function __construct(Connection $connection, ExportTable $exportTable, string $projectDir)
+    // Adapters
+    private Adapter $config;
+    private Adapter $chronometryHelper;
+
+    public function __construct(ContaoFramework $framework, Connection $connection, CsvWriter $csvWriter)
     {
+        $this->framework = $framework;
         $this->connection = $connection;
-        $this->exportTable = $exportTable;
-        $this->projectDir = $projectDir;
+        $this->csvWriter = $csvWriter;
+
+        // Adapters
+        $this->config = $this->framework->getAdapter(Config::class);
+        $this->chronometryHelper = $this->framework->getAdapter(ChronometryHelper::class);
+        $this->chronometryModel = $this->framework->getAdapter(ChronometryModel::class);
     }
 
     public function checkOnlineStatus(): JsonResponse
@@ -49,19 +56,24 @@ class FrontendAjax
 
     public function getDataAll(): JsonResponse
     {
-        $arrItems = [];
+        $arrRows = [];
         $arrJson = [];
 
-        $objChronometry = Database::getInstance()->prepare('SELECT * FROM tl_chronometry WHERE published = ? ORDER BY starttime ASC, stufe ASC, teachername, gender')->execute(1, 2);
+        $result = $this->connection
+            ->executeQuery(
+                'SELECT * FROM tl_chronometry WHERE published = ? ORDER BY starttime, stufe, teachername, gender',
+                ['1'],
+            )
+        ;
 
-        while ($row = $objChronometry->fetchAssoc()) {
-            $arrItems[] = ChronometryHelper::getRowAsObject($row);
+        while (false !== ($row = $result->fetchAssociative())) {
+            $arrRows[] = $this->chronometryHelper->getRowAsObject($row);
         }
 
         $arrJson['status'] = 'success';
-        $arrJson['stats'] = ChronometryHelper::getStats();
-        $arrJson['runners'] = $arrItems;
-        $arrJson['categories'] = ChronometryHelper::getCategories();
+        $arrJson['stats'] = $this->chronometryHelper->getStats();
+        $arrJson['runners'] = $arrRows;
+        $arrJson['categories'] = $this->chronometryHelper->getCategories();
 
         $response = new JsonResponse($arrJson);
 
@@ -78,7 +90,7 @@ class FrontendAjax
 
         // Save endtime
         if ($id > 0) {
-            $objChronometry = ChronometryModel::findByPk($id);
+            $objChronometry = $this->chronometryModel->findByPk($id);
 
             if (null !== $objChronometry) {
                 $objChronometry->endtime = $endtime;
@@ -86,51 +98,41 @@ class FrontendAjax
                 // Athlete did not finish the challenge
                 $objChronometry->dnf = $dnf ? '1' : '';
 
-                if ($dnf) {
+                if ('1' === $dnf) {
                     $objChronometry->endtime = '';
                 }
 
-                $objChronometry->runningtime = ChronometryHelper::getTimeDifference($objChronometry->starttime, $objChronometry->endtime);
-                $objChronometry->runningtimeUnix = ChronometryHelper::makeTimestamp($objChronometry->runningtime);
+                $objChronometry->runningtime = $this->chronometryHelper->getTimeDifference($objChronometry->starttime, $objChronometry->endtime);
+                $objChronometry->runningtimeUnix = $this->chronometryHelper->makeTimestamp($objChronometry->runningtime);
                 $objChronometry->tstamp = time();
                 $objChronometry->save();
 
                 $arrItems = [];
                 $arrJson = [];
-                $arrRows = [];
-                $i = 0;
 
                 // Get data
-                $result = $this->connection->executeQuery('SELECT * FROM tl_chronometry WHERE published = ? ORDER BY starttime ASC, stufe ASC, teachername, gender', ['1']);
+                $result = $this->connection
+                    ->executeQuery(
+                        'SELECT * FROM tl_chronometry WHERE published = ? ORDER BY starttime, stufe, teachername, gender',
+                        ['1'],
+                    )
+                ;
 
                 while (false !== ($row = $result->fetchAssociative())) {
-                    $arrItems[] = ChronometryHelper::getRowAsObject($row);
-
-                    if (0 === $i) {
-                        // Add the headline first
-                        $arrRows[] = array_keys($row);
-                    }
-                    $arrRows[] = $row;
-                    ++$i;
+                    $arrItems[] = $this->chronometryHelper->getRowAsObject($row);
                 }
 
                 $arrJson['status'] = 'success';
-                $arrJson['stats'] = ChronometryHelper::getStats();
+                $arrJson['stats'] = $this->chronometryHelper->getStats();
                 $arrJson['runners'] = $arrItems;
-                $arrJson['categories'] = ChronometryHelper::getCategories();
+                $arrJson['categories'] = $this->chronometryHelper->getCategories();
 
                 // Do backup
-                if (!empty($arrRows)) {
-                    new Folder('files/chronometry-backup');
-                    $strDatim = date('Ymd_H_i_s', time());
-                    $objFile = new File('files/chronometry-backup/'.$strDatim.'_chronometry.csv');
+                $strDatim = date('Ymd_H_i_s_', time());
+                $backupPath = $this->config->get('chronometry_bundle_backup_path');
+                $path = sprintf($backupPath, $strDatim);
 
-                    $writer = Writer::createFromPath($this->projectDir.'/'.$objFile->path, 'w+');
-                    $writer->setDelimiter(';');
-                    $writer->setEnclosure('"');
-                    $writer->setOutputBOM(ByteSequence::BOM_UTF8);
-                    $writer->insertAll($arrRows);
-                }
+                $this->csvWriter->saveToFile($path);
             }
         }
 

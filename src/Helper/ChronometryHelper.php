@@ -28,12 +28,12 @@ class ChronometryHelper
         foreach ($row as $k => $v) {
             $objRow->{$k} = $v;
         }
+
         $objRow->fullname = $row['firstname'].' '.$row['lastname'];
         $objRow->runningtimeUnix = static::makeTimestamp($row['runningtime']);
         $objRow->starttimeUnix = static::makeTimestamp($row['starttime']);
         $objRow->endtimeUnix = static::makeTimestamp($row['endtime']);
         $objRow->rank = static::getRank((int) $row['id']);
-        $objRow->requesting = false;
 
         return $objRow;
     }
@@ -42,34 +42,28 @@ class ChronometryHelper
     {
         $objAthlete = ChronometryModel::findByPk($id);
 
-        if (null !== $objAthlete) {
-            if ($objAthlete->runningtimeUnix < 1) {
+        if (null === $objAthlete) {
+            return 0;
+        }
+
+        $objDb = Database::getInstance()
+            ->prepare('SELECT * FROM tl_chronometry WHERE runningtimeUnix > 0 AND published = ? AND category = ? ORDER BY runningtimeUnix')
+            ->execute('1', $objAthlete->category)
+        ;
+
+        $arrPerformances = array_map('intval', $objDb->fetchEach('runningtimeUnix'));
+
+        $i = 0;
+
+        foreach ($arrPerformances as $performance) {
+            if ($performance < 1) {
                 return 0;
             }
 
-            $objDb = Database::getInstance()
-                ->prepare('SELECT * FROM tl_chronometry WHERE runningtimeUnix > 0 AND published = ? AND category = ? ORDER BY runningtimeUnix')
-                ->execute(1, $objAthlete->category)
-            ;
+            ++$i;
 
-            $values = $objDb->fetchEach('runningtimeUnix');
-
-            $i = 1;
-            $dupl = 0;
-            $lastScore = '';
-
-            foreach ($values as $score) {
-                if ($lastScore === $score) {
-                    ++$dupl;
-                } else {
-                    $dupl = 0;
-                }
-
-                if ($score === $objAthlete->runningtimeUnix) {
-                    return $i - $dupl;
-                }
-                ++$i;
-                $lastScore = $score;
+            if ($performance === (int) $objAthlete->runningtimeUnix) {
+                return $i;
             }
         }
 
@@ -125,7 +119,7 @@ class ChronometryHelper
     {
         Controller::loadLanguageFile('tl_chronometry');
         $aCat = [];
-        $arrCats = Config::get('chronometry_categories');
+        $arrCats = Config::get('chronometry_bundle_categories');
 
         if (!empty($arrCats) && \is_array($arrCats)) {
             foreach ($arrCats as $cat) {

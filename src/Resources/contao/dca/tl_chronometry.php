@@ -123,7 +123,7 @@ $GLOBALS['TL_DCA']['tl_chronometry'] = [
             'search'    => true,
             'sorting'   => true,
             'filter'    => true,
-            'options'   => Config::get('chronometry_categories'),
+            'options'   => Config::get('chronometry_bundle_categories'),
             'inputType' => 'select',
             'eval'      => ['mandatory' => true, 'maxlength' => 1, 'tl_class' => 'w50'],
             'sql'       => "varchar(1) NOT NULL default ''",
@@ -161,7 +161,7 @@ $GLOBALS['TL_DCA']['tl_chronometry'] = [
             'sorting'   => true,
             'filter'    => true,
             'inputType' => 'text',
-            'eval'      => ['mandatory' => true, 'rgxp' => 'chronometryTime', 'maxlength' => 8, 'tl_class' => 'w50'],
+            'eval'      => ['mandatory' => true, 'rgxp' => 'time_format_H:i:s', 'maxlength' => 8, 'tl_class' => 'w50'],
             'sql'       => "varchar(8) NOT NULL default ''",
         ],
         'endtime'         => [
@@ -170,7 +170,7 @@ $GLOBALS['TL_DCA']['tl_chronometry'] = [
             'sorting'   => true,
             'filter'    => true,
             'inputType' => 'text',
-            'eval'      => ['rgxp' => 'chronometryTime', 'maxlength' => 8, 'tl_class' => 'w50'],
+            'eval'      => ['rgxp' => 'time_format_H:i:s', 'maxlength' => 8, 'tl_class' => 'w50'],
             'sql'       => "varchar(8) NOT NULL default ''",
         ],
         'runningtime'     => [
@@ -179,7 +179,7 @@ $GLOBALS['TL_DCA']['tl_chronometry'] = [
             'sorting'   => true,
             'filter'    => true,
             'inputType' => 'text',
-            'eval'      => ['rgxp' => 'chronometryTime', 'maxlength' => 8, 'tl_class' => 'w50'],
+            'eval'      => ['rgxp' => 'time_format_H:i:s', 'maxlength' => 8, 'tl_class' => 'w50'],
             'sql'       => "varchar(8) NOT NULL default ''",
         ],
         'runningtimeUnix' => [

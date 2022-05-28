@@ -99,9 +99,6 @@ body {
 .mod_chronometry_list .table-container table tr td.number .icon-dnf {
     color: #fa9696;
 }
-.mod_chronometry_list .table-container table tr.requesting td.number {
-    color: blue;
-}
 .mod_chronometry_list #chronometryModal.modal .modal-header {
     position: relative;
 }
