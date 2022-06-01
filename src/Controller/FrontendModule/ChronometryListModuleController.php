@@ -64,17 +64,17 @@ class ChronometryListModuleController extends AbstractFrontendModuleController
                 $endtime = $request->request->get('endtime');
                 $dnf = (bool) $request->request->get('dnf');
 
-                return $this->frontendAjax->saveRow($intId, $endtime, $dnf);
+                $this->frontendAjax->saveRow($intId, $endtime, $dnf);
             }
 
             // Check is online
             if (self::ACTION_CHECK_ONLINE_STATE === $strAction) {
-                return $this->frontendAjax->checkOnlineStatus();
+                $this->frontendAjax->checkOnlineStatus();
             }
 
             // Retrieve data for the vue.js instance
             if (self::ACTION_GET_DATA_ALL === $strAction) {
-                return $this->frontendAjax->getDataAll();
+                $this->frontendAjax->getDataAll();
             }
 
             // Print ranking list

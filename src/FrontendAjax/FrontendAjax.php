@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Markocupic\ChronometryBundle\FrontendAjax;
 
 use Contao\Config;
+use Contao\CoreBundle\Exception\ResponseException;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Doctrine\DBAL\Connection;
@@ -45,16 +46,16 @@ class FrontendAjax
         $this->chronometryModel = $this->framework->getAdapter(ChronometryModel::class);
     }
 
-    public function checkOnlineStatus(): JsonResponse
+    public function checkOnlineStatus(): void
     {
         $arrJson = [];
         $arrJson['status'] = 'success';
         $response = new JsonResponse($arrJson);
 
-        return $response->send();
+        throw new ResponseException($response);
     }
 
-    public function getDataAll(): JsonResponse
+    public function getDataAll(): void
     {
         $arrRows = [];
         $arrJson = [];
@@ -63,7 +64,8 @@ class FrontendAjax
             ->executeQuery(
                 'SELECT * FROM tl_chronometry WHERE published = ? ORDER BY starttime, stufe, teachername, gender',
                 ['1'],
-            );
+            )
+        ;
 
         while (false !== ($row = $result->fetchAssociative())) {
             $arrRows[] = $this->chronometryHelper->getRowAsObject($row);
@@ -76,13 +78,13 @@ class FrontendAjax
 
         $response = new JsonResponse($arrJson);
 
-        return $response->send();
+        throw new ResponseException($response);
     }
 
     /**
      * @throws \Exception
      */
-    public function saveRow(int $id, string $endtime, bool $dnf): JsonResponse
+    public function saveRow(int $id, string $endtime, bool $dnf): void
     {
         $arrJson = [];
         $arrJson['status'] = 'error';
@@ -91,20 +93,16 @@ class FrontendAjax
 
         // Save endtime
         if ($arrSet) {
-
-
             if ($dnf) {
                 $arrSet['dnf'] = '1';
                 $arrSet['endtime'] = '';
                 $arrSet['runningtime'] = '';
                 $arrSet['runningtimeUnix'] = 0;
-
-            }else{
+            } else {
                 $arrSet['dnf'] = '';
                 $arrSet['endtime'] = $endtime;
                 $arrSet['runningtime'] = $this->chronometryHelper->getTimeSpan($arrSet['starttime'], $endtime);
                 $arrSet['runningtimeUnix'] = $this->chronometryHelper->makeTimestamp($arrSet['runningtime']);
-
             }
 
             $this->connection->update('tl_chronometry', $arrSet, ['id' => $id]);
@@ -117,7 +115,8 @@ class FrontendAjax
                 ->executeQuery(
                     'SELECT * FROM tl_chronometry WHERE published = ? ORDER BY starttime, stufe, teachername, gender',
                     ['1'],
-                );
+                )
+            ;
 
             while (false !== ($row = $result->fetchAssociative())) {
                 $arrItems[] = $this->chronometryHelper->getRowAsObject($row);
@@ -134,11 +133,10 @@ class FrontendAjax
             $path = sprintf($backupPath, $strDatim);
 
             $this->csvWriter->saveToFile($path);
-
         }
 
         $response = new JsonResponse($arrJson);
 
-        return $response->send();
+        throw new ResponseException($response);
     }
 }

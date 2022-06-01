@@ -8,39 +8,15 @@
  * @link https://github.com/markocupic/chronometry-bundle
  */
 const chronometryApp = new Vue({
-    el: '#chronometry-app',
-    data: {
-        isReady: false,
-        isOnline: '',
-        requestToken: '',
-        modalId: null,
-        currentTime: '',
-        runners: null,
-        categories: null,
+    el: '#chronometry-app', data: {
+        isReady: false, isOnline: '', requestToken: '', modalId: null, currentTime: '', runners: null, categories: null,
 
         modal: {
-            runnerIndex: null,
-            runnerNumber: '',
-            runnerFullname: '',
-            runnerId: null,
-            runnerIsFinisher: false,
-            runnerdnf: false,
-            lastChange: '',
-            endTime: '',
-        },
-        searchForm: {
-            showNumberDropdown: false,
-            numberSuggests: [],
-            showNameDropdown: false,
-            nameSuggests: [],
-        },
-        stats: {
-            total: 0,
-            dispensed: 0,
-            haveFinished: 0,
-            running: 0,
-            haveGivenUp: 0,
-            runnersTotal: 0,
+            runnerIndex: null, runnerNumber: '', runnerFullname: '', runnerId: null, runnerIsFinisher: false, runnerdnf: false, lastChange: '', endTime: '',
+        }, searchForm: {
+            showNumberDropdown: false, numberSuggests: [], showNameDropdown: false, nameSuggests: [],
+        }, stats: {
+            total: 0, dispensed: 0, haveFinished: 0, running: 0, haveGivenUp: 0, runnersTotal: 0,
         }
     },
 
@@ -76,21 +52,21 @@ const chronometryApp = new Vue({
          */
         getDataAll: function () {
             const self = this;
-            const xhr = $.ajax({
-                url: window.location.href + '?action=getDataAll',
-                type: 'get',
-                dataType: 'json',
-            });
-            xhr.done(function (response) {
-                self.runners = response.runners;
-                self.stats = response.stats;
-                self.categories = response.categories;
-            });
-            xhr.fail(function () {
-                alert("XHR-Request fehlgeschlagen!!!");
-            });
-            xhr.always(function () {
-                //
+
+            fetch(window.location.href + '?action=getDataAll', {
+                method: 'GET', // or 'PUT'
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                self.runners = data.runners;
+                self.stats = data.stats;
+                self.categories = data.categories;
+            })
+            .catch((error) => {
+                console.error('XHR-request failed!!!:', error);
             });
         },
 
@@ -125,16 +101,15 @@ const chronometryApp = new Vue({
 
             modalElement.addEventListener('hidden.bs.modal', function () {
                 $('html, body').animate({
-                        //scrollTop: $('body').offset().top
-                    }, 50, function () {
-                        $('#searchNumber').val('').focus();
-                        $('#searchName').val('');
-                        self.searchForm.numberSuggests = [];
-                        self.searchForm.nameSuggests = [];
-                        self.searchForm.showNumberDropdown = false;
-                        self.searchForm.showNameDropdown = false;
-                    }
-                );
+                    //scrollTop: $('body').offset().top
+                }, 50, function () {
+                    $('#searchNumber').val('').focus();
+                    $('#searchName').val('');
+                    self.searchForm.numberSuggests = [];
+                    self.searchForm.nameSuggests = [];
+                    self.searchForm.showNumberDropdown = false;
+                    self.searchForm.showNameDropdown = false;
+                });
             });
 
             modalElement.addEventListener('shown.bs.modal', function () {
@@ -166,11 +141,10 @@ const chronometryApp = new Vue({
                 const tr = $("tr[data-number='" + $(input).val() + "']");
                 if ($(tr).length) {
                     $('html, body').animate({
-                            scrollTop: $(tr).offset().top - 40
-                        }, 400, function () {
-                            // On animate end
-                        }
-                    );
+                        scrollTop: $(tr).offset().top - 40
+                    }, 400, function () {
+                        // On animate end
+                    });
 
                     // Open modal
                     const index = $(tr).data('index');
@@ -184,24 +158,21 @@ const chronometryApp = new Vue({
          */
         checkOnlineStatus: function () {
             const self = this;
-            const xhr = $.ajax({
-                url: window.location.href + '?action=checkOnlineStatus',
-                type: 'get',
-                dataType: 'json',
-            });
 
-            xhr.done(function (response) {
-                self.isOnline = response.status === 'success';
-            });
+            fetch(window.location.href + '?action=checkOnlineStatus', {
+                method: 'GET', // or 'PUT'
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                self.isOnline = data.status === 'success';
 
-            xhr.fail(function () {
+            })
+            .catch((error) => {
                 self.isOnline = false;
             });
-
-            xhr.always(function () {
-                //
-            });
-
         },
 
         /**
@@ -230,35 +201,30 @@ const chronometryApp = new Vue({
 
                 bsModalWindow.hide();
 
-                // Fire xhr
-                const xhr = $.ajax({
-                    url: window.location.href + '?action=saveRow',
-                    type: 'post',
-                    dataType: 'json',
-                    data: {
-                        'REQUEST_TOKEN': self.requestToken,
-                        'id': id,
-                        'index': index,
-                        'endtime': endtime,
-                        'dnf': dnf
-                    }
+                const form = new FormData();
+                form.append('REQUEST_TOKEN', self.requestToken);
+                form.append('id', id);
+                form.append('index', index);
+                form.append('endtime', endtime);
+                form.append('dnf', dnf);
+
+                fetch(window.location.href + '?action=saveRow', {
+                    method: 'POST', headers: {
+                        'Accept': 'application/json',
+                    }, body: form,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    self.runners = data.runners;
+                    self.stats = data.stats;
+                    self.categories = data.categories;
+                })
+                .catch((error) => {
+                    console.error('Upload error. Could not save data.', error);
                 });
 
-                xhr.done(function (response) {
-                    if (response.status === 'success') {
-                        self.runners = response.runners;
-                        self.stats = response.stats;
-                        self.categories = response.categories;
-                    } else {
-                        alert('Fehler');
-                    }
-                });
-
-                xhr.fail(function () {
-                    alert("XHR-Request für id " + id + " fehlgeschlagen!!!");
-                });
             } else {
-                alert('Ungültige Eingabe: ' + endtime);
+                alert('Invalid input format for "endtime": ' + endtime);
             }
         },
 
@@ -336,6 +302,7 @@ const chronometryApp = new Vue({
                 self.searchForm.showNumberDropdown = false;
                 return;
             }
+
             // Clean name input
             $('#searchName').val('');
             self.searchForm.nameSuggests = [];
@@ -350,9 +317,7 @@ const chronometryApp = new Vue({
                 if (regex.test($(this).attr('data-number'))) {
 
                     const runner = {
-                        index: $(this).attr('data-index'),
-                        number: $(this).attr('data-number'),
-                        fullname: $(this).attr('data-fullname')
+                        index: $(this).attr('data-index'), number: $(this).attr('data-number'), fullname: $(this).attr('data-fullname')
                     };
 
                     self.searchForm.numberSuggests.push(runner);
@@ -388,6 +353,7 @@ const chronometryApp = new Vue({
                 self.searchForm.showNameDropdown = false;
                 return;
             }
+
             // Clean number input
             $('#searchNumber').val('');
             self.searchForm.numberSuggests = [];
@@ -403,9 +369,7 @@ const chronometryApp = new Vue({
                 if (regex.test($(this).attr('data-fullname'))) {
 
                     const runner = {
-                        index: $(this).attr('data-index'),
-                        number: $(this).attr('data-number'),
-                        fullname: $(this).attr('data-fullname')
+                        index: $(this).attr('data-index'), number: $(this).attr('data-number'), fullname: $(this).attr('data-fullname')
                     };
 
                     self.searchForm.nameSuggests.push(runner);
