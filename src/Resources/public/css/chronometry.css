@@ -31,12 +31,21 @@ body {
     color: #fff;
 }
 .mod_chronometry_list #sidebarContainer {
-    background-color: var(--bs-dark);
+    background-color: darkred;
     min-width: 290px;
+}
+.mod_chronometry_list #sidebarContainer .bg-dark {
+    background-color: darkred !important;
+}
+.mod_chronometry_list #sidebarContainer label {
+    color: #fff;
 }
 .mod_chronometry_list #sidebarContainer .clock {
     font-size: 60px;
     color: #fff;
+}
+.mod_chronometry_list #sidebarContainer #toolContainer .accordion-item {
+    border-color: #fff;
 }
 .mod_chronometry_list #sidebarContainer #toolContainer .accordion-header > button {
     color: #eee !important;
@@ -60,21 +69,22 @@ body {
     padding: 0;
     margin: 0;
     width: 100%;
+    background-color: #460000;
 }
 .mod_chronometry_list #sidebarContainer #toolContainer .dropdown.suggest ul li {
     border: none;
-    line-height: 2rem;
+    line-height: 2.5rem;
     padding: 0 5px;
     z-index: 99999;
     color: var(--bs-gray-400);
-    background-color: var(--bs-dark);
+    background-color: darkred;
 }
 .mod_chronometry_list #sidebarContainer #toolContainer .dropdown.suggest ul li a {
-    color: var(--bs-gray-400);
+    color: #fff;
 }
 .mod_chronometry_list #sidebarContainer #toolContainer .dropdown.suggest ul li:hover {
     cursor: pointer;
-    background-color: #32373FFF;
+    background-color: #460000FF;
 }
 .mod_chronometry_list #sidebarContainer #toolContainer .dropdown.suggest ul li:hover a {
     color: #fff !important;
