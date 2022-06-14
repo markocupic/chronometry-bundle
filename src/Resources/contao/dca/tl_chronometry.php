@@ -65,9 +65,9 @@ $GLOBALS['TL_DCA']['tl_chronometry'] = [
                 'attributes' => 'onclick="if(!confirm(\''.($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null).'\'))return false;Backend.getScrollOffset()"',
             ],
             'toggle' => [
-                'label'      => &$GLOBALS['TL_LANG']['tl_chronometry']['toggle'],
-                'icon'       => 'visible.gif',
-                'attributes' => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleVisibility(this,%s)"',
+                'label' => &$GLOBALS['TL_LANG']['tl_chronometry']['toggle'],
+                'href'  => 'act=toggle&amp;field=published',
+                'icon'  => 'visible.svg',
             ],
             'show'   => [
                 'label' => &$GLOBALS['TL_LANG']['tl_chronometry']['show'],
@@ -167,7 +167,7 @@ $GLOBALS['TL_DCA']['tl_chronometry'] = [
         'eventDate'       => [
             'exclude'   => true,
             'sorting'   => true,
-            'filter'    => true,
+            'flag'      => DataContainer::SORT_DAY_DESC,
             'inputType' => 'text',
             'eval'      => ['rgxp' => 'date', 'datepicker' => true, 'tl_class' => 'clr wizard'],
             'sql'       => "varchar(11) NOT NULL default ''",
