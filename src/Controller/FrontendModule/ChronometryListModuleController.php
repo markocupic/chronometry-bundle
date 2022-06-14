@@ -79,10 +79,16 @@ class ChronometryListModuleController extends AbstractFrontendModuleController
 
             // Print ranking list
             if (self::ACTION_PRINT_RANKING_LIST === $strAction) {
-                if ($request->query->has('printRankingListCat')) {
-                    $intCat = (int) $request->query->get('printRankingListCat');
+                if ($request->request->has('printRankingListCat')) {
+                    $intCat = (int) $request->request->get('printRankingListCat');
+
+                    if (isset($_POST['eternalListOfTheBestDownload'])) {
+                        $strTemplate = 'vendor/markocupic/chronometry-bundle/src/Resources/contao/templates/docx/eternal_list_of_the_best.docx';
+                        $this->printRankingList->sendToBrowser($intCat, $strTemplate, true);
+                    }
+
                     $strTemplate = 'vendor/markocupic/chronometry-bundle/src/Resources/contao/templates/docx/ranklist.docx';
-                    $this->printRankingList->sendToBrowser($intCat, $strTemplate);
+                    $this->printRankingList->sendToBrowser($intCat, $strTemplate, false);
                 }
             }
 

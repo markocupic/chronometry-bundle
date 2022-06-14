@@ -118,16 +118,16 @@
             </h5>
             <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#toolContainer" aria-labelledby="headingFour">
               <div class="accordion-body">
-                <form action="{{env::request}}" method="get">
-                  <input type="hidden" name="action" value="printRankingList">
+                <form action="{{env::request}}?action=printRankingList" method="post">
+                  <input type="hidden" name="REQUEST_TOKEN" value="{{REQUEST_TOKEN}}">
                   <select class="form-control" id="rankingListSelect" name="printRankingListCat">
                     <option v-for="(category, index) in categories" v-bind:value="category.id">{{ category.label }}</option>
                   </select>
-                  {{br}}
-                  <button type="submit" class="w-100 btn btn-sm btn-dark btn-sm">Rangliste downloaden</button>
+                  <button type="submit" name="rankingListDownload" class="d-block mt-2 w-100 btn btn-sm btn-dark btn-sm">Rangliste herunterladen</button>
+                  <button type="submit" name="eternalListOfTheBestDownload" class="d-block mt-2 w-100 btn btn-sm btn-dark btn-sm">Ewigenbestenliste herunterladen</button>
                 </form>
-                {{br}}
-                <a href="{{env::request}}?action=csvExport" class="w-100 btn btn-sm btn-dark btn-sm">CSV-Export</a>
+
+                <a href="{{env::request}}?action=csvExport" class="d-block mt-2 w-100 btn btn-sm btn-dark btn-sm">CSV-Export</a>
               </div>
             </div>
           </div>

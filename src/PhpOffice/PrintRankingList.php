@@ -35,7 +35,7 @@ class PrintRankingList
      * @throws CopyFileException
      * @throws CreateTemporaryFileException
      */
-    public function sendToBrowser(int $catId, string $strTemplateSrc): void
+    public function sendToBrowser(int $catId, string $strTemplateSrc, bool $printEternalListOfTheBest): void
     {
         $strTable = 'tl_chronometry';
 
@@ -43,6 +43,11 @@ class PrintRankingList
         Controller::loadLanguageFile($strTable);
 
         $strTargetSrc = sprintf('system/tmp/rangliste_cat%s.docx', $catId);
+
+        if ($printEternalListOfTheBest) {
+            $strTargetSrc = sprintf('system/tmp/ewigenbestenliste_cat%s.docx', $catId);
+        }
+
         $objPhpWord = new MsWordTemplateProcessor($strTemplateSrc, $strTargetSrc);
 
         $objRow = Database::getInstance()
@@ -53,6 +58,8 @@ class PrintRankingList
         while ($objRow->next()) {
             date_default_timezone_set('UTC');
             $time = Date::parse('H:i:s', $objRow->runningtimeUnix);
+            $eventDate = Date::parse('d.m.Y', $objRow->eventDate);
+
             date_default_timezone_set(Config::get('timeZone'));
 
             $objPhpWord->createClone('rank');
@@ -61,6 +68,7 @@ class PrintRankingList
             $objPhpWord->addToClone('rank', 'firstname', $objRow->firstname, ['multiline' => false]);
             $objPhpWord->addToClone('rank', 'lastname', $objRow->lastname, ['multiline' => false]);
             $objPhpWord->addToClone('rank', 'time', $time, ['multiline' => false]);
+            $objPhpWord->addToClone('rank', 'eventDate', $eventDate, ['multiline' => false]);
         }
 
         // dnf

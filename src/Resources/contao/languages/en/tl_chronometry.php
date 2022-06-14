@@ -32,6 +32,7 @@ $GLOBALS['TL_LANG']['tl_chronometry']['stufe'] = ['Klasse'];
 $GLOBALS['TL_LANG']['tl_chronometry']['firstname'] = ['Vorname'];
 $GLOBALS['TL_LANG']['tl_chronometry']['lastname'] = ['Nachname'];
 $GLOBALS['TL_LANG']['tl_chronometry']['starttime'] = ['Startzeit'];
+$GLOBALS['TL_LANG']['tl_chronometry']['eventDate'] = ['Eventdatum'];
 $GLOBALS['TL_LANG']['tl_chronometry']['endtime'] = ['Zielzeit'];
 $GLOBALS['TL_LANG']['tl_chronometry']['runningtime'] = ['Laufzeit'];
 $GLOBALS['TL_LANG']['tl_chronometry']['runningtimeUnix'] = ['Laufzeit in Sekunden'];

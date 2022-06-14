@@ -78,7 +78,7 @@ $GLOBALS['TL_DCA']['tl_chronometry'] = [
     ],
     // Palettes
     'palettes' => [
-        'default' => '{published_legend},published;{name_legend},firstname,lastname,stufe,gender,number,category,teachername,notice;{time_legend},starttime,endtime,runningtime,runningtimeUnix,dnf',
+        'default' => '{published_legend},published;{name_legend},firstname,lastname,stufe,gender,number,category,teachername,notice;{time_legend},eventDate,starttime,endtime,runningtime,runningtimeUnix,dnf',
     ],
     // Fields
     'fields'   => [
@@ -163,6 +163,14 @@ $GLOBALS['TL_DCA']['tl_chronometry'] = [
             'inputType' => 'text',
             'eval'      => ['mandatory' => true, 'rgxp' => 'time_format_H:i:s', 'maxlength' => 8, 'tl_class' => 'w50'],
             'sql'       => "varchar(8) NOT NULL default ''",
+        ],
+        'eventDate'       => [
+            'exclude'   => true,
+            'sorting'   => true,
+            'filter'    => true,
+            'inputType' => 'text',
+            'eval'      => ['rgxp' => 'date', 'datepicker' => true, 'tl_class' => 'clr wizard'],
+            'sql'       => "varchar(11) NOT NULL default ''",
         ],
         'endtime'         => [
             'exclude'   => true,
