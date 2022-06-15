@@ -204,6 +204,7 @@ $GLOBALS['TL_DCA']['tl_chronometry'] = [
             'search'    => true,
             'sorting'   => true,
             'filter'    => true,
+            'toggle'    => true,
             'inputType' => 'checkbox',
             'eval'      => ['isBoolean' => true, 'doNotCopy' => true, 'tl_class' => 'clr'],
             'sql'       => "char(1) NOT NULL default ''",
