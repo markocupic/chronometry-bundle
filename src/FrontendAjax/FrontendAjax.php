@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Chronometry Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license LGPL-3.0+
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -19,31 +19,23 @@ use Contao\CoreBundle\Exception\ResponseException;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Doctrine\DBAL\Connection;
-use Markocupic\ChronometryBundle\Csv\CsvWriter;
+use Markocupic\ChronometryBundle\Export\CsvWriter;
 use Markocupic\ChronometryBundle\Helper\ChronometryHelper;
-use Markocupic\ChronometryBundle\Model\ChronometryModel;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class FrontendAjax
 {
-    private ContaoFramework $framework;
-    private Connection $connection;
-    private CsvWriter $csvWriter;
-
-    // Adapters
     private Adapter $config;
-    private Adapter $chronometryHelper;
 
-    public function __construct(ContaoFramework $framework, Connection $connection, CsvWriter $csvWriter)
-    {
-        $this->framework = $framework;
-        $this->connection = $connection;
-        $this->csvWriter = $csvWriter;
-
-        // Adapters
+    public function __construct(
+        private readonly Connection $connection,
+        private readonly ChronometryHelper $chronometryHelper,
+        private readonly ContaoFramework $framework,
+        private readonly CsvWriter $csvWriter,
+        private readonly string $projectDir,
+    ) {
         $this->config = $this->framework->getAdapter(Config::class);
-        $this->chronometryHelper = $this->framework->getAdapter(ChronometryHelper::class);
-        $this->chronometryModel = $this->framework->getAdapter(ChronometryModel::class);
     }
 
     public function checkOnlineStatus(): void
@@ -60,14 +52,14 @@ class FrontendAjax
         $arrRows = [];
         $arrJson = [];
 
-        $result = $this->connection
-            ->executeQuery(
+        $rows = $this->connection
+            ->fetchAllAssociative(
                 'SELECT * FROM tl_chronometry WHERE published = ? ORDER BY starttime, stufe, teachername, gender',
-                ['1'],
+                [1],
             )
         ;
 
-        while (false !== ($row = $result->fetchAssociative())) {
+        foreach ($rows as $row) {
             $arrRows[] = $this->chronometryHelper->getRowAsObject($row);
         }
 
@@ -84,58 +76,65 @@ class FrontendAjax
     /**
      * @throws \Exception
      */
-    public function saveRow(int $id, string $endtime, bool $dnf): void
+    public function persistRow(int $id, string $endtime, bool $dnf): void
     {
         $arrJson = [];
         $arrJson['status'] = 'error';
 
-        $arrSet = $this->connection->fetchAssociative('SELECT * FROM tl_chronometry WHERE id = ?', [$id]);
+        $set = $this->connection->fetchAssociative('SELECT * FROM tl_chronometry WHERE id = ?', [$id]);
 
         // Save endtime
-        if ($arrSet) {
-            if ($dnf) {
-                $arrSet['dnf'] = '1';
-                $arrSet['endtime'] = '';
-                $arrSet['runningtime'] = '';
-                $arrSet['runningtimeUnix'] = 0;
-            } else {
-                $arrSet['dnf'] = '';
-                $arrSet['endtime'] = $endtime;
-                $arrSet['runningtime'] = $this->chronometryHelper->getTimeSpan($arrSet['starttime'], $endtime);
-                $arrSet['runningtimeUnix'] = $this->chronometryHelper->makeTimestamp($arrSet['runningtime']);
-            }
+        if (false === $set) {
+            $response = new JsonResponse($arrJson);
 
-            $this->connection->update('tl_chronometry', $arrSet, ['id' => $id]);
-
-            $arrItems = [];
-            $arrJson = [];
-
-            // Get data
-            $result = $this->connection
-                ->executeQuery(
-                    'SELECT * FROM tl_chronometry WHERE published = ? ORDER BY starttime, stufe, teachername, gender',
-                    ['1'],
-                )
-            ;
-
-            while (false !== ($row = $result->fetchAssociative())) {
-                $arrItems[] = $this->chronometryHelper->getRowAsObject($row);
-            }
-
-            $arrJson['status'] = 'success';
-            $arrJson['stats'] = $this->chronometryHelper->getStats();
-            $arrJson['runners'] = $arrItems;
-            $arrJson['categories'] = $this->chronometryHelper->getCategories();
-
-            // Do backup
-            $strDatim = date('Ymd_H_i_s_', time());
-            $backupPath = $this->config->get('chronometry_bundle_backup_path');
-            $path = sprintf($backupPath, $strDatim);
-
-            $this->csvWriter->saveToFile($path);
+            throw new ResponseException($response);
         }
 
-        $response = new JsonResponse($arrJson);
+        if ($dnf) {
+            $set['dnf'] = 1;
+            $set['endtime'] = '';
+            $set['runningtime'] = '';
+            $set['runningtimeUnix'] = 0;
+        } else {
+            $set['dnf'] = 0;
+            $set['endtime'] = $endtime;
+            $set['runningtime'] = $this->chronometryHelper->getTimeSpan($set['starttime'], $endtime);
+            $set['runningtimeUnix'] = $this->chronometryHelper->makeTimestamp($set['runningtime']);
+        }
+
+        if ($this->connection->update('tl_chronometry', $set, ['id' => $id])) {
+            $set['tstamp'] = time();
+            $this->connection->update('tl_chronometry', $set, ['id' => $id]);
+        }
+
+        $items = [];
+        $json = [];
+
+        // Get data
+        $rows = $this->connection
+            ->fetchAllAssociative(
+                'SELECT * FROM tl_chronometry WHERE published = ? ORDER BY starttime, stufe, teachername, gender',
+                [1],
+            )
+        ;
+
+        foreach ($rows as $row) {
+            $items[] = $this->chronometryHelper->getRowAsObject($row);
+        }
+
+        $json['status'] = 'success';
+        $json['stats'] = $this->chronometryHelper->getStats();
+        $json['runners'] = $items;
+        $json['categories'] = $this->chronometryHelper->getCategories();
+
+        // Do backup
+        $strDatim = date('Ymd_H_i_s_', time());
+        $backupPath = Path::join($this->projectDir, $this->config->get('chronometry_bundle_backup_path'));
+        $path = \sprintf($backupPath, $strDatim);
+
+        $this->csvWriter->saveToFile($path);
+
+        $response = new JsonResponse($json);
 
         throw new ResponseException($response);
     }

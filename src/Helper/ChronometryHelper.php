@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Chronometry Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license LGPL-3.0+
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -16,12 +16,21 @@ namespace Markocupic\ChronometryBundle\Helper;
 
 use Contao\Config;
 use Contao\Controller;
-use Contao\Database;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 use Markocupic\ChronometryBundle\Model\ChronometryModel;
 
-class ChronometryHelper
+readonly class ChronometryHelper
 {
-    public static function getRowAsObject(array $row): \stdClass
+    public function __construct(
+        private Connection $connection,
+    ) {
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getRowAsObject(array $row): \stdClass
     {
         $objRow = new \stdClass();
 
@@ -30,39 +39,40 @@ class ChronometryHelper
         }
 
         $objRow->fullname = $row['firstname'].' '.$row['lastname'];
-        $objRow->runningtimeUnix = static::makeTimestamp($row['runningtime']);
-        $objRow->starttimeUnix = static::makeTimestamp($row['starttime']);
-        $objRow->endtimeUnix = static::makeTimestamp($row['endtime']);
-        $objRow->rank = static::getRank((int) $row['id']);
+        $objRow->runningtimeUnix = $this->makeTimestamp($row['runningtime']);
+        $objRow->starttimeUnix = $this->makeTimestamp($row['starttime']);
+        $objRow->endtimeUnix = $this->makeTimestamp($row['endtime']);
+        $objRow->rank = $this->getRank((int) $row['id']);
 
         return $objRow;
     }
 
-    public static function getRank(int $id): int
+    /**
+     * @throws Exception
+     */
+    public function getRank(int $id): int
     {
-        $objAthlete = ChronometryModel::findByPk($id);
+        $objAthlete = ChronometryModel::findById($id);
 
         if (null === $objAthlete) {
             return 0;
         }
 
-        $objDb = Database::getInstance()
-            ->prepare('SELECT * FROM tl_chronometry WHERE runningtimeUnix > 0 AND published = ? AND category = ? ORDER BY runningtimeUnix')
-            ->execute('1', $objAthlete->category)
-        ;
-
-        $arrPerformances = array_map('intval', $objDb->fetchEach('runningtimeUnix'));
+        $tstamps = $this->connection->fetchFirstColumn(
+            'SELECT runningtimeUnix FROM tl_chronometry WHERE runningtimeUnix > 0 AND published = ? AND category = ? ORDER BY runningtimeUnix',
+            [1, $objAthlete->category],
+        );
 
         $i = 0;
 
-        foreach ($arrPerformances as $performance) {
-            if ($performance < 1) {
+        foreach ($tstamps as $tstamp) {
+            if ($tstamp < 1) {
                 return 0;
             }
 
             ++$i;
 
-            if ($performance === (int) $objAthlete->runningtimeUnix) {
+            if ($tstamp === (int) $objAthlete->runningtimeUnix) {
                 return $i;
             }
         }
@@ -70,39 +80,36 @@ class ChronometryHelper
         return 0;
     }
 
-    public static function getStats(): \stdClass
+    /**
+     * @throws Exception
+     */
+    public function getStats(): \stdClass
     {
-        $objChronometry = Database::getInstance()
-            ->prepare('SELECT * FROM tl_chronometry WHERE published = ?')
-            ->execute(0)
-        ;
-        $dispensed = $objChronometry->numRows;
+        $dispensed = $this->connection->fetchOne(
+            'SELECT COUNT(id) FROM tl_chronometry WHERE published = ?',
+            [0],
+        );
 
-        $objChronometry = Database::getInstance()
-            ->prepare('SELECT * FROM tl_chronometry')
-            ->execute()
-        ;
-        $total = $objChronometry->numRows;
+        $total = $this->connection->fetchOne(
+            'SELECT COUNT(id) FROM tl_chronometry',
+        );
 
-        $objChronometry = Database::getInstance()
-            ->prepare('SELECT * FROM tl_chronometry WHERE published = ? AND dnf = ?')
-            ->execute(1, 1)
-        ;
-        $dnf = $objChronometry->numRows;
+        $dnf = $this->connection->fetchOne(
+            'SELECT COUNT(id) FROM tl_chronometry WHERE published = ? AND dnf = ?',
+            [1, 1],
+        );
 
-        $objChronometry = Database::getInstance()
-            ->prepare('SELECT * FROM tl_chronometry WHERE published = ? AND runningtimeUnix > 0 AND dnf != ?')
-            ->execute(1, 1)
-        ;
-        $haveFinished = $objChronometry->numRows;
+        $haveFinished = $this->connection->fetchOne(
+            'SELECT COUNT(id) FROM tl_chronometry WHERE published = ? AND runningtimeUnix > 0 AND dnf != ?',
+            [1, 1],
+        );
 
-        $objChronometry = Database::getInstance()
-            ->prepare('SELECT * FROM tl_chronometry WHERE published = ? AND runningtimeUnix = 0 AND dnf != ?')
-            ->execute(1, 1)
-        ;
-        $running = $objChronometry->numRows;
+        $running = $this->connection->fetchOne(
+            'SELECT COUNT(id) FROM tl_chronometry WHERE published = ? AND runningtimeUnix = 0 AND dnf != ?',
+            [1, 1],
+        );
 
-        $runnerstotal = $total - $dispensed;
+        $runnersTotal = $total - $dispensed;
 
         $objStats = new \stdClass();
         $objStats->total = $total;
@@ -110,14 +117,14 @@ class ChronometryHelper
         $objStats->haveFinished = $haveFinished;
         $objStats->running = $running;
         $objStats->haveGivenUp = $dnf;
-        $objStats->runnersTotal = $runnerstotal;
+        $objStats->runnersTotal = $runnersTotal;
 
         return $objStats;
     }
 
-    public static function getCategories(): array
+    public function getCategories(): array
     {
-        Controller::loadLanguageFile('tl_chronometry');
+        Controller::loadLanguageFile(ChronometryModel::getTable());
         $aCat = [];
         $arrCats = Config::get('chronometry_bundle_categories');
 
@@ -125,7 +132,10 @@ class ChronometryHelper
             foreach ($arrCats as $cat) {
                 $objCat = new \stdClass();
                 $objCat->id = $cat;
-                $objCat->label = '' !== $GLOBALS['TL_LANG']['tl_chronometry']['categories'][$cat] ? $GLOBALS['TL_LANG']['tl_chronometry']['categories'][$cat] : 'undefined';
+
+                $table = ChronometryModel::getTable();
+                $categoryLabel = $GLOBALS['TL_LANG'][$table]['categories'][$cat] ?? '';
+                $objCat->label = '' !== $categoryLabel ? $categoryLabel : 'undefined';
                 $aCat[] = $objCat;
             }
         }
@@ -133,7 +143,7 @@ class ChronometryHelper
         return $aCat;
     }
 
-    public static function makeTimestamp(string $time = ''): int
+    public function makeTimestamp(string $time = ''): int
     {
         if ('' === trim($time)) {
             return 0;
@@ -145,10 +155,10 @@ class ChronometryHelper
             return 0;
         }
 
-        return (int) ($time[0]) * 60 * 60 + (int) ($time[1]) * 60 + (int) ($time[2]);
+        return (int) $time[0] * 60 * 60 + (int) $time[1] * 60 + (int) $time[2];
     }
 
-    public static function getTimeSpan(string $strStartTime, string $strEndTime): string
+    public function getTimeSpan(string $strStartTime, string $strEndTime): string
     {
         if ('' === $strStartTime || '' === $strEndTime) {
             return '';
@@ -165,36 +175,62 @@ class ChronometryHelper
         return gmdate('H:i:s', $timeDifference);
     }
 
-    public static function synchronizeTime(): void
+    /**
+     * @throws Exception
+     */
+    public function synchronizeTime(): void
     {
-        $set = [
-            'runningtimeUnix' => 0,
-            'runningtime' => '',
-        ];
+        $this->connection->beginTransaction();
 
-        // Set valid timestamps
-        Database::getInstance()->prepare('UPDATE tl_chronometry %s WHERE endtime = ? OR runningtime = ? OR runningtime = ?')->set($set)->execute('', '', 0);
+        try {
+            // Set valid timestamps
+            $this->connection->executeStatement(
+                'UPDATE tl_chronometry SET runningtimeUnix = 0, runningtime = "" WHERE endtime = ? OR runningtime = ? OR runningtime = ?',
+                ['', '', 0],
+            );
+            $this->connection->commit();
+        } catch (\Exception $e) {
+            $this->connection->rollBack();
 
-        $objChronometry = Database::getInstance()->prepare('SELECT * FROM tl_chronometry WHERE endtime != ?')->execute('');
-
-        while ($objChronometry->next()) {
-            $objChronometryModel = ChronometryModel::findByPk($objChronometry->id);
-
-            if (null !== $objChronometryModel) {
-                $objChronometryModel->runningtime = static::getTimeSpan($objChronometry->starttime, $objChronometry->endtime);
-                $objChronometryModel->save();
-            }
+            throw $e;
         }
 
-        $objChronometry = Database::getInstance()->prepare('SELECT * FROM tl_chronometry WHERE runningtime != ?')->execute('');
+        $this->connection->beginTransaction();
 
-        while ($objChronometry->next()) {
-            $objChronometryModel = ChronometryModel::findByPk($objChronometry->id);
+        try {
+            $rows = $this->connection->fetchAllAssociative(
+                'SELECT * FROM tl_chronometry WHERE endtime != ?',
+                [''],
+            );
 
-            if (null !== $objChronometryModel) {
-                $objChronometryModel->runningtimeUnix = static::makeTimestamp($objChronometry->runningtime);
-                $objChronometryModel->save();
+            foreach ($rows as $row) {
+                $set = ['runningtime' => $this->getTimeSpan($row['starttime'], $row['endtime'])];
+                $this->connection->update('tl_chronometry', $set, ['id' => $row['id']]);
             }
+            $this->connection->commit();
+        } catch (\Exception $e) {
+            $this->connection->rollBack();
+
+            throw $e;
+        }
+
+        $this->connection->beginTransaction();
+
+        try {
+            $rows = $this->connection->fetchAllAssociative(
+                'SELECT * FROM tl_chronometry WHERE runningtime != ?',
+                [''],
+            );
+
+            foreach ($rows as $row) {
+                $set = ['runningtimeUnix' => $this->makeTimestamp($row['runningtime'])];
+                $this->connection->update('tl_chronometry', $set, ['id' => $row['id']]);
+            }
+            $this->connection->commit();
+        } catch (\Exception $e) {
+            $this->connection->rollBack();
+
+            throw $e;
         }
     }
 }

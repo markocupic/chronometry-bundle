@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Chronometry Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license LGPL-3.0+
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -14,15 +14,19 @@ declare(strict_types=1);
 
 namespace Markocupic\ChronometryBundle\DataContainer;
 
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Markocupic\ChronometryBundle\Helper\ChronometryHelper;
 
 class Chronometry
 {
-    /**
-     * @Callback(table="tl_chronometery", target="config.onload")
-     */
-    public static function synchronizeTime(): void
+    public function __construct(
+        private readonly ChronometryHelper $chronometryHelper,
+    ) {
+    }
+
+    #[AsCallback(table: 'tl_chronometry', target: 'config.onload')]
+    public function synchronizeTime(): void
     {
-        ChronometryHelper::synchronizeTime();
+        $this->chronometryHelper->synchronizeTime();
     }
 }

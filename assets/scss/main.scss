@@ -1,0 +1,262 @@
+/** dark mode */
+
+$text-red: #fa9696;
+$text-green: #84fd84;
+
+body {
+  background-color: #393939;
+}
+
+.module-chronometry-list {
+
+  .text-red {
+    color: $text-red;
+  }
+
+  .text-green {
+    color: $text-green;
+  }
+
+  #chronometry-app .application {
+    visibility: hidden;
+  }
+
+  #chronometry-app.is-ready .application {
+    visibility: visible;
+  }
+
+  #toggleSidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    opacity: 1;
+    z-index: 1040;
+
+    button {
+      border: 0;
+      background: none;
+      padding: 1rem;
+
+      .sidebar-toggle-icon {
+        color: #fff;
+      }
+    }
+  }
+
+  #sidebarContainer {
+    background-color: darkred;
+    min-width: 290px;
+
+    .bg-dark {
+      background-color: darkred !important;
+    }
+
+    label {
+      color: #fff;
+    }
+
+    .clock {
+      font-size: 60px;
+      color: #fff;
+    }
+
+    #toolContainer {
+      .accordion-item {
+        border-color: #fff;
+      }
+
+      .accordion-header > button {
+        color: #eee !important;
+      }
+
+      .accordion-button:after {
+        color: var(--bs-gray-400) !important;
+      }
+
+      ul {
+        list-style-type: none;
+        padding: 0;
+
+        li {
+          color: #eee;
+        }
+      }
+
+      .dropdown.suggest {
+        position: relative;
+        top: 100%;
+        left: -1px;
+
+        ul {
+          padding: 0;
+          margin: 0;
+          width: 100%;
+          background-color: #460000;
+
+          li {
+            border: none;
+            line-height: 2.5rem;
+            padding: 0 5px;
+            z-index: 99999;
+            color: var(--bs-gray-400);
+            background-color: darkred;
+
+            a {
+              color: #fff;
+            }
+
+            &:hover {
+              cursor: pointer;
+              background-color: #460000FF;
+
+              a {
+                color: #fff !important;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .table-container {
+    table {
+      thead {
+        th[data-sort] {
+          cursor: pointer;
+        }
+      }
+
+      .runner-status-icon {
+        display: none;
+      }
+
+      tr[data-runnerhasfinishedrace="true"] .runner-status-icon {
+        display: inline;
+        color: $text-green;
+      }
+
+      tr[data-runnerdnfrace="true"] .runner-status-icon {
+        display: inline;
+        color: $text-red;
+      }
+
+      tr td.number .icon-finisher {
+        color: $text-green;
+      }
+
+      tr td.number .icon-dnf {
+        color: $text-red;
+      }
+    }
+  }
+
+  #chronometryModal.modal {
+    .modal-header {
+      position: relative;
+
+      .close {
+        font-size: 4rem;
+      }
+    }
+
+    .modal-body {
+      color: #000;
+
+      .modal-endtime {
+        input, button {
+          font-size: 2rem;
+        }
+      }
+
+      .large-icon {
+        font-size: 2rem;
+      }
+
+      #endtimeCtrl {
+        background-color: var(--bs-bg-dark);
+        border-color: var(--bs-bg-dark);
+        color: var(--bs-light);
+      }
+    }
+
+    .modal-title {
+      font-size: 3rem;
+      color: black;
+    }
+
+    .blinking-runner-has-finished {
+      animation: blinkingText 1.2s infinite;
+    }
+
+    @keyframes blinkingText {
+      0% {
+        color: $text-green;
+      }
+      49% {
+        color: $text-green;
+      }
+      60% {
+        color: transparent;
+      }
+      99% {
+        color: transparent;
+      }
+      100% {
+        color: $text-green;
+      }
+    }
+
+    .modal-content {
+      top: 60px;
+    }
+
+    .clockStyle {
+      font-size: 2rem;
+      color: $text-red !important;
+      text-align: left;
+    }
+
+  }
+
+  #chronometryModal.modal.runner-is-finisher {
+    #infoRunnerHasFinished {
+      display: block !important;
+      font-size: 2rem;
+    }
+
+    #endtimeCtrl {
+      background-color: #ac2925;
+      border-color: #ac2925;
+      color: #fff;
+    }
+  }
+
+  [role="button"] {
+    cursor: pointer;
+  }
+}
+
+.scroll-to-top {
+  width: 50px;
+  height: auto;
+  //padding: 10px $spacer;
+  //text-align: center;
+  background: $text-red;
+  color: #fff;
+  text-decoration: none;
+  position: fixed;
+  bottom: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 10px;
+  border-radius: 0;
+  aspect-ratio: 1/1;
+  opacity: 1;
+  -webkit-transition: background-color ease-in-out 0.4s;
+
+  a, .fa {
+    color: #fff;
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "entrypoints": {
+    "chronometry": {
+      "js": [
+        "/bundles/markocupicchronometry/chronometry.e5b317de.js"
+      ]
+    },
+    "styles": {
+      "css": [
+        "/bundles/markocupicchronometry/styles.6b40c00b.css"
+      ]
+    }
+  }
+}

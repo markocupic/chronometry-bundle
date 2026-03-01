@@ -1,0 +1,241 @@
+{% extends "@Contao/frontend_module/_base.html.twig" %}
+
+{% block content %}
+    {% add to head %}
+        <script src="assets/contao-component-bootstrap/bootstrap/dist/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="assets/contao-component-bootstrap/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{{ asset('styles.css', 'markocupic_chronometry') }}">
+        <link rel="stylesheet" href="assets/contao-component-fontawesome-free/fontawesomefree/js-packages/@fortawesome/fontawesome-free/css/all.css">
+        <link rel="stylesheet" href="assets/contao-component-fontawesome-free/fontawesomefree/js-packages/@fortawesome/fontawesome-free/css/brands.css">
+    {% endadd %}
+
+    <div id="chronometry-app">
+        <div class="text-center align-middle align-middle text-light mt-5 fa-3x" v-if="isReady === false">
+            <i class="fas fa-sync fa-spin"></i>
+            <span class="mt-5">...Loading...</span>
+        </div>
+
+        <!-- Application container -->
+        <div class="application">
+
+            <!-- Toggle sidebar -->
+            <div id="toggleSidebar">
+                <button type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarContainer" aria-controls="sidebarContainer"><i class="sidebar-toggle-icon fas fa-4x fa-bars"></i></button>
+            </div>
+            <!-- End toggle sidebar -->
+
+            <!-- Sidebar container -->
+            <div id="sidebarContainer" class="offcanvas offcanvas-end show" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" aria-labelledby="sidebarContainerLabel">
+                <div class="offcanvas-header">
+                    <button type="button" class="btn-close btn-close-white text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+
+                <div class="clock ms-4 me-4">[[ currentTime ]]</div>
+
+                <div class="offcanvas-body">
+                    <div id="toolContainer" class="accordion accordion-flush">
+                        <div class="accordion-item bg-dark">
+                            <h5 class="accordion-header bg-dark" id="headingOne">
+                                <button class="accordion-button btn btn-sm bg-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Finde
+                                </button>
+                            </h5>
+
+                            <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#toolContainer" aria-labelledby="headingOne">
+                                <div class="accordion-body">
+                                    <div id="searchForm">
+                                        <!-- search for runners starting number -->
+                                        <label for="searchNumber">Gehe zu Start-Nr.</label><br>
+
+                                        <!-- speech input -->
+                                        <input x-webkit-speech type="number" class="form-control" id="searchNumber" placeholder="123" autocomplete="off" v-on:input="onInputNumber" v-on:keydown.enter="scrollToNumber">
+
+                                        <div class="search-dropdown dropdown suggest" data-key="#">
+                                            <ul id="searchNumberDropdown" class="dropdown-menu" role="menu" v-if="searchForm.showNumberDropdown" v-bind:class="searchForm.showNumberDropdown ? 'show' : ''">
+                                                <li v-for="(runner, index) in searchForm.numberSuggests" v-bind:data-index="runner.index" v-on:click="openModal(runner.index)"><a href="#" v-on:click.prevent="openModal(runner.index)" v-on:click="removeNameDropdownSuggest">[[ runner.number ]] [[ runner.fullname ]]</a></li>
+                                            </ul>
+                                        </div>
+
+                                        <br> <br>
+
+                                        <!-- search for runners name -->
+                                        <label for="searchName">Suche nach Namen:</label>
+                                        <input type="text" class="form-control" id="searchName" placeholder="Namen eingeben" autocomplete="off" v-on:input="showNameDropdownSuggest">
+                                        <div class="search-dropdown dropdown suggest" data-key="#">
+                                            <ul id="searchNameDropdown" class="dropdown-menu" role="menu" v-if="searchForm.showNameDropdown" v-bind:class="searchForm.showNameDropdown ? 'show' : ''">
+                                                <li v-for="(runner, index) in searchForm.nameSuggests" v-bind:data-index="runner.index"><a href="#" v-on:click.prevent="openModal(runner.index)" v-on:click="removeNameDropdownSuggest">[[ runner.number ]] [[ runner.fullname ]]</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item bg-dark">
+                            <h5 class="accordion-header bg-dark" id="headingTwo">
+                                <button class="accordion-button btn btn-sm bg-dark btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    Kategorien-Filter
+                                </button>
+                            </h5>
+                            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#toolContainer" aria-labelledby="headingTwo">
+                                <div class="accordion-body">
+                                    <select class="form-control" id="filterSelect" v-on:change="applyFilter">
+                                        <option value="0">alle auswählen</option>
+                                        <option v-for="(category, index) in categories" v-bind:value="category.id">[[ category.label ]]</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item bg-dark">
+                            <h5 class="accordion-header bg-dark" id="headingThree">
+                                <button class="accordion-button btn btn-sm bg-dark btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    Statistik
+                                </button>
+                            </h5>
+                            <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#toolContainer" aria-labelledby="headingThree">
+                                <div class="accordion-body">
+                                    <ul class="p-0">
+                                        <li class="total" data-text="Total">Gemeldet: [[ stats.total ]]</li>
+                                        <li class="runnersTotal" data-text="Gemeldet">Am Start: [[ stats.runnersTotal ]]</li>
+                                        <li class="dispensed" data-text="Dispensiert">Nicht am Start: [[ stats.dispensed ]]</li>
+                                        <li class="haveFinished" data-text="Im Ziel">Bereits im Ziel: [[ stats.haveFinished ]]</li>
+                                        <li class="running" data-text="Noch nicht im Ziel">Noch nicht im Ziel: [[ stats.running ]]</li>
+                                        <li class="haveGivenUp" data-text="Wettkampf aufgegeben">Wettkampf aufgegeben: [[ stats.haveGivenUp ]]</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item bg-dark">
+                            <h5 class="accordion-header bg-dark" id="headingFour">
+                                <button class="accordion-button btn btn-sm bg-dark btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                    Downloads
+                                </button>
+                            </h5>
+                            <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#toolContainer" aria-labelledby="headingFour">
+                                <div class="accordion-body">
+                                    <form action="{{ insert_tag('env::request') }}?action=printRankingList" method="post">
+                                        <input type="hidden" name="REQUEST_TOKEN" value="{{ request_token }}">
+                                        <select class="form-control" id="rankingListSelect" name="printRankingListCat">
+                                            <option v-for="(category, index) in categories" v-bind:value="category.id">[[ category.label ]]</option>
+                                        </select>
+                                        <button type="submit" name="rankingListDownload" class="d-block mt-2 w-100 btn btn-sm btn-dark btn-sm">Rangliste herunterladen</button>
+                                        <button type="submit" name="eternalListOfTheBestDownload" class="d-block mt-2 w-100 btn btn-sm btn-dark btn-sm">Ewigenbestenliste herunterladen</button>
+                                    </form>
+
+                                    <a href="{{ insert_tag('env::request') }}?action=csvExport" class="d-block mt-2 w-100 btn btn-sm btn-dark btn-sm">CSV-Export</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End sidebar container -->
+
+            <div class="container">
+                <div id="onlineStatusInfoBox" class="m-b-4 alert alert-warning" role="alert" v-if="isOnline === false">
+                    Im Moment kann keine Verbindung zum Server aufgebaut werden. Bitte überprüfen Sie die Verbindung.
+                </div>
+
+                <div class="table-container table-responsive">
+                    <table id="startlistTable" class="startlist-table table table-dark table-hover">
+                        <thead>
+                        <tr>
+                            <th class="text-center align-middle align-middle no-sort" data-field="status">Status</th>
+                            <th class="align-middle" data-field="number">Start-Nr.</th>
+                            <th class="align-middle" data-field="firstname">Vorname</th>
+                            <th class="align-middle" data-field="lastname">Nachname</th>
+                            <th class="align-middle" data-field="stufe">Klasse</th>
+                            <th class="align-middle" data-field="teachername">KLP</th>
+                            <th class="align-middle" data-field="starttime">Start</th>
+                            <th class="align-middle" data-field="endtime">Ziel</th>
+                            <th class="align-middle" data-field="rank">Rang</th>
+                            <th class="align-middle" data-field="runningtime">Laufzeit</th>
+                            <th class="text-center align-middle no-sort"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="(runner, index) in runners" v-bind:data-index="index" v-bind:id="runner.id" v-bind:data-number="runner.number" v-bind:data-fullname="runner.fullname" v-bind:data-category="runner.category" v-bind:data-runnerdnfRace="runner.dnf === 1 ? 'true' : 'false'" v-bind:data-runnerHasFinishedRace="runner.endtime != '' ? true : false">
+                            <td class="text-center align-middle number">
+                                <span><i class="fas fa-circle runner-status-icon"></i></span>
+                            </td>
+                            <td class="align-middle number">
+                                <span role="button" v-on:click="openModal(index)" title="Datensatz bearbeiten">[[ runner.number ]]</span>
+                            </td>
+                            <td class="align-middle firstname"><span role="button" v-on:click="openModal(index)" title="Datensatz bearbeiten">[[ runner.firstname ]]</span></td>
+                            <td class="align-middle lastname"><span role="button" v-on:click="openModal(index)" title="Datensatz bearbeiten">[[ runner.lastname ]]</span></td>
+                            <td class="align-middle stufe">[[ runner.stufe ]]</td>
+                            <td class="align-middle teachername">[[ runner.teachername ]]</td>
+                            <td class="align-middle starttime" v-bind:data-sort="runner.starttimeUnix">[[ runner.starttime ]]</td>
+                            <td class="align-middle endtime" v-bind:data-sort="runner.endtimeUnix"><span role="button" v-on:click="openModal(index)" title="Datensatz bearbeiten">[[ runner.endtime ]]</span></td>
+                            <td class="align-middle rank" v-bind:data-sort="runner.rank > 0 ? runner.rank : 999999999999999">[[ runner.rank > 0 ? runner.rank : 'd.n.f' ]]</td>
+                            <td class="align-middle runningtime" v-bind:data-sort="runner.runningtimeUnix == 0 ? 999999999999999 : runner.runningtimeUnix"><span role="button" v-on:click="openModal(index)" title="Datensatz bearbeiten">[[ runner.runningtime ]]</span></td>
+                            <td class="text-center align-middle edit-button">
+                                <button v-on:click="openModal(index)" title="Datensatz bearbeiten" class="btn btn-primary editButton"><i class="far fa-clock"></i></button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Modal window -->
+            <div id="chronometryModal" class="modal fade" v-bind:class="modal.runnerIsFinisher ? 'runner-is-finisher' : ''">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content bg-dark">
+                        <div class="modal-header">
+                            <h4 class="modal-title text-light">Startnummer [[ modal.runnerNumber ]]</h4>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+
+                            <h1 class="mb-4 text-uppercase text-red">[[ modal.runnerFullname ]]</h1>
+
+                            <div id="infoRunnerHasFinished" class="info-runner-has-finished mb-3 text-green" v-if="modal.runnerIsFinisher"><i class="fas fa-check text-green blinking-runner-has-finished me-3"></i><span class="blinking-runner-has-finished">Athlet ist bereits im Ziel!</span></div>
+
+                            <div class="modal-endtime input-group mb-3">
+                                <button class="btn btn-lg btn-secondary btn-warning btnGetTime" v-on:click="setEndTimeFromCurrentTime" title="Zielzeit setzen" type="button"><i class="large-icon far fa-clock"></i></button>
+                                <input type="text" class="form-control" id="endtimeCtrl" maxlength="8" v-model="modal.endTime" v-on:keydown.enter="saveRow(modal.runnerIndex)" placeholder="00:00:00"/>
+                                <button id="inputClear" class="btn btn-lg btn-secondary btn-danger" v-on:click="clearEndTime()" title="Zeit zurücksetzen" type="button"><i class="large-icon fa fa-times-circle"></i></button>
+                            </div>
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="1" id="runnerDnfCtrl" :checked="modal.runnerdnf === true">
+                                <label class="form-check-label text-light" for="runnerDnfCtrl">
+                                    Wettkampf aufgegeben
+                                </label>
+                            </div>
+
+                            <div v-if="modal.runnerHasNotice" class="mt-4 runnerNotice alert alert-info">
+                                <span v-html="modal.runnerNotice"></span>
+                            </div>
+
+                            <div id="lastChange" class="mt-3 text-right lastChange text-light">[[ modal.lastChange ]]</div>
+                            <div id="clockDisplay" class="mt-3 clockStyle text-light">[[ currentTime ]]</div>
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-lg btn-secondary" data-bs-dismiss="modal"><i class="me-2 fas fa-door-closed"></i>Schliessen</button>
+                            <a v-bind:href="'{{ insert_tag('env::request') }}?action=printCertificate&id=' + modal.runnerId" title="Zertifikat drucken" class="btn btn-lg btn-success"><i class="me-2 fas fa-trophy"></i>Zertifikat</a>
+                            <button id="saveChanges" v-on:click="saveRow(modal.runnerIndex)" type="button" class="btn btn-lg btn-primary"><i class="me-2 fas fa-save"></i>Speichern</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+        </div><!-- /.application -->
+    </div><!-- end #chronometry-app -->
+
+    <script>
+        CHRONOMETRY = {
+            requestToken: '{{ request_token }}',
+            modalId: 'chronometryModal',
+        }
+    </script>
+
+    <script src="{{ asset('app.js','markocupic_chronometry') }}"></script>
+
+{% endblock %}

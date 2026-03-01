@@ -1,47 +1,44 @@
 {
-  "name": "markocupic/chronometry-bundle",
-  "description": "Zeitmessungs-Tool für Ausdauerwettkaempfe.",
-  "keywords": [
-    "contao",
-    "chronometry",
-    "Zeitmessung",
-    "duathlon",
-    "triathlon",
-    "vue.js",
-    "ranking list"
-  ],
-  "type": "contao-module",
-  "license": "LGPL-3.0+",
-  "authors": [
-    {
-      "name": "Marko Cupic",
-      "email": "m.cupic@gmx.ch",
-      "homepage": "https://github.com/markocupic",
-      "role": "Developer"
-    }
-  ],
-  "support": {
-    "issues": "https://github.com/markocupic/chronometry-bundle/issues",
-    "source": "https://github.com/markocupic/chronometry-bundle"
-  },
-  "require": {
-    "php": "^8.3",
-    "contao/core-bundle": "^5.7",
-    "markocupic/phpoffice-bundle": "^1.2",
-    "markocupic/contao-component-bootstrap": "^5.1",
-    "markocupic/contao-component-fontawesome-free": "^5.9",
-    "league/csv": "^9.0"
-  },
-  "autoload": {
-    "psr-4": {
-      "Markocupic\\ChronometryBundle\\": "src/"
+    "name": "markocupic/chronometry-bundle",
+    "description": "Zeitmessungs-Tool für Ausdauerwettkaempfe an Schulen.",
+    "keywords": [
+        "contao",
+        "chronometry",
+        "Zeitmessung",
+        "duathlon",
+        "triathlon",
+        "vue.js",
+        "ranking list"
+    ],
+    "type": "contao-module",
+    "license": "LGPL-3.0+",
+    "authors": [
+        {
+            "name": "Marko Cupic",
+            "email": "m.cupic@gmx.ch",
+            "homepage": "https://github.com/markocupic",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/markocupic/chronometry-bundle/issues",
+        "source": "https://github.com/markocupic/chronometry-bundle"
     },
-    "exclude-from-classmap": [
-      "src/Resources"
-    ]
-  },
-  "extra": {
-    "contao-manager-plugin": "Markocupic\\ChronometryBundle\\ContaoManager\\Plugin"
-  }
+    "require": {
+        "php": "^8.4",
+        "contao/core-bundle": "^5.7",
+        "markocupic/phpoffice-bundle": "^1.2",
+        "markocupic/contao-component-bootstrap": "^5.3",
+        "markocupic/contao-component-popper-js": "*",
+        "markocupic/contao-component-fontawesome-free": "^7.0",
+        "league/csv": "^9.21"
+    },
+    "autoload": {
+        "psr-4": {
+            "Markocupic\\ChronometryBundle\\": "src/"
+        }
+    },
+    "extra": {
+        "contao-manager-plugin": "Markocupic\\ChronometryBundle\\ContaoManager\\Plugin"
+    }
 }
-
