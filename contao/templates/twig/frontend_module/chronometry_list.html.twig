@@ -229,13 +229,14 @@
         </div><!-- /.application -->
     </div><!-- end #chronometry-app -->
 
-    <script>
+    <script{{ attrs().setIfExists('nonce', csp_nonce('script-src')) }}>
         CHRONOMETRY = {
             requestToken: '{{ request_token }}',
             modalId: 'chronometryModal',
         }
     </script>
-
-    <script src="{{ asset('app.js','markocupic_chronometry') }}"></script>
+    {% add to body %}
+        <script src="{{ asset('app.js','markocupic_chronometry') }}"></script>
+    {% endadd %}
 
 {% endblock %}

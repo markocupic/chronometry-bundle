@@ -4,7 +4,7 @@ Encore
     .setOutputPath('public/')
     .setPublicPath('/bundles/markocupicchronometry')
     .setManifestKeyPrefix('')
-    .addEntry('chronometry', './assets/js/app.js')
+    .addEntry('app', './assets/js/app.js')
     .enableVueLoader()
     .disableSingleRuntimeChunk()
     .cleanupOutputBeforeBuild()
