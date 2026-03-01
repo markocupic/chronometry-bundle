@@ -2,6 +2,7 @@
 
 $text-red: #fa9696;
 $text-green: #84fd84;
+$font-size-sidebar: 1.5rem;
 
 body {
   background-color: #393939;
@@ -45,7 +46,16 @@ body {
 
   #sidebarContainer {
     background-color: darkred;
-    min-width: 290px;
+    width: 500px;
+    max-width: 100% !important;
+    font-size: $font-size-sidebar;
+
+    .btn-close {
+      font-size: 2rem;
+      width: 3rem;
+      height: 3rem;
+      color: #fff !important;
+    }
 
     .bg-dark {
       background-color: darkred !important;
@@ -56,8 +66,11 @@ body {
     }
 
     .clock {
-      font-size: 60px;
       color: #fff;
+      font-size: 3.5rem;
+      @media (max-width: 576px) {
+        font-size: 2rem;
+      }
     }
 
     #toolContainer {
@@ -65,12 +78,25 @@ body {
         border-color: #fff;
       }
 
-      .accordion-header > button {
-        color: #eee !important;
+      .accordion-header button {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        color: #fff;
+        font-size: $font-size-sidebar;
+
+        &:after {
+          background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+          background-repeat: no-repeat;
+          background-size: 1.5em;
+          width: 1.5em;
+          height: 1.5em;
+        }
       }
 
-      .accordion-button:after {
-        color: var(--bs-gray-400) !important;
+      .form-control-lg {
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+        font-size: 1.75rem;
       }
 
       ul {
@@ -82,6 +108,10 @@ body {
         }
       }
 
+      .speech-btn.listening {
+        animation: blink 0.8s infinite alternate;
+      }
+
       .dropdown.suggest {
         position: relative;
         top: 100%;
@@ -91,11 +121,14 @@ body {
           padding: 0;
           margin: 0;
           width: 100%;
-          background-color: #460000;
+          background-color: darkred;
 
           li {
+            font-size: 1.25rem;
             border: none;
-            line-height: 2.5rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.5rem;
             padding: 0 5px;
             z-index: 99999;
             color: var(--bs-gray-400);
@@ -107,7 +140,6 @@ body {
 
             &:hover {
               cursor: pointer;
-              background-color: #460000FF;
 
               a {
                 color: #fff !important;
@@ -155,8 +187,16 @@ body {
     .modal-header {
       position: relative;
 
-      .close {
-        font-size: 4rem;
+      .btn-close {
+        width: 3rem;
+        height: 3rem;
+        font-size: 2rem;
+
+        @media (max-width: 576px) {
+          width: 2rem;
+          height: 2rem;
+          font-size: 1.5rem;
+        }
       }
     }
 
@@ -166,6 +206,9 @@ body {
       .modal-endtime {
         input, button {
           font-size: 2rem;
+          @media (max-width: 576px) {
+            font-size: 1.5rem;
+          }
         }
       }
 
@@ -178,15 +221,28 @@ body {
         border-color: var(--bs-bg-dark);
         color: var(--bs-light);
       }
+
+      .modal-dnf {
+        font-size: 1.5rem;
+        @media (max-width: 576px) {
+          font-size: 1rem;
+        }
+      }
     }
 
     .modal-title {
       font-size: 3rem;
       color: black;
+      @media (max-width: 576px) {
+        font-size: 2rem;
+      }
     }
 
     .blinking-runner-has-finished {
       animation: blinkingText 1.2s infinite;
+      @media (max-width: 576px) {
+        font-size: 1.5rem;
+      }
     }
 
     @keyframes blinkingText {
@@ -207,14 +263,13 @@ body {
       }
     }
 
-    .modal-content {
-      top: 60px;
-    }
-
     .clockStyle {
       font-size: 2rem;
       color: $text-red !important;
       text-align: left;
+      @media (max-width: 576px) {
+        font-size: 2rem;
+      }
     }
 
   }
@@ -258,5 +313,14 @@ body {
 
   a, .fa {
     color: #fff;
+  }
+}
+
+@keyframes blink {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.3;
   }
 }

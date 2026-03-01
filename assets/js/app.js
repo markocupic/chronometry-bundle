@@ -12,6 +12,9 @@ window.chronometryApp = createApp({
         const currentTime = ref('');
         const runners = ref(null);
         const categories = ref(null);
+        const searchNumber = ref('');
+        const isListening = ref(false); // SpeechRecognition
+
 
         const modal = reactive({
             runnerIndex: null,
@@ -40,7 +43,6 @@ window.chronometryApp = createApp({
             runnersTotal: 0,
         });
 
-        // Methods
         const getDataAll = () => {
             fetch(window.location.href + '?action=getDataAll', {
                 method: 'GET',
@@ -61,6 +63,8 @@ window.chronometryApp = createApp({
 
         const openModal = (index) => {
             const runner = runners.value[index];
+
+            speakNumber(runner.number + ' ' + runner.fullname);
 
             modal.runnerIndex = index;
             modal.runnerNumber = runner.number;
@@ -87,19 +91,19 @@ window.chronometryApp = createApp({
                 modalElement.dataset.handlersAttached = '1';
 
                 modalElement.addEventListener('hidden.bs.modal', () => {
-                    document.querySelector('#searchNumber').value = '';
+                    searchNumber.value = '';
                     document.querySelector('#searchName').value = '';
 
                     searchForm.numberSuggests = [];
                     searchForm.nameSuggests = [];
                     searchForm.showNumberDropdown = false;
                     searchForm.showNameDropdown = false;
-
-                    document.querySelector('#searchNumber').focus();
+                    getDataAll();
+                    //document.querySelector('#searchNumber').focus();
                 });
 
                 modalElement.addEventListener('shown.bs.modal', () => {
-                    document.querySelector('#endtimeCtrl').focus();
+                    document.querySelector('#endtimeCtrl').blur();
                 });
 
                 document.querySelector('#inputClear').addEventListener('click', () => {
@@ -112,6 +116,57 @@ window.chronometryApp = createApp({
             });
 
             bsModalWindow.show();
+        };
+
+        const startSpeech = (inputSelector) => {
+            // Chrome / Android unterstützt webkitSpeechRecognition
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (!SpeechRecognition) {
+                alert("Spracherkennung wird auf diesem Gerät nicht unterstützt.");
+                return;
+            }
+
+            const recognition = new SpeechRecognition();
+            recognition.lang = "de-DE";
+            recognition.interimResults = false;
+
+            recognition.onstart = () => {
+                isListening.value = true;
+            }
+
+            recognition.onend = () => {
+                isListening.value = false;
+            }
+
+            recognition.onresult = (event) => {
+                const spoken = event.results[0][0].transcript;
+
+                // Optional: Nur Zahlen extrahieren
+                searchNumber.value = spoken.replace(/[^0-9]/g, '');
+                if (searchNumber.value.length > 0) {
+                    showNumberDropdownSuggest();
+                    if (searchForm.numberSuggests.length === 1) {
+                        const tr = document.querySelector("tr[data-number='" + searchNumber.value + "']");
+                        openModal(tr.dataset.index);
+                        // Scrollen (Vanilla JS)
+                        window.scrollTo({
+                            top: tr.offsetTop - 40,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            };
+
+            recognition.start();
+        };
+
+        const speakNumber = (number) => {
+            if (!number) return;
+
+            const utterance = new SpeechSynthesisUtterance(number);
+            utterance.lang = 'de-DE';
+            speechSynthesis.speak(utterance);
         };
 
         const scrollToNumber = (event) => {
@@ -132,7 +187,6 @@ window.chronometryApp = createApp({
                 }
             }
         };
-
 
         const checkOnlineStatus = () => {
             fetch(window.location.href + '?action=checkOnlineStatus', {
@@ -208,44 +262,43 @@ window.chronometryApp = createApp({
         };
 
         const setEndTimeFromCurrentTime = () => {
+            if (!confirm('Soll die Endzeit die Endzeit wirklich neu gesetzt werden?')) {
+                return;
+            }
             const d = new Date();
             modal.endTime = getFormatedTime(d);
         };
 
         const clearEndTime = () => {
+            if (!confirm('Wollen Sie die Endzeit wirklich löschen?')) {
+                return;
+            }
             modal.endTime = '';
         };
 
         const onInputNumber = (event) => {
-            validateNumberOnInput(event);
-            showNumberDropdownSuggest(event);
+            searchNumber.value = event.target.value.replace(/[^0-9]/g, '');
+            showNumberDropdownSuggest();
         };
 
-        const validateNumberOnInput = (event) => {
-            const inputEl = event.target;
-            inputEl.value = inputEl.value.replace(/[^0-9]/g, '');
-        };
+        const showNumberDropdownSuggest = async () => {
 
-        const showNumberDropdownSuggest = (event) => {
-            const input = event.target;
-
-            if (input.value === '') {
+            if (searchNumber.value === '') {
                 searchForm.numberSuggests = [];
                 searchForm.showNumberDropdown = false;
                 return;
             }
-
 
             document.querySelector('#searchName').value = '';
             searchForm.nameSuggests = [];
             searchForm.showNameDropdown = false;
 
             const rows = document.querySelectorAll('#startlistTable tbody tr');
-            const regex = new RegExp('^' + input.value + '(.*)', 'i');
+            const regex = new RegExp('^' + searchNumber.value + '(.*)', 'i');
 
             searchForm.numberSuggests = [];
 
-            rows.forEach(row => {
+            for (const row of rows) {
                 if (regex.test(row.getAttribute('data-number'))) {
                     const runner = {
                         index: row.getAttribute('data-index'),
@@ -255,8 +308,7 @@ window.chronometryApp = createApp({
                     searchForm.numberSuggests.push(runner);
                     searchForm.showNumberDropdown = true;
                 }
-            });
-
+            }
         };
 
         const removeNumberDropdownSuggest = (event) => {
@@ -278,7 +330,7 @@ window.chronometryApp = createApp({
                 return;
             }
 
-            document.querySelector('#searchNumber').value = '';
+            searchNumber.value = '';
             searchForm.numberSuggests = [];
             searchForm.showNumberDropdown = false;
 
@@ -350,18 +402,23 @@ window.chronometryApp = createApp({
             }, 1000);
 
             checkOnlineStatus();
+
             window.setInterval(() => {
                 checkOnlineStatus();
             }, 15000);
 
-
             getDataAll();
+
+            window.setInterval(() => {
+                getDataAll();
+            }, 60000);
 
             // This will activate the sortable table
             document.querySelector('#chronometry-app #startlistTable').classList.add('sortable');
         });
 
         return {
+            isListening,
             isReady,
             isOnline,
             requestToken,
@@ -374,6 +431,8 @@ window.chronometryApp = createApp({
             stats,
             getDataAll,
             openModal,
+            searchNumber,
+            startSpeech,
             scrollToNumber,
             checkOnlineStatus,
             saveRow,
@@ -381,7 +440,6 @@ window.chronometryApp = createApp({
             setEndTimeFromCurrentTime,
             clearEndTime,
             onInputNumber,
-            validateNumberOnInput,
             showNumberDropdownSuggest,
             removeNumberDropdownSuggest,
             showNameDropdownSuggest,
@@ -395,5 +453,3 @@ window.chronometryApp = createApp({
 // Mount the app and expose the instance globally
 window.chronometryApp.config.compilerOptions.delimiters = ['[[ ', ' ]]'];
 window.chronometryApp.mount('#chronometry-app');
-
-

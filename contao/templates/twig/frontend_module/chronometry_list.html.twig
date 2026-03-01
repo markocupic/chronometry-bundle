@@ -11,7 +11,7 @@
 
     <div id="chronometry-app">
         <div class="text-center align-middle align-middle text-light mt-5 fa-3x" v-if="isReady === false">
-            <i class="fas fa-sync fa-spin"></i>
+            <i class="fa-solid fa-sync fa-spin"></i>
             <span class="mt-5">...Loading...</span>
         </div>
 
@@ -20,7 +20,7 @@
 
             <!-- Toggle sidebar -->
             <div id="toggleSidebar">
-                <button type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarContainer" aria-controls="sidebarContainer"><i class="sidebar-toggle-icon fas fa-4x fa-bars"></i></button>
+                <button type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarContainer" aria-controls="sidebarContainer"><i class="sidebar-toggle-icon fa-solid fa-4x fa-bars"></i></button>
             </div>
             <!-- End toggle sidebar -->
 
@@ -48,11 +48,16 @@
                                         <label for="searchNumber">Gehe zu Start-Nr.</label><br>
 
                                         <!-- speech input -->
-                                        <input x-webkit-speech type="number" class="form-control" id="searchNumber" placeholder="123" autocomplete="off" v-on:input="onInputNumber" v-on:keydown.enter="scrollToNumber">
+                                        <div class="position-relative">
+                                            <input type="number" class="form-control form-control-lg pe-5" id="searchNumber" placeholder="123" autocomplete="off" :value="searchNumber" @input="onInputNumber" @keydown.enter="scrollToNumber">
+                                            <button class="speech-btn btn btn-link position-absolute end-0 top-50 translate-middle-y me-2 p-0" :class="{ listening: isListening }" @click="startSpeech('#searchNumber')">
+                                                <i class="fa-solid fa-microphone fa-2x"></i>
+                                            </button>
+                                        </div>
 
                                         <div class="search-dropdown dropdown suggest" data-key="#">
                                             <ul id="searchNumberDropdown" class="dropdown-menu" role="menu" v-if="searchForm.showNumberDropdown" v-bind:class="searchForm.showNumberDropdown ? 'show' : ''">
-                                                <li v-for="(runner, index) in searchForm.numberSuggests" v-bind:data-index="runner.index" v-on:click="openModal(runner.index)"><a href="#" v-on:click.prevent="openModal(runner.index)" v-on:click="removeNameDropdownSuggest">[[ runner.number ]] [[ runner.fullname ]]</a></li>
+                                                <li v-for="(runner, index) in searchForm.numberSuggests" v-bind:data-index="runner.index" v-on:click="openModal(runner.index)" class=""><a href="#" v-on:click.prevent="openModal(runner.index)" v-on:click="removeNameDropdownSuggest">[[ runner.number ]] [[ runner.fullname ]]</a></li>
                                             </ul>
                                         </div>
 
@@ -60,7 +65,7 @@
 
                                         <!-- search for runners name -->
                                         <label for="searchName">Suche nach Namen:</label>
-                                        <input type="text" class="form-control" id="searchName" placeholder="Namen eingeben" autocomplete="off" v-on:input="showNameDropdownSuggest">
+                                        <input type="text" class="form-control form-control-lg" id="searchName" placeholder="Namen eingeben" autocomplete="off" v-on:input="showNameDropdownSuggest">
                                         <div class="search-dropdown dropdown suggest" data-key="#">
                                             <ul id="searchNameDropdown" class="dropdown-menu" role="menu" v-if="searchForm.showNameDropdown" v-bind:class="searchForm.showNameDropdown ? 'show' : ''">
                                                 <li v-for="(runner, index) in searchForm.nameSuggests" v-bind:data-index="runner.index"><a href="#" v-on:click.prevent="openModal(runner.index)" v-on:click="removeNameDropdownSuggest">[[ runner.number ]] [[ runner.fullname ]]</a></li>
@@ -158,7 +163,7 @@
                         <tbody>
                         <tr v-for="(runner, index) in runners" v-bind:data-index="index" v-bind:id="runner.id" v-bind:data-number="runner.number" v-bind:data-fullname="runner.fullname" v-bind:data-category="runner.category" v-bind:data-runnerdnfRace="runner.dnf === 1 ? 'true' : 'false'" v-bind:data-runnerHasFinishedRace="runner.endtime != '' ? true : false">
                             <td class="text-center align-middle number">
-                                <span><i class="fas fa-circle runner-status-icon"></i></span>
+                                <span><i class="fa-solid fa-circle runner-status-icon"></i></span>
                             </td>
                             <td class="align-middle number">
                                 <span role="button" v-on:click="openModal(index)" title="Datensatz bearbeiten">[[ runner.number ]]</span>
@@ -172,7 +177,7 @@
                             <td class="align-middle rank" v-bind:data-sort="runner.rank > 0 ? runner.rank : 999999999999999">[[ runner.rank > 0 ? runner.rank : 'd.n.f' ]]</td>
                             <td class="align-middle runningtime" v-bind:data-sort="runner.runningtimeUnix == 0 ? 999999999999999 : runner.runningtimeUnix"><span role="button" v-on:click="openModal(index)" title="Datensatz bearbeiten">[[ runner.runningtime ]]</span></td>
                             <td class="text-center align-middle edit-button">
-                                <button v-on:click="openModal(index)" title="Datensatz bearbeiten" class="btn btn-primary editButton"><i class="far fa-clock"></i></button>
+                                <button v-on:click="openModal(index)" title="Datensatz bearbeiten" class="btn btn-primary editButton"><i class="fa-regular fa-clock"></i></button>
                             </td>
                         </tr>
                         </tbody>
@@ -182,32 +187,32 @@
 
             <!-- Modal window -->
             <div id="chronometryModal" class="modal fade" v-bind:class="modal.runnerIsFinisher ? 'runner-is-finisher' : ''">
-                <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-dialog modal-xl modal-fullscreen-sm-down" role="document">
                     <div class="modal-content bg-dark">
                         <div class="modal-header">
-                            <h4 class="modal-title text-light">Startnummer [[ modal.runnerNumber ]]</h4>
+                            <h4 class="modal-title text-light">Startnr. [[ modal.runnerNumber ]]</h4>
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
 
                             <h1 class="mb-4 text-uppercase text-red">[[ modal.runnerFullname ]]</h1>
 
-                            <div id="infoRunnerHasFinished" class="info-runner-has-finished mb-3 text-green" v-if="modal.runnerIsFinisher"><i class="fas fa-check text-green blinking-runner-has-finished me-3"></i><span class="blinking-runner-has-finished">Athlet ist bereits im Ziel!</span></div>
+                            <div id="infoRunnerHasFinished" class="info-runner-has-finished mb-3 text-green" v-if="modal.runnerIsFinisher"><i class="fa-solid fa-check text-green blinking-runner-has-finished me-3"></i><span class="blinking-runner-has-finished">Athlet bereits im Ziel!</span></div>
 
                             <div class="modal-endtime input-group mb-3">
-                                <button class="btn btn-lg btn-secondary btn-warning btnGetTime" v-on:click="setEndTimeFromCurrentTime" title="Zielzeit setzen" type="button"><i class="large-icon far fa-clock"></i></button>
+                                <button class="btn btn-lg btn-primary btnGetTime" v-on:click="setEndTimeFromCurrentTime" title="Zielzeit setzen" type="button"><i class="large-icon fa-solid fa-stopwatch"></i></button>
                                 <input type="text" class="form-control" id="endtimeCtrl" maxlength="8" v-model="modal.endTime" v-on:keydown.enter="saveRow(modal.runnerIndex)" placeholder="00:00:00"/>
                                 <button id="inputClear" class="btn btn-lg btn-secondary btn-danger" v-on:click="clearEndTime()" title="Zeit zurücksetzen" type="button"><i class="large-icon fa fa-times-circle"></i></button>
                             </div>
 
-                            <div class="form-check">
+                            <div class="modal-dnf form-check mt-5">
                                 <input class="form-check-input" type="checkbox" value="1" id="runnerDnfCtrl" :checked="modal.runnerdnf === true">
                                 <label class="form-check-label text-light" for="runnerDnfCtrl">
                                     Wettkampf aufgegeben
                                 </label>
                             </div>
 
-                            <div v-if="modal.runnerHasNotice" class="mt-4 runnerNotice alert alert-info">
+                            <div v-if="modal.runnerHasNotice" class="mt-5 runnerNotice alert alert-info">
                                 <span v-html="modal.runnerNotice"></span>
                             </div>
 
@@ -217,9 +222,8 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-lg btn-secondary" data-bs-dismiss="modal"><i class="me-2 fas fa-door-closed"></i>Schliessen</button>
-                            <a v-bind:href="'{{ insert_tag('env::request') }}?action=printCertificate&id=' + modal.runnerId" title="Zertifikat drucken" class="btn btn-lg btn-success"><i class="me-2 fas fa-trophy"></i>Zertifikat</a>
-                            <button id="saveChanges" v-on:click="saveRow(modal.runnerIndex)" type="button" class="btn btn-lg btn-primary"><i class="me-2 fas fa-save"></i>Speichern</button>
+                            <a v-bind:href="'{{ insert_tag('env::request') }}?action=printCertificate&id=' + modal.runnerId" title="Zertifikat drucken" class="btn btn-lg btn-success"><i class="me-2 fa-solid fa-trophy"></i>Zertif.</a>
+                            <button id="saveChanges" v-on:click="saveRow(modal.runnerIndex)" type="button" class="btn btn-lg btn-primary"><i class="me-2 fa-solid fa-save"></i>Save</button>
                         </div>
                     </div>
                     <!-- /.modal-content -->

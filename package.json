@@ -10,7 +10,6 @@
     },
     "license": "MIT",
     "dependencies": {
-        "jquery": "^4.0.0",
         "sortable-tablesort": "^4.1.7",
         "vue": "^3.5"
     },
