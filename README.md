@@ -15,13 +15,11 @@ Neben dem Modul-Verzeichnis gibt es in contao/templates/frontend/fe_page_chronom
 Über das Modalfenster kann anlässlich einer Siegerehrung ein Diplom (MS-Word-Dokument) ausgedruckt werden.
 
 ### Abhängigkeiten
-Diese Ressourcen werden im Template eingebunden und befinden sich in src/Resources/public
+Diese Abhängigkeiten werden atomatisch mitinstalliert
 * vue.js
-* Font Awesome 5 Free
+* Font Awesome 7 Free
 * Bootstrap Framework
-* jQuery (muss im Theme im Contao Backend eingebunden werden)
-* popper.js
-* [stupid-table table sorter](https://github.com/joequery/Stupid-Table-Plugin)
+* [tofsjonas/sortable](https://github.com/tofsjonas/sortable)
 
 ### XAMPP & Installation
 
