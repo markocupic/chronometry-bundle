@@ -42,7 +42,7 @@
                             </h5>
 
                             <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#toolContainer" aria-labelledby="headingOne">
-                                <div class="accordion-body">
+                                <div class="accordion-body my-4">
                                     <div id="searchForm">
                                         <!-- search for runners starting number -->
                                         <label for="searchNumber">Gehe zu Start-Nr.</label><br>
@@ -57,7 +57,7 @@
 
                                         <div class="search-dropdown dropdown suggest" data-key="#">
                                             <ul id="searchNumberDropdown" class="dropdown-menu" role="menu" v-if="searchForm.showNumberDropdown" v-bind:class="searchForm.showNumberDropdown ? 'show' : ''">
-                                                <li v-for="(runner, index) in searchForm.numberSuggests" v-bind:data-index="runner.index" v-on:click="openModal(runner.index)" class=""><a href="#" v-on:click.prevent="openModal(runner.index)" v-on:click="removeNameDropdownSuggest">[[ runner.number ]] [[ runner.fullname ]]</a></li>
+                                                <li v-for="(runner, index) in searchForm.numberSuggests" v-bind:data-index="runner.index" @click="openModal(runner.index)" class=""><a href="#" @click.prevent="openModal(runner.index)" @click="removeNameDropdownSuggest">[[ runner.number ]] [[ runner.fullname ]]</a></li>
                                             </ul>
                                         </div>
 
@@ -65,10 +65,10 @@
 
                                         <!-- search for runners name -->
                                         <label for="searchName">Suche nach Namen:</label>
-                                        <input type="text" class="form-control form-control-lg" id="searchName" placeholder="Namen eingeben" autocomplete="off" v-on:input="showNameDropdownSuggest">
+                                        <input type="text" class="form-control form-control-lg" id="searchName" placeholder="Namen eingeben" autocomplete="off" @input="showNameDropdownSuggest">
                                         <div class="search-dropdown dropdown suggest" data-key="#">
                                             <ul id="searchNameDropdown" class="dropdown-menu" role="menu" v-if="searchForm.showNameDropdown" v-bind:class="searchForm.showNameDropdown ? 'show' : ''">
-                                                <li v-for="(runner, index) in searchForm.nameSuggests" v-bind:data-index="runner.index"><a href="#" v-on:click.prevent="openModal(runner.index)" v-on:click="removeNameDropdownSuggest">[[ runner.number ]] [[ runner.fullname ]]</a></li>
+                                                <li v-for="(runner, index) in searchForm.nameSuggests" v-bind:data-index="runner.index"><a href="#" @click.prevent="openModal(runner.index)" @click="removeNameDropdownSuggest">[[ runner.number ]] [[ runner.fullname ]]</a></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -83,8 +83,8 @@
                                 </button>
                             </h5>
                             <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#toolContainer" aria-labelledby="headingTwo">
-                                <div class="accordion-body">
-                                    <select class="form-control" id="filterSelect" v-on:change="applyFilter">
+                                <div class="accordion-body my-4">
+                                    <select class="form-control form-control-lg" id="filterSelect" @change="applyFilter">
                                         <option value="0">alle auswählen</option>
                                         <option v-for="(category, index) in categories" v-bind:value="category.id">[[ category.label ]]</option>
                                     </select>
@@ -99,7 +99,7 @@
                                 </button>
                             </h5>
                             <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#toolContainer" aria-labelledby="headingThree">
-                                <div class="accordion-body">
+                                <div class="accordion-body my-4">
                                     <ul class="p-0">
                                         <li class="total" data-text="Total">Gemeldet: [[ stats.total ]]</li>
                                         <li class="runnersTotal" data-text="Gemeldet">Am Start: [[ stats.runnersTotal ]]</li>
@@ -119,17 +119,17 @@
                                 </button>
                             </h5>
                             <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#toolContainer" aria-labelledby="headingFour">
-                                <div class="accordion-body">
+                                <div class="accordion-body my-4">
                                     <form action="{{ insert_tag('env::request') }}?action=printRankingList" method="post">
                                         <input type="hidden" name="REQUEST_TOKEN" value="{{ request_token }}">
-                                        <select class="form-control" id="rankingListSelect" name="printRankingListCat">
+                                        <select class="form-control form-control-lg mt-5" id="rankingListSelect" name="printRankingListCat">
                                             <option v-for="(category, index) in categories" v-bind:value="category.id">[[ category.label ]]</option>
                                         </select>
-                                        <button type="submit" name="rankingListDownload" class="d-block mt-2 w-100 btn btn-sm btn-dark btn-sm">Rangliste herunterladen</button>
-                                        <button type="submit" name="eternalListOfTheBestDownload" class="d-block mt-2 w-100 btn btn-sm btn-dark btn-sm">Ewigenbestenliste herunterladen</button>
+                                        <button type="submit" name="rankingListDownload" class="d-block mt-5 w-100 btn btn-lg btn-primary">Rangliste herunterladen</button>
+                                        <button type="submit" name="eternalListOfTheBestDownload" class="d-block mt-5 w-100 btn btn-lg btn-primary">Ewigenbestenliste herunterladen</button>
                                     </form>
 
-                                    <a href="{{ insert_tag('env::request') }}?action=csvExport" class="d-block mt-2 w-100 btn btn-sm btn-dark btn-sm">CSV-Export</a>
+                                    <a href="{{ insert_tag('env::request') }}?action=csvExport" class="d-block mt-5 w-100 btn btn-lg btn-primary">CSV-Export</a>
                                 </div>
                             </div>
                         </div>
@@ -166,18 +166,18 @@
                                 <span><i class="fa-solid fa-circle runner-status-icon"></i></span>
                             </td>
                             <td class="align-middle number">
-                                <span role="button" v-on:click="openModal(index)" title="Datensatz bearbeiten">[[ runner.number ]]</span>
+                                <span role="button" @click="openModal(index)" title="Datensatz bearbeiten">[[ runner.number ]]</span>
                             </td>
-                            <td class="align-middle firstname"><span role="button" v-on:click="openModal(index)" title="Datensatz bearbeiten">[[ runner.firstname ]]</span></td>
-                            <td class="align-middle lastname"><span role="button" v-on:click="openModal(index)" title="Datensatz bearbeiten">[[ runner.lastname ]]</span></td>
+                            <td class="align-middle firstname"><span role="button" @click="openModal(index)" title="Datensatz bearbeiten">[[ runner.firstname ]]</span></td>
+                            <td class="align-middle lastname"><span role="button" @click="openModal(index)" title="Datensatz bearbeiten">[[ runner.lastname ]]</span></td>
                             <td class="align-middle stufe">[[ runner.stufe ]]</td>
                             <td class="align-middle teachername">[[ runner.teachername ]]</td>
                             <td class="align-middle starttime" v-bind:data-sort="runner.starttimeUnix">[[ runner.starttime ]]</td>
-                            <td class="align-middle endtime" v-bind:data-sort="runner.endtimeUnix"><span role="button" v-on:click="openModal(index)" title="Datensatz bearbeiten">[[ runner.endtime ]]</span></td>
+                            <td class="align-middle endtime" v-bind:data-sort="runner.endtimeUnix"><span role="button" @click="openModal(index)" title="Datensatz bearbeiten">[[ runner.endtime ]]</span></td>
                             <td class="align-middle rank" v-bind:data-sort="runner.rank > 0 ? runner.rank : 999999999999999">[[ runner.rank > 0 ? runner.rank : 'd.n.f' ]]</td>
-                            <td class="align-middle runningtime" v-bind:data-sort="runner.runningtimeUnix == 0 ? 999999999999999 : runner.runningtimeUnix"><span role="button" v-on:click="openModal(index)" title="Datensatz bearbeiten">[[ runner.runningtime ]]</span></td>
+                            <td class="align-middle runningtime" v-bind:data-sort="runner.runningtimeUnix == 0 ? 999999999999999 : runner.runningtimeUnix"><span role="button" @click="openModal(index)" title="Datensatz bearbeiten">[[ runner.runningtime ]]</span></td>
                             <td class="text-center align-middle edit-button">
-                                <button v-on:click="openModal(index)" title="Datensatz bearbeiten" class="btn btn-primary editButton"><i class="fa-regular fa-clock"></i></button>
+                                <button @click="openModal(index)" title="Datensatz bearbeiten" class="btn btn-primary editButton"><i class="fa-regular fa-clock"></i></button>
                             </td>
                         </tr>
                         </tbody>
@@ -200,9 +200,9 @@
                             <div id="infoRunnerHasFinished" class="info-runner-has-finished mb-3 text-green" v-if="modal.runnerIsFinisher"><i class="fa-solid fa-check text-green blinking-runner-has-finished me-3"></i><span class="blinking-runner-has-finished">Athlet bereits im Ziel!</span></div>
 
                             <div class="modal-endtime input-group mb-3">
-                                <button class="btn btn-lg btn-primary btnGetTime" v-on:click="setEndTimeFromCurrentTime" title="Zielzeit setzen" type="button"><i class="large-icon fa-solid fa-stopwatch"></i></button>
-                                <input type="text" class="form-control" id="endtimeCtrl" maxlength="8" v-model="modal.endTime" v-on:keydown.enter="saveRow(modal.runnerIndex)" placeholder="00:00:00"/>
-                                <button id="inputClear" class="btn btn-lg btn-secondary btn-danger" v-on:click="clearEndTime()" title="Zeit zurücksetzen" type="button"><i class="large-icon fa fa-times-circle"></i></button>
+                                <button class="btn btn-lg btn-primary btnGetTime" @click.stop="setEndTimeFromCurrentTime" title="Zielzeit setzen" type="button"><i class="large-icon fa-solid fa-stopwatch"></i></button>
+                                <input type="text" class="form-control" id="endtimeCtrl" maxlength="8" v-model="modal.endTime" @keydown.enter="saveRow(modal.runnerIndex)" placeholder="00:00:00"/>
+                                <button id="inputClear" class="btn btn-lg btn-secondary btn-danger" @click.stop="clearEndTime()" title="Zeit zurücksetzen" type="button"><i class="large-icon fa fa-times-circle"></i></button>
                             </div>
 
                             <div class="modal-dnf form-check mt-5">
@@ -223,7 +223,7 @@
 
                         <div class="modal-footer">
                             <a v-bind:href="'{{ insert_tag('env::request') }}?action=printCertificate&id=' + modal.runnerId" title="Zertifikat drucken" class="btn btn-lg btn-success"><i class="me-2 fa-solid fa-trophy"></i>Zertif.</a>
-                            <button id="saveChanges" v-on:click="saveRow(modal.runnerIndex)" type="button" class="btn btn-lg btn-primary"><i class="me-2 fa-solid fa-save"></i>Save</button>
+                            <button id="saveChanges" @click="saveRow(modal.runnerIndex)" type="button" class="btn btn-lg btn-primary"><i class="me-2 fa-solid fa-save"></i>Save</button>
                         </div>
                     </div>
                     <!-- /.modal-content -->
