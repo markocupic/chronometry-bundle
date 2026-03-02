@@ -105,10 +105,6 @@ window.chronometryApp = createApp({
                 modalElement.addEventListener('shown.bs.modal', () => {
                     document.querySelector('#endtimeCtrl').blur();
                 });
-
-                document.querySelector('#inputClear').addEventListener('click', () => {
-                    modal.endTime = '';
-                });
             }
 
             const bsModalWindow = bootstrap.Modal.getOrCreateInstance(modalElement, {
@@ -262,17 +258,16 @@ window.chronometryApp = createApp({
         };
 
         const setEndTimeFromCurrentTime = () => {
-            if (!confirm('Soll die Endzeit die Endzeit wirklich neu gesetzt werden?')) {
-                return;
-            }
-            const d = new Date();
-            modal.endTime = getFormatedTime(d);
+            if (!confirm('Soll die Endzeit wirklich neu gesetzt werden?')) return;
+            if (!confirm('Ganz sicher? Aktion kann nicht rückgängig gemacht werden?')) return;
+
+            modal.endTime = getFormatedTime(new Date());
         };
 
         const clearEndTime = () => {
-            if (!confirm('Wollen Sie die Endzeit wirklich löschen?')) {
-                return;
-            }
+            if (!confirm('Wollen Sie die Endzeit wirklich löschen?')) return;
+            if (!confirm('Ganz sicher? Aktion kann nicht rückgängig gemacht werden?')) return;
+
             modal.endTime = '';
         };
 

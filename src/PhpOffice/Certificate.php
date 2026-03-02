@@ -49,7 +49,7 @@ readonly class Certificate
         $time = date('H:i:s', (int) $chronometryModel->runningtimeUnix);
         date_default_timezone_set(Config::get('timeZone'));
 
-        $strTemplateSrc = Path::join($this->projectDir, 'vendor/markocupic/chronometry-bundle/contao/templates/docx/certificate.docx');
+        $strTemplateSrc = Path::join($this->projectDir, 'vendor/markocupic/chronometry-bundle/docx/certificate.docx');
 
         // Set the target filename
         $strTargetSrc = \sprintf(
