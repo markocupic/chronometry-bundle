@@ -38,7 +38,7 @@ class FrontendAjax
         $this->config = $this->framework->getAdapter(Config::class);
     }
 
-    public function checkOnlineStatus(): void
+    public function checkIsOnline(): void
     {
         $arrJson = [];
         $arrJson['status'] = 'success';
@@ -47,7 +47,7 @@ class FrontendAjax
         throw new ResponseException($response);
     }
 
-    public function getDataAll(): void
+    public function fetchAppData(): void
     {
         $arrRows = [];
         $arrJson = [];

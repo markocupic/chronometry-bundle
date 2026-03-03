@@ -36,9 +36,9 @@ class ChronometryListController extends AbstractFrontendModuleController
 
     public const string ACTION_SAVE_ROW = 'saveRow';
 
-    public const string ACTION_CHECK_ONLINE_STATE = 'checkOnlineStatus';
+    public const string ACTION_CHECK_ONLINE_STATE = 'checkIsOnline';
 
-    public const string ACTION_GET_DATA_ALL = 'getDataAll';
+    public const string ACTION_GET_DATA_ALL = 'fetchAppData';
 
     public const string ACTION_CSV_EXPORT = 'csvExport';
 
@@ -72,12 +72,12 @@ class ChronometryListController extends AbstractFrontendModuleController
 
             // Check is online
             if (self::ACTION_CHECK_ONLINE_STATE === $strAction) {
-                $this->frontendAjax->checkOnlineStatus();
+                $this->frontendAjax->checkIsOnline();
             }
 
             // Retrieve data for the vue.js instance
             if (self::ACTION_GET_DATA_ALL === $strAction) {
-                $this->frontendAjax->getDataAll();
+                $this->frontendAjax->fetchAppData();
             }
 
             // Print ranking list
