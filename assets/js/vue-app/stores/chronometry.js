@@ -101,9 +101,14 @@ export const useChronometryStore = defineStore('chronometry', () => {
 
     const speakNumber = (number) => {
         if (!number) return;
-        const utterance = new SpeechSynthesisUtterance(number);
-        utterance.lang = 'de-DE';
-        speechSynthesis.speak(utterance);
+
+        try {
+            const utterance = new SpeechSynthesisUtterance(number);
+            utterance.lang = 'de-DE';
+            speechSynthesis.speak(utterance);
+        } catch (error) {
+            console.log('SpeechSynthesisUtterance is not supported in this browser.');
+        }
     };
 
     const checkIsOnline = () => {

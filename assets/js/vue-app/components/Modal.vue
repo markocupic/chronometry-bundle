@@ -54,8 +54,8 @@
 </template>
 
 <script setup>
-import { useChronometryStore } from '../stores/chronometry';
-import { computed, onMounted } from 'vue';
+import {useChronometryStore} from '../stores/chronometry';
+import {computed, onMounted} from 'vue';
 
 const store = useChronometryStore();
 
@@ -101,34 +101,35 @@ const saveRow = (index) => {
       },
       body: form,
     })
-      .then(response => response.json())
-      .then(data => {
-        store.$patch({
-          runners: data.runners,
-          categories: data.categories,
-          stats: data.stats
-        });
-      })
-      .catch((error) => {
-        console.error('Upload error. Could not save data.', error);
+    .then(response => response.json())
+    .then(data => {
+      store.$patch({
+        runners: data.runners,
+        categories: data.categories,
+        stats: data.stats
       });
+    })
+    .catch((error) => {
+      console.error('Upload error. Could not save data.', error);
+    });
   } else {
     alert('Invalid input format for "endtime": ' + endtime);
   }
 };
 
 onMounted(() => {
-    const modalElement = document.getElementById('chronometryModal');
-    if (modalElement) {
-        modalElement.addEventListener('hidden.bs.modal', () => {
-            store.searchNumber = '';
-            document.querySelector('#searchName').value = '';
-            store.searchForm.numberSuggests = [];
-            store.searchForm.nameSuggests = [];
-            store.searchForm.showNumberDropdown = false;
-            store.searchForm.showNameDropdown = false;
-            store.fetchAppData();
-        });
-    }
+  const modalElement = document.getElementById('chronometryModal');
+
+  if (modalElement) {
+    modalElement.addEventListener('hidden.bs.modal', () => {
+      store.searchNumber = '';
+      document.querySelector('#searchName').value = '';
+      store.searchForm.numberSuggests = [];
+      store.searchForm.nameSuggests = [];
+      store.searchForm.showNumberDropdown = false;
+      store.searchForm.showNameDropdown = false;
+      store.fetchAppData();
+    });
+  }
 });
 </script>

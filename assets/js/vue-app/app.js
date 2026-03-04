@@ -2,10 +2,11 @@ import 'sortable-tablesort/dist/sortable.auto.min.js';
 import { createApp, onMounted } from 'vue';
 import { createPinia } from 'pinia';
 import { useChronometryStore } from './stores/chronometry';
+
 // Components
 import LoadingSpinner from './components/LoadingSpinner.vue';
 import OnlineStatusIndicator from './components/OnlineStatusIndicator.vue';
-import Sidebar from './components/Sidebar.vue';
+import Sidepanel from './components/Sidepanel.vue';
 import RunnersTable from './components/RunnersTable.vue';
 import Modal from './components/Modal.vue';
 
@@ -15,7 +16,7 @@ window.chronometryApp = createApp({
     components: {
         LoadingSpinner,
         OnlineStatusIndicator,
-        Sidebar,
+        Sidepanel,
         RunnersTable,
         Modal,
     },

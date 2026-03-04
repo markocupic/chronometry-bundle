@@ -2,7 +2,7 @@
 
 $text-red: #ff0000;
 $text-green: #84fd84;
-$font-size-sidebar: 1.5rem;
+$font-size-sidepanel: 1.5rem;
 
 body {
   background-color: #1c1d20;
@@ -26,7 +26,7 @@ body {
     visibility: visible;
   }
 
-  #toggleSidebar {
+  #toggleSidepanel {
     position: fixed;
     top: 0;
     right: 0;
@@ -38,19 +38,19 @@ body {
       background: none;
       padding: 1rem;
 
-      .sidebar-toggle-icon {
+      .sidepanel-toggle-icon {
         color: #fff;
       }
     }
   }
 
-  #sidebarContainer {
+  #sidepanelContainer {
     background-color: darkred;
     width: 500px;
     max-width: 100% !important;
-    font-size: $font-size-sidebar;
+    font-size: $font-size-sidepanel;
     @media (max-width: 576px) {
-      font-size: calc($font-size-sidebar * 0.75);
+      font-size: calc($font-size-sidepanel * 0.75);
     }
 
 
@@ -84,10 +84,10 @@ body {
 
       .accordion-header button {
         color: #fff;
-        font-size: $font-size-sidebar;
+        font-size: $font-size-sidepanel;
 
         @media (max-width: 576px) {
-          font-size: calc($font-size-sidebar * 0.75);
+          font-size: calc($font-size-sidepanel * 0.75);
         }
 
         &:after {
@@ -104,7 +104,7 @@ body {
         padding-bottom: 0.75rem;
         font-size: 1.75rem;
         @media (max-width: 576px) {
-          font-size: calc($font-size-sidebar * 0.75);
+          font-size: calc($font-size-sidepanel * 0.75);
         }
       }
 

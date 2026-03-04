@@ -1,6 +1,5 @@
 <template>
-  <!-- Sidebar container -->
-  <div id="sidebarContainer" class="offcanvas offcanvas-end show" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" aria-labelledby="sidebarContainerLabel">
+  <div id="sidepanelContainer" class="offcanvas offcanvas-end show" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" aria-labelledby="sidepanelContainerLabel">
     <div class="offcanvas-header">
       <button type="button" class="btn-close btn-close-white text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
@@ -36,7 +35,7 @@
                   </ul>
                 </div>
 
-                <br> <br>
+                <br><br>
 
                 <!-- search for runners name -->
                 <label for="searchName">Suche nach Namen:</label>
@@ -114,8 +113,7 @@
 </template>
 
 <script setup>
-import { useChronometryStore } from '../stores/chronometry';
-import { inject } from 'vue';
+import {useChronometryStore} from '../stores/chronometry';
 
 const store = useChronometryStore();
 const envRequestUrl = window.location.href.split('?')[0];
@@ -169,48 +167,65 @@ const scrollToNumber = (event) => {
 };
 
 const startSpeech = (inputSelector) => {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) {
-    alert("Spracherkennung wird auf diesem Gerät nicht unterstützt.");
-    return;
-  }
-  const recognition = new SpeechRecognition();
-  recognition.lang = "de-DE";
-  recognition.interimResults = false;
-  recognition.onstart = () => { store.isListening = true; }
-  recognition.onend = () => { store.isListening = false; }
-  recognition.onresult = (event) => {
-    const spoken = event.results[0][0].transcript;
-    store.searchNumber = spoken.replace(/[^0-9]/g, '');
-    if (store.searchNumber.length > 0) {
-      showNumberDropdownSuggest();
-      if (store.searchForm.numberSuggests.length === 1) {
-        const tr = document.querySelector("tr[data-number='" + store.searchNumber + "']");
-        store.openModal(tr.dataset.index);
-        window.scrollTo({
-          top: tr.offsetTop - 40,
-          behavior: 'smooth'
-        });
-      }
+  try {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      console.log("Spracherkennung wird auf diesem Gerät nicht unterstützt.");
+      return;
     }
-  };
-  recognition.start();
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "de-DE";
+    recognition.interimResults = false;
+
+    recognition.onstart = () => {
+      store.isListening = true;
+    }
+
+    recognition.onend = () => {
+      store.isListening = false;
+    }
+
+    recognition.onresult = (event) => {
+      const spoken = event.results[0][0].transcript;
+      store.searchNumber = spoken.replace(/[^0-9]/g, '');
+
+      if (store.searchNumber.length > 0) {
+        showNumberDropdownSuggest();
+
+        if (store.searchForm.numberSuggests.length === 1) {
+          const tr = document.querySelector("tr[data-number='" + store.searchNumber + "']");
+          store.openModal(tr.dataset.index);
+          window.scrollTo({
+            top: tr.offsetTop - 40,
+            behavior: 'smooth'
+          });
+        }
+      }
+    };
+    recognition.start();
+  } catch (error) {
+    console.error("Fehler beim Starten der Spracherkennung:", error);
+  }
 };
 
 const showNameDropdownSuggest = (event) => {
   const input = event.target;
   const value = input.value.trim();
+
   if (value === '') {
     store.searchForm.nameSuggests = [];
     store.searchForm.showNameDropdown = false;
     return;
   }
+
   store.searchNumber = '';
   store.searchForm.numberSuggests = [];
   store.searchForm.showNumberDropdown = false;
   const rows = document.querySelectorAll('#startlistTable tbody tr');
   const regex = new RegExp(value + '(.*)', 'i');
   const results = [];
+
   rows.forEach(row => {
     if (regex.test(row.dataset.fullname)) {
       results.push({
@@ -238,7 +253,9 @@ const applyFilter = (event) => {
   const filterCat = select.value;
   const rows = document.querySelectorAll('.startlist-table tbody tr');
   rows.forEach(row => row.classList.remove('d-none'));
+
   if (filterCat === '0') return;
+
   rows.forEach(row => {
     if (row.getAttribute('data-category') !== filterCat) {
       row.classList.add('d-none');
