@@ -25,6 +25,7 @@ $GLOBALS['TL_DCA']['tl_chronometry'] = [
             'keys' => [
                 'id'        => 'primary',
                 'published' => 'index',
+                'number'    => 'unique',
             ],
         ],
     ],
@@ -48,7 +49,7 @@ $GLOBALS['TL_DCA']['tl_chronometry'] = [
             ],
         ],
         'operations'        => [
-           'all',
+            'all',
         ],
     ],
     // Palettes
@@ -69,7 +70,7 @@ $GLOBALS['TL_DCA']['tl_chronometry'] = [
             'sorting'   => true,
             'filter'    => true,
             'inputType' => 'text',
-            'eval'      => ['mandatory' => true, 'decodeEntities' => false, 'maxlength' => 3, 'tl_class' => 'w25'],
+            'eval'      => ['mandatory' => true, 'decodeEntities' => false, 'maxlength' => 3, 'unique' => true, 'tl_class' => 'w25'],
             'sql'       => "int(3) unsigned NOT NULL default '0'",
         ],
         'gender'          => [
