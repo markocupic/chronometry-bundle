@@ -93,7 +93,7 @@ export const useChronometryStore = defineStore('chronometry', () => {
 
         // Wait for the next tick to ensure the modal is updated
         const bsModal = bootstrap.Modal.getOrCreateInstance(modalElement, {
-            keyboard: false
+            keyboard: true
         });
 
         bsModal.show();
@@ -127,6 +127,16 @@ export const useChronometryStore = defineStore('chronometry', () => {
             });
     };
 
+    const findRunnerById = (id) => {
+        for (const runner of runners.value) {
+            if (runner.id === id) {
+                return runner;
+            }
+        }
+
+        return null;
+    };
+
     return {
         isReady,
         isOnline,
@@ -144,6 +154,7 @@ export const useChronometryStore = defineStore('chronometry', () => {
         fetchAppData,
         openModal,
         speakNumber,
-        checkIsOnline
+        checkIsOnline,
+        findRunnerById,
     };
 });

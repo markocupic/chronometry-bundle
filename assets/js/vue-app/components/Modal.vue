@@ -1,6 +1,6 @@
 <template>
   <!-- Modal window -->
-  <div id="chronometryModal" class="modal fade" :class="store.modal.runnerIsFinisher ? 'runner-is-finisher' : ''">
+  <div id="chronometryModal" class="modal fade" tabindex="-1" data-bs-keyboard="true" :class="store.modal.runnerIsFinisher ? 'runner-is-finisher' : ''">
     <div class="modal-dialog modal-xl modal-fullscreen-sm-down" role="document">
       <div class="modal-content bg-dark">
         <div class="modal-header">
@@ -101,17 +101,35 @@ const saveRow = (index) => {
       },
       body: form,
     })
-    .then(response => response.json())
-    .then(data => {
-      store.$patch({
-        runners: data.runners,
-        categories: data.categories,
-        stats: data.stats
-      });
-    })
-    .catch((error) => {
-      console.error('Upload error. Could not save data.', error);
-    });
+        .then(response => response.json())
+        .then(data => {
+          store.$patch({
+            runners: data.runners,
+            categories: data.categories,
+            stats: data.stats
+          });
+        })
+        .then(() => {
+          try {
+            let text = endtime ? 'Gespeichert!' : 'Gelöscht!';
+
+            const runner = store.findRunnerById(id);
+
+            if (runner && runner.rank) {
+              text = text + ' Rang ' + runner.rank;
+            }
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'de-DE';
+            speechSynthesis.speak(utterance);
+
+          } catch (error) {
+            console.log('SpeechSynthesisUtterance is not supported in this browser.');
+          }
+        })
+        .catch((error) => {
+          console.error('Upload error. Could not save data.', error);
+        });
   } else {
     alert('Invalid input format for "endtime": ' + endtime);
   }

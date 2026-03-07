@@ -21,66 +21,26 @@ Diese Abhängigkeiten werden atomatisch mitinstalliert
 * Bootstrap Framework
 * [tofsjonas/sortable](https://github.com/tofsjonas/sortable)
 
-### XAMPP & Installation
 
-#### XAMPP installieren in c:\xampp
+### Lokale Installation mit Symfony Server
 
-#### php.ini anpassen
-```
-memory_limit=-1 # kein Limit
+Soll die App in einem Funkloch betrieben werden, kann die App mit Symfony Server auch lokal auf einem Notebook installiert und betrieben werden.
 
-extension=intl # aktivieren
-extension=gd # aktivieren
-extension=fileinfo # aktivieren
-extension=sodium # aktivieren
-```
+Es können sogar **mehrere Geräte** auf die Server Instanz zugreifen. Dadurch können bei vielen Teilnehmern mehrere Leute die Zeitmessung im Ziel verarbeiten.
 
-#### Konfiguration für virtuellen Host in C:\xampp\apache\conf\extra\httpd-vhosts.conf
-```
-<VirtualHost *:80>
-    DocumentRoot "C:/xampp/htdocs/"
-    ServerName localhost
-    <Directory "C:/xampp/htdocs/">
-	AllowOverride All
-	Allow from All
-    </Directory>
-</VirtualHost>
+**Konfiguration:**
 
-<VirtualHost *:80>
-    ServerName duathlon.local
-    DocumentRoot "C:/xampp/htdocs/duathlon/web"
-    ErrorLog "logs/duathlon-error.log"
-    CustomLog "logs/duathlon-access.log" common
-    <Directory "C:/xampp/htdocs/duathlon/web">
-	AllowOverride All
-	Allow from All
-    </Directory>
-</VirtualHost>
+- Ein Mobiltelefon agiert als Hotspot
+- **Notebook** und andere **mobile Geräte** verbinden sich mit dem **Hotspot**. Alle mit dem Hotspot verbundenen Geräte befinden sich nun im gleichen Subnetz.
+- Via `ipconfig /all` die IP-Adresse des Notebooks ermitteln. (z.B. 10.247.21.86)
+- Danach am Notebook Symfony Server via CLI starten. `symfony server:start --allow-all-ip --no-tls --port=8000`
+- Alle mit dem via Hotspot verbundenen Geräte können auf die Server Instanz zugreifen, weil sie im selben Subnetz sind.
+- Im Browser die IP-Adresse des Notebooks eingeben. (z.B. http://10.247.21.86:8000)
 
-```
-
-#### Konfiguration von C:\Windows\System32\drivers\etc\hosts
-```
-127.0.0.1      duathlon.local
-```
-
-#### Tipp: XAMPP unbedingt im "Als Administrator ausführen" Modus neu starten.
-
-#### In phpmyadmin eine Datenbank anlegen.
-
-#### Contao lokal installieren mit composer oder per http://duathlon.local/contao-manager.phar.php
-
-#### Zusatzmodule installieren
-
-```
-require markocupic/chronometry-bundle
-require markocupic/export_table
-require markocupic/import-from-csv-bundle
-```
 
 #### Contao Setup
 - In Contao anmelden `http://duathlon.local/contao`.
-- Ein Theme erstellen und darin ein Layout einbauen (einspaltig ohne Kopf- und Fusszeile, jQuery aktivieren)
+- Ein Theme erstellen und darin ein Layout einbauen (einspaltig ohne Kopf- und Fusszeile)
 - Das Zeitmessungsmodul erstellen
 - Eine Seite erstellen und darin das Modul einbinden
 - Mit `markocupic/import-from-csv-bundle` die Startliste in tl_chronometry importieren

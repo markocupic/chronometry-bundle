@@ -17,7 +17,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(runner, index) in store.runners" :key="runner.id" :data-index="index" :id="runner.id" :data-number="runner.number" :data-fullname="runner.fullname" :data-category="runner.category" :data-runnerDnfRace="runner.dnf === 1 ? 'true' : 'false'" :data-runnerHasFinishedRace="runner.endtime != '' ? true : false">
+        <tr v-for="(runner, index) in store.runners" :key="runner.id" :data-index="index" :data-runnerid="runner.id" :data-number="runner.number" :data-fullname="runner.fullname" :data-category="runner.category" :data-rank="runner.rank" :data-runnerDnfRace="runner.dnf === 1 ? 'true' : 'false'" :data-runnerHasFinishedRace="runner.endtime != '' ? true : false">
           <td class="text-center align-middle number">
             <span><i class="fa-solid fa-circle runner-status-icon"></i></span>
           </td>

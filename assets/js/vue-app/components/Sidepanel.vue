@@ -23,7 +23,7 @@
 
                 <!-- speech input -->
                 <div class="position-relative">
-                  <input type="number" class="form-control form-control-lg pe-5" id="searchNumber" placeholder="123" autocomplete="off" :value="store.searchNumber" @input="onInputNumber" @keydown.enter="scrollToNumber">
+                  <input type="number" class="form-control form-control-lg pe-5" id="searchNumber" placeholder="123" autocomplete="off" :value="store.searchNumber" @input="onInputNumber" @keyup="scrollToNumberAndOpenModalOnMatch">
                   <button class="speech-btn btn btn-link position-absolute end-0 top-50 translate-middle-y me-2 p-0" :class="{ listening: store.isListening }" @click="startSpeech('#searchNumber')">
                     <i class="fa-solid fa-microphone fa-2x"></i>
                   </button>
@@ -152,8 +152,9 @@ const showNumberDropdownSuggest = () => {
   }
 };
 
-const scrollToNumber = (event) => {
+const scrollToNumberAndOpenModalOnMatch = (event) => {
   const input = event.target;
+
   if (input.value > 1) {
     const tr = document.querySelector("tr[data-number='" + input.value + "']");
     if (tr) {
@@ -161,6 +162,7 @@ const scrollToNumber = (event) => {
         top: tr.offsetTop - 40,
         behavior: 'smooth'
       });
+      input.blur();
       store.openModal(tr.dataset.index);
     }
   }
@@ -170,7 +172,7 @@ const startSpeech = (inputSelector) => {
   try {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      console.log("Spracherkennung wird auf diesem Gerät nicht unterstützt.");
+      console.log('SpeechSynthesisUtterance is not supported in this browser.');
       return;
     }
 
