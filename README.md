@@ -45,7 +45,3 @@ Es können sogar **mehrere Geräte** auf die Server Instanz zugreifen. Dadurch k
 - Eine Seite erstellen und darin das Modul einbinden
 - Mit `markocupic/import-from-csv-bundle` die Startliste in tl_chronometry importieren
 - Für Tabellenexport `markocupic/export_table` benutzen (Datumsfelder werden automatisch von Unix nach d.m.Y konvertiert)
-
-
-
-
