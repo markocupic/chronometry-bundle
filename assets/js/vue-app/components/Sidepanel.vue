@@ -171,6 +171,7 @@ const scrollToNumberAndOpenModalOnMatch = (event) => {
 const startSpeech = (inputSelector) => {
   try {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
     if (!SpeechRecognition) {
       console.log('SpeechSynthesisUtterance is not supported in this browser.');
       return;
@@ -198,6 +199,7 @@ const startSpeech = (inputSelector) => {
         if (store.searchForm.numberSuggests.length === 1) {
           const tr = document.querySelector("tr[data-number='" + store.searchNumber + "']");
           store.openModal(tr.dataset.index);
+
           window.scrollTo({
             top: tr.offsetTop - 40,
             behavior: 'smooth'

@@ -34,7 +34,7 @@ class ChronometryListController extends AbstractFrontendModuleController
 {
     public const string TYPE = 'chronometry_list';
 
-    public const string ACTION_SAVE_ROW = 'saveRow';
+    public const string ACTION_SAVE_ROW = 'updateRecord';
 
     public const string ACTION_CHECK_ONLINE_STATE = 'checkIsOnline';
 

@@ -33,7 +33,7 @@ Es können sogar **mehrere Geräte** auf die Server Instanz zugreifen. Dadurch k
 - Ein Mobiltelefon agiert als Hotspot
 - **Notebook** und andere **mobile Geräte** verbinden sich mit dem **Hotspot**. Alle mit dem Hotspot verbundenen Geräte befinden sich nun im gleichen Subnetz.
 - Via `ipconfig /all` die IP-Adresse des Notebooks ermitteln. (z.B. 10.247.21.86)
-- Danach am Notebook Symfony Server via CLI starten. `symfony server:start --allow-all-ip --no-tls --port=8000`
+- Danach am Notebook Symfony Server via CLI starten. `symfony server:start --allow-all-ip --port=8000`
 - Alle mit dem via Hotspot verbundenen Geräte können auf die Server Instanz zugreifen, weil sie im selben Subnetz sind.
 - Im Browser die IP-Adresse des Notebooks eingeben. (z.B. http://10.247.21.86:8000)
 

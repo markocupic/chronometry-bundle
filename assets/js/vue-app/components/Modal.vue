@@ -19,7 +19,7 @@
             <button class="btn btn-lg btn-primary btnGetTime" @click.stop="setEndTimeFromCurrentTime" title="Zielzeit setzen" type="button">
               <i class="large-icon fa-solid fa-stopwatch"></i>
             </button>
-            <input type="text" class="form-control" id="endtimeCtrl" maxlength="8" v-model="store.modal.endTime" @keydown.enter="saveRow(store.modal.runnerIndex)" placeholder="00:00:00"/>
+            <input type="text" class="form-control" id="endtimeCtrl" maxlength="8" v-model="store.modal.endTime" @keydown.enter="updateRecord(store.modal.runnerIndex)" placeholder="00:00:00"/>
             <button id="inputClear" class="btn btn-lg btn-secondary btn-danger" @click.stop="clearEndTime()" title="Zeit zurücksetzen" type="button">
               <i class="large-icon fa fa-times-circle"></i>
             </button>
@@ -44,7 +44,7 @@
           <a :href="certificateUrl" title="Zertifikat drucken" class="btn btn-lg btn-success">
             <i class="me-2 fa-solid fa-trophy"></i>Zertif.
           </a>
-          <button id="saveChanges" @click="saveRow(store.modal.runnerIndex)" type="button" class="btn btn-lg btn-primary">
+          <button id="saveChanges" @click="updateRecord(store.modal.runnerIndex)" type="button" class="btn btn-lg btn-primary">
             <i class="me-2 fa-solid fa-save"></i>Save
           </button>
         </div>
@@ -75,7 +75,7 @@ const clearEndTime = () => {
   store.modal.endTime = '';
 };
 
-const saveRow = (index) => {
+const updateRecord = (index) => {
   const id = store.modal.runnerId;
   const endtime = document.querySelector('#endtimeCtrl').value;
   const dnf = document.querySelector('.modal #runnerDnfCtrl').checked ? 1 : '';
@@ -94,7 +94,7 @@ const saveRow = (index) => {
     form.append('endtime', endtime);
     form.append('dnf', dnf);
 
-    fetch(window.location.href + '?action=saveRow', {
+    fetch(window.location.href + '?action=updateRecord', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
