@@ -61,7 +61,7 @@ window.chronometryApp = createApp({
 
             window.setInterval(() => {
                 store.fetchAppData();
-            }, 60000);
+            }, 15000);
         });
 
         return {
