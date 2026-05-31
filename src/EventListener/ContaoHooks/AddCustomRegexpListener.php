@@ -12,7 +12,7 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/chronometry-bundle
  */
 
-namespace Markocupic\ChronometryBundle\Listener\ContaoHooks;
+namespace Markocupic\ChronometryBundle\EventListener\ContaoHooks;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\Widget;
