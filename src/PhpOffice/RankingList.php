@@ -46,7 +46,11 @@ readonly class RankingList
         // Load language file
         Controller::loadLanguageFile($strTable);
 
-        $strTemplateSrc = Path::join($this->projectDir, 'vendor/markocupic/chronometry-bundle/docx/eternal_list_of_the_best.docx');
+        $strTemplateSrc = Path::join($this->projectDir, 'vendor/markocupic/chronometry-bundle/docx/ranklist.docx');
+
+        if (true === $printEternalListOfTheBest) {
+            $strTemplateSrc = Path::join($this->projectDir, 'vendor/markocupic/chronometry-bundle/docx/eternal_list_of_the_best.docx');
+        }
 
         $strTargetSrc = \sprintf('%s/system/tmp/rangliste_cat%s.docx', $this->projectDir, $catId);
 

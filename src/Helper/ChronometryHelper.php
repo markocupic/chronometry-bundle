@@ -22,9 +22,8 @@ use Markocupic\ChronometryBundle\Model\ChronometryModel;
 
 readonly class ChronometryHelper
 {
-    public function __construct(
-        private Connection $connection,
-    ) {
+    public function __construct(private Connection $connection)
+    {
     }
 
     /**

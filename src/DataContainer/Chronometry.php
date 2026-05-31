@@ -19,9 +19,8 @@ use Markocupic\ChronometryBundle\Helper\ChronometryHelper;
 
 class Chronometry
 {
-    public function __construct(
-        private readonly ChronometryHelper $chronometryHelper,
-    ) {
+    public function __construct(private readonly ChronometryHelper $chronometryHelper)
+    {
     }
 
     #[AsCallback(table: 'tl_chronometry', target: 'config.onload')]

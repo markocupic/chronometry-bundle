@@ -30,7 +30,7 @@
         "markocupic/phpoffice-bundle": "^1.2",
         "markocupic/contao-component-bootstrap": "^5.3",
         "markocupic/contao-component-popper-js": "*",
-        "markocupic/contao-component-fontawesome-free": "^7.0",
+        "markocupic/contao-component-fontawesome-free": "^6.0 || ^7.0",
         "league/csv": "^9.21"
     },
     "autoload": {
@@ -40,5 +40,6 @@
     },
     "extra": {
         "contao-manager-plugin": "Markocupic\\ChronometryBundle\\ContaoManager\\Plugin"
-    }
+    },
+    "version": "3.0"
 }
