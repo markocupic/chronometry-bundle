@@ -40,6 +40,5 @@
     },
     "extra": {
         "contao-manager-plugin": "Markocupic\\ChronometryBundle\\ContaoManager\\Plugin"
-    },
-    "version": "3.0"
+    }
 }
