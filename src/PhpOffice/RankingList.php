@@ -60,40 +60,52 @@ readonly class RankingList
 
         $objPhpWord = new MsWordTemplateProcessor($strTemplateSrc, $strTargetSrc);
 
-        $rows = $this->connection->fetchAllAssociative(
-            'SELECT * FROM tl_chronometry WHERE category = ? AND runningtimeUnix > ? ORDER BY runningTimeUnix',
-            [$catId, 0],
+        $rowsA = $this->connection->fetchAllAssociative(
+            'SELECT * FROM tl_chronometry WHERE published = 1 AND runningtimeUnix > 0 AND category = ? AND unranked = 0 AND dnf = 0 ORDER BY runningtimeUnix, number',
+            [$catId],
         );
+
+        $rowsB = $this->connection->fetchAllAssociative(
+            'SELECT * FROM tl_chronometry WHERE published = 1 AND category = ? AND unranked = 1 ORDER BY runningtimeUnix, number',
+            [$catId],
+        );
+
+        $rowsC = $this->connection->fetchAllAssociative(
+            'SELECT * FROM tl_chronometry WHERE published = 1 AND category = ? AND unranked = 0 AND dnf = 1 ORDER BY runningtimeUnix, number',
+            [$catId],
+        );
+
+        $rowsD = $this->connection->fetchAllAssociative(
+            'SELECT * FROM tl_chronometry WHERE published = 1 AND runningtimeUnix < 1 AND category = ? AND unranked = 0 AND dnf = 0 ORDER BY runningtimeUnix, number',
+            [$catId],
+        );
+
+        $rows = array_merge($rowsA, $rowsB, $rowsC, $rowsD);
 
         foreach ($rows as $row) {
             date_default_timezone_set('UTC');
-            $time = Date::parse('H:i:s', $row['runningtimeUnix']);
+            $time = Date::parse('H:i:s', (int) $row['runningtimeUnix']);
             $eventDate = Date::parse('d.m.Y', $row['eventDate']);
 
             date_default_timezone_set(Config::get('timeZone'));
 
+            if ($row['unranked']) {
+                $rank = 'o. Rang';
+            } elseif ($row['dnf']) {
+                $rank = 'd.n.f.';
+            } elseif ($row['runningtimeUnix'] < 1) {
+                $rank = '';
+            } else {
+                $rank = $this->chronometryHelper->getRank((int) $row['id']);
+            }
+
             $objPhpWord->createClone('rank');
-            $objPhpWord->addToClone('rank', 'rank', $this->chronometryHelper->getRank((int) $row['id']), ['multiline' => false]);
+            $objPhpWord->addToClone('rank', 'rank', $rank, ['multiline' => false]);
             $objPhpWord->addToClone('rank', 'number', $row['number'], ['multiline' => false]);
             $objPhpWord->addToClone('rank', 'firstname', $row['firstname'], ['multiline' => false]);
             $objPhpWord->addToClone('rank', 'lastname', $row['lastname'], ['multiline' => false]);
-            $objPhpWord->addToClone('rank', 'time', $time, ['multiline' => false]);
+            $objPhpWord->addToClone('rank', 'time', $time > 0 ? $time : '', ['multiline' => false]);
             $objPhpWord->addToClone('rank', 'eventDate', $eventDate, ['multiline' => false]);
-        }
-
-        // dnf
-        $rows = $this->connection->fetchAllAssociative(
-            'SELECT * FROM tl_chronometry WHERE category = ? AND dnf = ? ORDER BY lastname',
-            [$catId, 1],
-        );
-
-        foreach ($rows as $row) {
-            $objPhpWord->createClone('rank');
-            $objPhpWord->addToClone('rank', 'rank', '---', ['multiline' => false]);
-            $objPhpWord->addToClone('rank', 'number', $row['number'], ['multiline' => false]);
-            $objPhpWord->addToClone('rank', 'firstname', $row['firstname'], ['multiline' => false]);
-            $objPhpWord->addToClone('rank', 'lastname', $row['lastname'], ['multiline' => false]);
-            $objPhpWord->addToClone('rank', 'time', 'dnf', ['multiline' => false]);
         }
 
         // Category

@@ -37,4 +37,5 @@ $GLOBALS['TL_LANG']['tl_chronometry']['endtime'] = ['Zielzeit'];
 $GLOBALS['TL_LANG']['tl_chronometry']['runningtime'] = ['Laufzeit'];
 $GLOBALS['TL_LANG']['tl_chronometry']['runningtimeUnix'] = ['Laufzeit in Sekunden'];
 $GLOBALS['TL_LANG']['tl_chronometry']['notice'] = ['Bemerkungen'];
+$GLOBALS['TL_LANG']['tl_chronometry']['unranked'] = ['Ohne Rangierung'];
 $GLOBALS['TL_LANG']['tl_chronometry']['dnf'] = ['Aufgegeben'];

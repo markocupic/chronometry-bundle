@@ -49,7 +49,7 @@ readonly class ChronometryHelper
     /**
      * @throws Exception
      */
-    public function getRank(int $id): int
+    public function getRank(int $id): int|string
     {
         $objAthlete = ChronometryModel::findById($id);
 
@@ -57,26 +57,20 @@ readonly class ChronometryHelper
             return 0;
         }
 
-        $tstamps = $this->connection->fetchFirstColumn(
-            'SELECT runningtimeUnix FROM tl_chronometry WHERE runningtimeUnix > 0 AND published = ? AND category = ? ORDER BY runningtimeUnix',
-            [1, $objAthlete->category],
-        );
-
-        $i = 0;
-
-        foreach ($tstamps as $tstamp) {
-            if ($tstamp < 1) {
-                return 0;
-            }
-
-            ++$i;
-
-            if ($tstamp === (int) $objAthlete->runningtimeUnix) {
-                return $i;
-            }
+        if ($objAthlete->unranked) {
+            return 'unranked';
         }
 
-        return 0;
+        if ($objAthlete->runningtimeUnix > 1) {
+            $tstamps = $this->connection->fetchFirstColumn(
+                'SELECT runningtimeUnix FROM tl_chronometry WHERE runningtimeUnix > 0 AND published = 1 AND category = ? ORDER BY runningtimeUnix',
+                [$objAthlete->category],
+            );
+
+            return $this->calculateRank($objAthlete->runningtimeUnix, $tstamps);
+        }
+
+        return 'd.n.f';
     }
 
     /**
@@ -103,6 +97,11 @@ readonly class ChronometryHelper
             [1, 1],
         );
 
+        $unranked = $this->connection->fetchOne(
+            'SELECT COUNT(id) FROM tl_chronometry WHERE published = ? AND unranked = 1 AND runningtimeUnix > 0 AND dnf != ?',
+            [1, 1],
+        );
+
         $running = $this->connection->fetchOne(
             'SELECT COUNT(id) FROM tl_chronometry WHERE published = ? AND runningtimeUnix = 0 AND dnf != ?',
             [1, 1],
@@ -117,6 +116,7 @@ readonly class ChronometryHelper
         $objStats->running = $running;
         $objStats->haveGivenUp = $dnf;
         $objStats->runnersTotal = $runnersTotal;
+        $objStats->unranked = $unranked;
 
         return $objStats;
     }
@@ -231,5 +231,18 @@ readonly class ChronometryHelper
 
             throw $e;
         }
+    }
+
+    private function calculateRank(int $time, array $times): int
+    {
+        $faster = 0;
+
+        foreach ($times as $t) {
+            if ($t < $time) {
+                ++$faster;
+            }
+        }
+
+        return $faster + 1;
     }
 }

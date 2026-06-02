@@ -30,7 +30,7 @@
           <td class="align-middle teachername">{{ runner.teachername }}</td>
           <td class="align-middle starttime" :data-sort="runner.starttimeUnix">{{ runner.starttime }}</td>
           <td class="align-middle endtime" :data-sort="runner.endtimeUnix"><span role="button" @click="store.openModal(index)" title="Datensatz bearbeiten">{{ runner.endtime }}</span></td>
-          <td class="align-middle rank" :data-sort="runner.rank > 0 ? runner.rank : 999999999999999">{{ runner.rank > 0 ? runner.rank : 'd.n.f' }}</td>
+          <td class="align-middle rank" :data-sort="runner.rank > 0 ? runner.rank : 999999999999999">{{ runner.rank }}</td>
           <td class="align-middle runningtime" :data-sort="runner.runningtimeUnix == 0 ? 999999999999999 : runner.runningtimeUnix"><span role="button" @click="store.openModal(index)" title="Datensatz bearbeiten">{{ runner.runningtime }}</span></td>
           <td class="text-center align-middle edit-button">
             <button @click="store.openModal(index)" title="Datensatz bearbeiten" class="btn btn-primary editButton"><i class="fa-regular fa-clock"></i></button>

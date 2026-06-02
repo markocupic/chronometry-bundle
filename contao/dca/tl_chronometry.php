@@ -37,7 +37,7 @@ $GLOBALS['TL_DCA']['tl_chronometry'] = [
             'panelLayout' => 'filter;sort,search,limit',
         ],
         'label'             => [
-            'fields'      => ['number', 'firstname', 'lastname', 'published', 'stufe', 'starttime', 'runningtime'],
+            'fields'      => ['number', 'firstname', 'lastname', 'published', 'stufe', 'starttime', 'runningtime', 'unranked', 'dnf', 'notice', 'eventDate'],
             'showColumns' => true,
         ],
         'global_operations' => [
@@ -54,7 +54,7 @@ $GLOBALS['TL_DCA']['tl_chronometry'] = [
     ],
     // Palettes
     'palettes' => [
-        'default' => '{published_legend},published;{name_legend},firstname,lastname,stufe,gender,number,category,teachername,notice;{time_legend},eventDate,starttime,endtime,runningtime,runningtimeUnix,dnf',
+        'default' => '{published_legend},published;{name_legend},firstname,lastname,stufe,gender,number,category,teachername,notice;{time_legend},eventDate,starttime,endtime,runningtime,runningtimeUnix,unranked,dnf',
     ],
     // Fields
     'fields'   => [
@@ -140,14 +140,6 @@ $GLOBALS['TL_DCA']['tl_chronometry'] = [
             'eval'      => ['mandatory' => true, 'rgxp' => 'time_format_H:i:s', 'maxlength' => 8, 'tl_class' => 'w25'],
             'sql'       => "varchar(8) NOT NULL default ''",
         ],
-        'eventDate'       => [
-            'exclude'   => true,
-            'sorting'   => true,
-            'flag'      => DataContainer::SORT_DAY_DESC,
-            'inputType' => 'text',
-            'eval'      => ['rgxp' => 'date', 'datepicker' => true, 'tl_class' => 'clr wizard'],
-            'sql'       => "varchar(11) NOT NULL default ''",
-        ],
         'endtime'         => [
             'exclude'   => true,
             'search'    => true,
@@ -194,6 +186,15 @@ $GLOBALS['TL_DCA']['tl_chronometry'] = [
             'eval'      => ['doNotCopy' => true, 'tl_class' => 'clr'],
             'sql'       => ['type' => 'boolean', 'default' => false],
         ],
+        'unranked'        => [
+            'exclude'   => true,
+            'search'    => true,
+            'sorting'   => true,
+            'filter'    => true,
+            'inputType' => 'checkbox',
+            'eval'      => ['doNotCopy' => true, 'tl_class' => 'clr'],
+            'sql'       => ['type' => 'boolean', 'default' => false],
+        ],
         'notice'          => [
             'exclude'   => true,
             'search'    => true,
@@ -202,6 +203,14 @@ $GLOBALS['TL_DCA']['tl_chronometry'] = [
             'inputType' => 'textarea',
             'eval'      => ['tl_class' => 'clr'],
             'sql'       => "varchar(255) NOT NULL default ''",
+        ],
+        'eventDate'       => [
+            'exclude'   => true,
+            'sorting'   => true,
+            'flag'      => DataContainer::SORT_DAY_DESC,
+            'inputType' => 'text',
+            'eval'      => ['rgxp' => 'date', 'datepicker' => true, 'tl_class' => 'clr wizard'],
+            'sql'       => "varchar(11) NOT NULL default ''",
         ],
     ],
 ];
