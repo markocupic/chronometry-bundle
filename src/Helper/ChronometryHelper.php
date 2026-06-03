@@ -63,7 +63,7 @@ readonly class ChronometryHelper
 
         if ($objAthlete->runningtimeUnix > 1) {
             $tstamps = $this->connection->fetchFirstColumn(
-                'SELECT runningtimeUnix FROM tl_chronometry WHERE runningtimeUnix > 0 AND published = 1 AND category = ? ORDER BY runningtimeUnix',
+                'SELECT runningtimeUnix FROM tl_chronometry WHERE published = 1 AND unranked = 0 AND dnf = 0 AND runningtimeUnix > 0 AND category = ? ORDER BY runningtimeUnix',
                 [$objAthlete->category],
             );
 
