@@ -1,5 +1,5 @@
-﻿published;dnf;id;tstamp;number;gender;stufe;category;firstname;lastname;teachername;starttime;eventDate;endtime;runningtime;runningtimeUnix;notice
-1;0;1;1772883712;501;male;5;1;Albert;Einstein;"Lehrer Laempel";08:00:00;;12:41:51;04:41:51;16911;
-1;0;2;1772883524;502;male;5;1;Fritz;Nimmersatt;"Lehrer Laempel";08:00:00;;12:38:43;04:38:43;16723;
-1;0;3;1772881619;503;male;5;1;Anton;"Hohlkopf";"Lehrer Laempel";08:00:00;;12:06:57;04:06:57;14817;
-1;0;4;1772829283;504;male;5;1;John;Johnson;"Lehrer Laempel";08:00:00;;08:35:00;00:35:00;2100;
+﻿published;id;tstamp;number;gender;stufe;category;firstname;lastname;teachername;starttime;eventDate;endtime;runningtime;runningtimeUnix;notice;status
+1;1;1772883712;501;male;5;1;Albert;Einstein;"Lehrer Laempel";08:00:00;;12:41:51;04:41:51;16911;finisher
+1;2;1772883524;502;male;5;1;Fritz;Nimmersatt;"Lehrer Laempel";08:00:00;;12:38:43;04:38:43;16723;finisher
+1;3;1772881619;503;male;5;1;Anton;"Hohlkopf";"Lehrer Laempel";08:00:00;;12:06:57;04:06:57;14817;finisher
+1;4;1772829283;504;male;5;1;John;Johnson;"Lehrer Laempel";08:00:00;;08:35:00;00:35:00;2100;finisher

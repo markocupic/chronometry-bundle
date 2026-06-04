@@ -2,12 +2,12 @@
   "entrypoints": {
     "app": {
       "js": [
-        "/bundles/markocupicchronometry/app.1176603c.js"
+        "/bundles/markocupicchronometry/app.a157e2bf.js"
       ]
     },
     "styles": {
       "css": [
-        "/bundles/markocupicchronometry/styles.66112f7a.css"
+        "/bundles/markocupicchronometry/styles.2f9c4e12.css"
       ]
     }
   }

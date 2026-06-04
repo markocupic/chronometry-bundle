@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Chronometry Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license LGPL-3.0+
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -21,6 +21,7 @@ use Contao\CoreBundle\Exception\ResponseException;
 use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\ModuleModel;
 use Contao\PageModel;
+use Doctrine\DBAL\Connection;
 use Markocupic\ChronometryBundle\Export\CsvWriter;
 use Markocupic\ChronometryBundle\FrontendAjax\FrontendAjax;
 use Markocupic\ChronometryBundle\Model\ChronometryModel;
@@ -48,6 +49,7 @@ class ChronometryListController extends AbstractFrontendModuleController
 
     public function __construct(
         private readonly Certificate $certificate,
+        private readonly Connection $connection,
         private readonly ContaoCsrfTokenManager $csrfTokenManager,
         private readonly CsvWriter $csvWriter,
         private readonly FrontendAjax $frontendAjax,
@@ -65,9 +67,9 @@ class ChronometryListController extends AbstractFrontendModuleController
             if (self::ACTION_SAVE_ROW === $strAction) {
                 $intId = (int) $request->request->get('id');
                 $endtime = $request->request->get('endtime');
-                $dnf = (bool) $request->request->get('dnf');
+                $status = $request->request->get('status');
 
-                $this->frontendAjax->persistRow($intId, $endtime, $dnf);
+                $this->frontendAjax->persistRow($intId, $endtime, $status);
             }
 
             // Check is online

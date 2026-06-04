@@ -18,6 +18,8 @@ use Contao\Config;
 use Contao\Controller;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
+use Markocupic\ChronometryBundle\Data\Status;
+use Markocupic\ChronometryBundle\Model\ChronometryArchiveModel;
 use Markocupic\ChronometryBundle\Model\ChronometryModel;
 
 readonly class ChronometryHelper
@@ -49,28 +51,32 @@ readonly class ChronometryHelper
     /**
      * @throws Exception
      */
-    public function getRank(int $id): int|string
+    public function getRank(int $id, string $table = 'tl_chronometry'): int|string
     {
-        $objAthlete = ChronometryModel::findById($id);
+        if (!\in_array($table, ['tl_chronometry', 'tl_chronometry_archive'], true)) {
+            throw new \Exception('$table must be tl_chronometry or tl_chronometry_archive');
+        }
+
+        if ('tl_chronometry' === $table) {
+            $objAthlete = ChronometryModel::findById($id);
+        } else {
+            $objAthlete = ChronometryArchiveModel::findById($id);
+        }
 
         if (null === $objAthlete) {
             return 0;
         }
 
-        if ($objAthlete->unranked) {
-            return 'unranked';
+        if ($objAthlete->status !== Status::finisher->value) {
+            return '';
         }
 
-        if ($objAthlete->runningtimeUnix > 1) {
-            $tstamps = $this->connection->fetchFirstColumn(
-                'SELECT runningtimeUnix FROM tl_chronometry WHERE published = 1 AND unranked = 0 AND dnf = 0 AND runningtimeUnix > 0 AND category = ? ORDER BY runningtimeUnix',
-                [$objAthlete->category],
-            );
+        $tstamps = $this->connection->fetchFirstColumn(
+            "SELECT runningtimeUnix FROM $table WHERE published = 1 AND status = ? AND category = ? ORDER BY runningtimeUnix",
+            [Status::finisher->value, $objAthlete->category],
+        );
 
-            return $this->calculateRank($objAthlete->runningtimeUnix, $tstamps);
-        }
-
-        return 'd.n.f';
+        return $this->calculateRank($objAthlete->runningtimeUnix, $tstamps);
     }
 
     /**
@@ -78,43 +84,43 @@ readonly class ChronometryHelper
      */
     public function getStats(): \stdClass
     {
-        $dispensed = $this->connection->fetchOne(
-            'SELECT COUNT(id) FROM tl_chronometry WHERE published = ?',
-            [0],
+        $total = $this->connection->fetchOne(
+            'SELECT COUNT(id) FROM tl_chronometry WHERE published = 1',
         );
 
-        $total = $this->connection->fetchOne(
-            'SELECT COUNT(id) FROM tl_chronometry',
+        $notstarted = $this->connection->fetchOne(
+            'SELECT COUNT(id) FROM tl_chronometry WHERE published = 1 AND status = ?',
+            [Status::notstarted->value],
         );
 
         $dnf = $this->connection->fetchOne(
-            'SELECT COUNT(id) FROM tl_chronometry WHERE published = ? AND dnf = ?',
-            [1, 1],
+            'SELECT COUNT(id) FROM tl_chronometry WHERE published = 1 AND status = ?',
+            [Status::dnf->value],
         );
 
-        $haveFinished = $this->connection->fetchOne(
-            'SELECT COUNT(id) FROM tl_chronometry WHERE published = ? AND runningtimeUnix > 0 AND dnf != ?',
-            [1, 1],
+        $finisher = $this->connection->fetchOne(
+            'SELECT COUNT(id) FROM tl_chronometry WHERE published = 1 AND status = ?',
+            [Status::finisher->value],
         );
 
         $unranked = $this->connection->fetchOne(
-            'SELECT COUNT(id) FROM tl_chronometry WHERE published = ? AND unranked = 1 AND runningtimeUnix > 0 AND dnf != ?',
-            [1, 1],
+            'SELECT COUNT(id) FROM tl_chronometry WHERE published = 1 AND status = ?',
+            [Status::unranked->value],
         );
 
         $running = $this->connection->fetchOne(
-            'SELECT COUNT(id) FROM tl_chronometry WHERE published = ? AND runningtimeUnix = 0 AND dnf != ?',
-            [1, 1],
+            'SELECT COUNT(id) FROM tl_chronometry WHERE published = 1 AND status = ?',
+            [''],
         );
 
-        $runnersTotal = $total - $dispensed;
+        $runnersTotal = $total - $notstarted;
 
         $objStats = new \stdClass();
         $objStats->total = $total;
-        $objStats->dispensed = $dispensed;
-        $objStats->haveFinished = $haveFinished;
+        $objStats->dispensed = $notstarted;
+        $objStats->finishers = $finisher;
         $objStats->running = $running;
-        $objStats->haveGivenUp = $dnf;
+        $objStats->dnf = $dnf;
         $objStats->runnersTotal = $runnersTotal;
         $objStats->unranked = $unranked;
 

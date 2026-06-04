@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Chronometry Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license LGPL-3.0+
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -14,15 +14,21 @@ declare(strict_types=1);
 
 use Contao\ArrayUtil;
 use Markocupic\ChronometryBundle\Model\ChronometryModel;
+use Markocupic\ChronometryBundle\Model\ChronometryArchiveModel;
 
 /*
  * Back end modules
  */
-ArrayUtil::arrayInsert($GLOBALS['BE_MOD']['content'], 1, [
-    'chronometry' => [
+ArrayUtil::arrayInsert($GLOBALS['BE_MOD']['chronometry'], 1, [
+    'chronometry'         => [
         'tables' => ['tl_chronometry'],
-        'table' => ['TableWizard', 'importTable'],
-        'list' => ['ListWizard', 'importList'],
+        'table'  => ['TableWizard', 'importTable'],
+        'list'   => ['ListWizard', 'importList'],
+    ],
+    'chronometry_archive' => [
+        'tables' => ['tl_chronometry_archive'],
+        'table'  => ['TableWizard', 'importTable'],
+        'list'   => ['ListWizard', 'importList'],
     ],
 ]);
 
@@ -30,6 +36,7 @@ ArrayUtil::arrayInsert($GLOBALS['BE_MOD']['content'], 1, [
  * Models
  */
 $GLOBALS['TL_MODELS']['tl_chronometry'] = ChronometryModel::class;
+$GLOBALS['TL_MODELS']['tl_chronometry_archive'] = ChronometryArchiveModel::class;
 
 /*
  * Asset path

@@ -12,7 +12,11 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/chronometry-bundle
  */
 
-/*
- * Add palettes to tl_module
- */
-$GLOBALS['TL_DCA']['tl_module']['palettes']['chronometry_list'] = '{title_legend},name,headline,type;{config_legend};{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+namespace Markocupic\ChronometryBundle\Model;
+
+use Contao\Model;
+
+class ChronometryArchiveModel extends Model
+{
+    protected static $strTable = 'tl_chronometry_archive';
+}

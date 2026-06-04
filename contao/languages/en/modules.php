@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Chronometry Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license LGPL-3.0+
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 $GLOBALS['TL_LANG']['MOD']['chronometry'] = ['Zeitmessung', 'Zeitmessung Athleten-Einstellungen'];
+$GLOBALS['TL_LANG']['MOD']['chronometry_archive'] = ['Zeitmessung Archiv', 'Zeitmessung Athleten-Einstellungen'];
 
 // Frontend modules
 $GLOBALS['TL_LANG']['FMD']['chronometry'] = 'Zeitmessung Module';

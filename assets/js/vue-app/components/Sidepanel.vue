@@ -78,9 +78,10 @@
                 <li class="total" data-text="Total">Gemeldet: {{ store.stats.total }}</li>
                 <li class="runnersTotal" data-text="Gemeldet">Am Start: {{ store.stats.runnersTotal }}</li>
                 <li class="dispensed" data-text="Dispensiert">Nicht am Start: {{ store.stats.dispensed }}</li>
-                <li class="haveFinished" data-text="Im Ziel">Bereits im Ziel: {{ store.stats.haveFinished }}</li>
+                <li class="finishers" data-text="Im Ziel">Bereits im Ziel (mit Rang): {{ store.stats.finishers }}</li>
+                <li class="unranked" data-text="Im Ziel">Bereits im Ziel (ohne Rang): {{ store.stats.unranked }}</li>
                 <li class="running" data-text="Noch nicht im Ziel">Noch nicht im Ziel: {{ store.stats.running }}</li>
-                <li class="haveGivenUp" data-text="Wettkampf aufgegeben">Wettkampf aufgegeben: {{ store.stats.haveGivenUp }}</li>
+                <li class="dnf" data-text="Wettkampf aufgegeben">Wettkampf aufgegeben: {{ store.stats.dnf }}</li>
               </ul>
             </div>
           </div>

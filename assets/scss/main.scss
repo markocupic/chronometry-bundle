@@ -1,6 +1,7 @@
 /** dark mode */
 
 $text-red: #ff0000;
+$text-orange: orange;
 $text-green: #84fd84;
 $font-size-sidepanel: 1.5rem;
 
@@ -185,27 +186,30 @@ body {
         border-bottom: 1px solid #303236;
       }
 
-      .runner-status-icon {
+      .status-icon i {
         display: none;
       }
 
-      tr[data-runnerhasfinishedrace="true"] .runner-status-icon {
+      tr[data-status="finisher"] .status-icon i {
         display: inline;
         color: $text-green;
       }
 
-      tr[data-runnerdnfrace="true"] .runner-status-icon {
+      tr[data-status="unranked"] .status-icon i {
+        display: inline;
+        color: grey;
+      }
+
+      tr[data-status="dnf"] .status-icon i {
         display: inline;
         color: $text-red;
       }
 
-      tr td.number .icon-finisher {
-        color: $text-green;
+      tr[data-status="notstarted"] .status-icon i {
+        display: inline;
+        color: $text-orange;
       }
 
-      tr td.number .icon-dnf {
-        color: $text-red;
-      }
     }
   }
 
@@ -248,7 +252,7 @@ body {
         color: var(--bs-light);
       }
 
-      .modal-dnf {
+      .modal-status {
         font-size: 1.5rem;
         @media (max-width: 576px) {
           font-size: 1rem;
@@ -300,7 +304,7 @@ body {
 
   }
 
-  #chronometryModal.modal.runner-is-finisher {
+  #chronometryModal.modal[data-status="finisher"] {
     #infoRunnerHasFinished {
       display: block !important;
       font-size: 2rem;

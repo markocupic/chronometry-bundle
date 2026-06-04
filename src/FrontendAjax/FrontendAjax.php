@@ -19,6 +19,7 @@ use Contao\CoreBundle\Exception\ResponseException;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Doctrine\DBAL\Connection;
+use Markocupic\ChronometryBundle\Data\Status;
 use Markocupic\ChronometryBundle\Export\CsvWriter;
 use Markocupic\ChronometryBundle\Helper\ChronometryHelper;
 use Symfony\Component\Filesystem\Path;
@@ -76,7 +77,7 @@ class FrontendAjax
     /**
      * @throws \Exception
      */
-    public function persistRow(int $id, string $endtime, bool $dnf): void
+    public function persistRow(int $id, string $endtime, string $status): void
     {
         $arrJson = [];
         $arrJson['status'] = 'error';
@@ -90,16 +91,16 @@ class FrontendAjax
             throw new ResponseException($response);
         }
 
-        if ($dnf) {
-            $set['dnf'] = 1;
-            $set['endtime'] = '';
-            $set['runningtime'] = '';
-            $set['runningtimeUnix'] = 0;
-        } else {
-            $set['dnf'] = 0;
+        if ($status === Status::finisher->value || $status === Status::unranked->value) {
+            $set['status'] = $status;
             $set['endtime'] = $endtime;
             $set['runningtime'] = $this->chronometryHelper->getTimeSpan($set['starttime'], $endtime);
             $set['runningtimeUnix'] = $this->chronometryHelper->makeTimestamp($set['runningtime']);
+        } else {
+            $set['status'] = $status;
+            $set['endtime'] = '';
+            $set['runningtime'] = '';
+            $set['runningtimeUnix'] = 0;
         }
 
         if ($this->connection->update('tl_chronometry', $set, ['id' => $id])) {

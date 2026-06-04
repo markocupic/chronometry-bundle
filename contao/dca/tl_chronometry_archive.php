@@ -17,16 +17,19 @@ use Contao\DataContainer;
 use Contao\DC_Table;
 use Markocupic\ChronometryBundle\Data\Status;
 
-$GLOBALS['TL_DCA']['tl_chronometry'] = [
+$GLOBALS['TL_DCA']['tl_chronometry_archive'] = [
     'config'   => [
         'dataContainer'    => DC_Table::class,
         'switchToEdit'     => true,
         'enableVersioning' => true,
+        'closed'           => true,
+        'notEditable'      => true,
+        'notDeletable'     => true,
+        'notCopyable'      => true,
         'sql'              => [
             'keys' => [
                 'id'        => 'primary',
-                'published' => 'index',
-                'number'    => 'unique',
+                'published' => 'index'
             ],
         ],
     ],

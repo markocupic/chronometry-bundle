@@ -25,6 +25,7 @@ use Contao\Config;
 use Contao\Controller;
 use Contao\Date;
 use Doctrine\DBAL\Connection;
+use Markocupic\ChronometryBundle\Data\Status;
 use Markocupic\ChronometryBundle\Helper\ChronometryHelper;
 use Markocupic\PhpOffice\PhpWord\MsWordTemplateProcessor;
 use Symfony\Component\Filesystem\Path;
@@ -41,10 +42,10 @@ readonly class RankingList
 
     public function generate(int $catId, bool $printEternalListOfTheBest): File
     {
-        $strTable = 'tl_chronometry';
+        $table = $printEternalListOfTheBest ? 'tl_chronometry_archive' : 'tl_chronometry';
 
         // Load language file
-        Controller::loadLanguageFile($strTable);
+        Controller::loadLanguageFile($table);
 
         $strTemplateSrc = Path::join($this->projectDir, 'vendor/markocupic/chronometry-bundle/docx/ranklist.docx');
 
@@ -61,26 +62,31 @@ readonly class RankingList
         $objPhpWord = new MsWordTemplateProcessor($strTemplateSrc, $strTargetSrc);
 
         $rowsA = $this->connection->fetchAllAssociative(
-            'SELECT * FROM tl_chronometry WHERE published = 1 AND runningtimeUnix > 0 AND category = ? AND unranked = 0 AND dnf = 0 ORDER BY runningtimeUnix, number',
-            [$catId],
+            "SELECT * FROM $table WHERE published = 1 AND runningtimeUnix > 0 AND category = ? AND status = ? ORDER BY runningtimeUnix, number",
+            [$catId, Status::finisher->value],
         );
 
         $rowsB = $this->connection->fetchAllAssociative(
-            'SELECT * FROM tl_chronometry WHERE published = 1 AND category = ? AND unranked = 1 ORDER BY runningtimeUnix, number',
-            [$catId],
+            "SELECT * FROM $table WHERE published = 1 AND category = ? AND status = ? ORDER BY runningtimeUnix, number",
+            [$catId, Status::unranked->value],
         );
 
         $rowsC = $this->connection->fetchAllAssociative(
-            'SELECT * FROM tl_chronometry WHERE published = 1 AND category = ? AND unranked = 0 AND dnf = 1 ORDER BY runningtimeUnix, number',
-            [$catId],
+            "SELECT * FROM $table WHERE published = 1 AND category = ? AND status = ? ORDER BY runningtimeUnix, number",
+            [$catId, Status::dnf->value],
         );
 
         $rowsD = $this->connection->fetchAllAssociative(
-            'SELECT * FROM tl_chronometry WHERE published = 1 AND runningtimeUnix < 1 AND category = ? AND unranked = 0 AND dnf = 0 ORDER BY runningtimeUnix, number',
-            [$catId],
+            "SELECT * FROM $table WHERE published = 1 AND category = ? AND status = ? ORDER BY runningtimeUnix, number",
+            [$catId, Status::notstarted->value],
         );
 
-        $rows = array_merge($rowsA, $rowsB, $rowsC, $rowsD);
+        $rowsE = $this->connection->fetchAllAssociative(
+            "SELECT * FROM $table WHERE published = 1 AND category = ? AND status = ? ORDER BY runningtimeUnix, number",
+            [$catId, ''],
+        );
+
+        $rows = array_merge($rowsA, $rowsB, $rowsC, $rowsD, $rowsE);
 
         foreach ($rows as $row) {
             date_default_timezone_set('UTC');
@@ -89,14 +95,16 @@ readonly class RankingList
 
             date_default_timezone_set(Config::get('timeZone'));
 
-            if ($row['unranked']) {
+            if ($row['status'] === Status::unranked->value) {
                 $rank = 'o. Rang';
-            } elseif ($row['dnf']) {
+            } elseif ($row['status'] === Status::dnf->value) {
                 $rank = 'd.n.f.';
-            } elseif ($row['runningtimeUnix'] < 1) {
-                $rank = '';
+            } elseif ($row['status'] === Status::notstarted->value) {
+                $rank = 'n. gestartet';
+            } elseif ($row['status'] === Status::finisher->value) {
+                $rank = $this->chronometryHelper->getRank($row['id'], $table);
             } else {
-                $rank = $this->chronometryHelper->getRank((int) $row['id']);
+                $rank = '';
             }
 
             $objPhpWord->createClone('rank');
@@ -104,12 +112,12 @@ readonly class RankingList
             $objPhpWord->addToClone('rank', 'number', $row['number'], ['multiline' => false]);
             $objPhpWord->addToClone('rank', 'firstname', $row['firstname'], ['multiline' => false]);
             $objPhpWord->addToClone('rank', 'lastname', $row['lastname'], ['multiline' => false]);
-            $objPhpWord->addToClone('rank', 'time', $time > 0 ? $time : '', ['multiline' => false]);
+            $objPhpWord->addToClone('rank', 'time', $row['runningtimeUnix'] > 0 ? $time : '', ['multiline' => false]);
             $objPhpWord->addToClone('rank', 'eventDate', $eventDate, ['multiline' => false]);
         }
 
         // Category
-        $category = $GLOBALS['TL_LANG']['tl_chronometry']['categories'][$catId] ?? $catId;
+        $category = $GLOBALS['TL_LANG'][$table]['categories'][$catId] ?? $catId;
         $objPhpWord->replace('category', $category, ['multiline' => false]);
 
         // Generate & send to browser

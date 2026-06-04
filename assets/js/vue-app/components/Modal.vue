@@ -1,6 +1,6 @@
 <template>
   <!-- Modal window -->
-  <div id="chronometryModal" class="modal fade" tabindex="-1" data-bs-keyboard="true" :class="store.modal.runnerIsFinisher ? 'runner-is-finisher' : ''">
+  <div id="chronometryModal" class="modal fade" tabindex="-1" data-bs-keyboard="true" data-status="store.modal.runnerStatus">
     <div class="modal-dialog modal-xl modal-fullscreen-sm-down" role="document">
       <div class="modal-content bg-dark">
         <div class="modal-header">
@@ -25,11 +25,17 @@
             </button>
           </div>
 
-          <div class="modal-dnf form-check mt-5">
-            <input class="form-check-input" type="checkbox" value="1" id="runnerDnfCtrl" :checked="store.modal.runnerDnf === true">
-            <label class="form-check-label text-light" for="runnerDnfCtrl">
-              Wettkampf aufgegeben
+          <div class="modal-status form-check mt-5 p-0">
+            <label class="form-check-label text-light" for="runnerStatusCtrl">
+              Status
             </label>
+            <select class="form-select form-select-lg" id="runnerStatusCtrl" v-model="store.modal.runnerStatus">
+              <option value="">---</option>
+              <option value="finisher">Finisher</option>
+              <option value="dnf">Aufgegeben</option>
+              <option value="notstarted">Nicht gestartet</option>
+              <option value="unranked">Unranked</option>
+            </select>
           </div>
 
           <div v-if="store.modal.runnerHasNotice" class="mt-5 runnerNotice alert alert-info">
@@ -76,9 +82,9 @@ const clearEndTime = () => {
 };
 
 const updateRecord = (index) => {
+  const modalElement = document.getElementById('chronometryModal');
   const id = store.modal.runnerId;
-  const endtime = document.querySelector('#endtimeCtrl').value;
-  const dnf = document.querySelector('.modal #runnerDnfCtrl').checked ? 1 : '';
+  const endtime = modalElement.querySelector('#endtimeCtrl').value;
 
   const regex = /^(([0|1][0-9])|([2][0-3])):([0-5][0-9]):([0-5][0-9])$/;
 
@@ -92,7 +98,7 @@ const updateRecord = (index) => {
     form.append('id', id);
     form.append('index', index);
     form.append('endtime', endtime);
-    form.append('dnf', dnf);
+    form.append('status', store.modal.runnerStatus);
 
     fetch(window.location.href + '?action=updateRecord', {
       method: 'POST',

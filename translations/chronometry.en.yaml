@@ -1,0 +1,5 @@
+status:
+  dnf: 'dnf'
+  finisher: 'finisher'
+  unranked: 'unranked'
+  notstarted: 'notstarted'
