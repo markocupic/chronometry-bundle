@@ -17,6 +17,7 @@ namespace Markocupic\ChronometryBundle\Export;
 use Contao\Config;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use League\Csv\Bom;
 use League\Csv\Writer;
@@ -85,7 +86,7 @@ class CsvWriter
                 // Add the headline first
                 $arrRows[] = array_keys($row);
             }
-            $arrRows[] = $row;
+            $arrRows[] = array_map(static fn ($v) => \is_string($v) ? StringUtil::revertInputEncoding($v) : $v, $row);
             ++$i;
         }
 
