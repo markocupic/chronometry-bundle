@@ -44,9 +44,6 @@ readonly class RankingList
     {
         $table = $printEternalListOfTheBest ? 'tl_chronometry_archive' : 'tl_chronometry';
 
-        // Load language file
-        Controller::loadLanguageFile($table);
-
         $strTemplateSrc = Path::join($this->projectDir, 'vendor/markocupic/chronometry-bundle/docx/ranklist.docx');
 
         if (true === $printEternalListOfTheBest) {
@@ -117,7 +114,9 @@ readonly class RankingList
         }
 
         // Category
-        $category = $GLOBALS['TL_LANG'][$table]['categories'][$catId] ?? $catId;
+        // Load language file
+        Controller::loadLanguageFile('default');
+        $category = $GLOBALS['TL_LANG']['CHRONOMETRY']['categories'][$catId] ?? $catId;
         $objPhpWord->replace('category', $category, ['multiline' => false]);
 
         // Generate & send to browser

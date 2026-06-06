@@ -12,11 +12,6 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/chronometry-bundle
  */
 
-$GLOBALS['TL_LANG']['tl_chronometry_archive']['categories'][1] = 'Primar Boys';
-$GLOBALS['TL_LANG']['tl_chronometry_archive']['categories'][2] = 'Primar Girls';
-$GLOBALS['TL_LANG']['tl_chronometry_archive']['categories'][3] = 'ISS Boys';
-$GLOBALS['TL_LANG']['tl_chronometry_archive']['categories'][4] = 'ISS Girls';
-
 // Legends
 $GLOBALS['TL_LANG']['tl_chronometry_archive']['published_legend'] = 'Veröffentlichen';
 $GLOBALS['TL_LANG']['tl_chronometry_archive']['name_legend'] = 'Einstellungen Athlet';

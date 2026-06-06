@@ -35,11 +35,9 @@ readonly class Certificate
         // Load DCA
         Controller::loadDataContainer(ChronometryModel::getTable());
 
-        // Load language file
-        Controller::loadLanguageFile(ChronometryModel::getTable());
-
         // Get category
-        $category = $GLOBALS['TL_LANG'][ChronometryModel::getTable()]['categories'][$chronometryModel->category] ?? $chronometryModel->category;
+        Controller::loadLanguageFile('default');
+        $category = $GLOBALS['TL_LANG']['CHRONOMETRY']['categories'][$chronometryModel->category] ?? $chronometryModel->category;
 
         // Get rank
         $rank = $this->chronometryHelper->getRank($chronometryModel->id);

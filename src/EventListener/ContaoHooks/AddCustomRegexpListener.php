@@ -16,23 +16,20 @@ namespace Markocupic\ChronometryBundle\EventListener\ContaoHooks;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\Widget;
-use Markocupic\ChronometryBundle\Validator\ValidatorTime;
+use Markocupic\ChronometryBundle\Validator\TimeValidator;
 
 #[AsHook('addCustomRegexp', priority: 100)]
 class AddCustomRegexpListener
 {
-    private ValidatorTime $validatorTime;
-
-    public function __construct(ValidatorTime $validatorTime)
+    public function __construct(private readonly TimeValidator $validatorTime)
     {
-        $this->validatorTime = $validatorTime;
     }
 
-    public function __invoke(string $strRegexp, $varValue, Widget $objWidget): bool
+    public function __invoke(string $strRegexp, $varValue, Widget $widget): bool
     {
         if ('time_format_H:i:s' === $strRegexp) {
             if (!$this->validatorTime->isValidTimeFormat($varValue)) {
-                $objWidget->addError('Field '.$objWidget->label.' should be a valid time format hh:mm:ss.');
+                $widget->addError(\sprintf('Field "%s" should be a valid time format hh:mm:ss.', $widget->label));
             }
 
             return true;

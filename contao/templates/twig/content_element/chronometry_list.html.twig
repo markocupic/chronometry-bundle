@@ -1,0 +1,42 @@
+{% extends "@Contao/frontend_module/_base.html.twig" %}
+
+{% block content %}
+    {% if app.request.attributes.get('_scope')|default == 'backend' %}
+        <h2>Duathlon Zeitmessungs APP</h2>
+    {% endif %}
+
+    {% if app.request.attributes.get('_scope')|default == 'frontend' %}
+        {% add to head %}
+            <script src="assets/contao-component-bootstrap/bootstrap/dist/js/bootstrap.min.js"></script>
+            <link rel="stylesheet" href="assets/contao-component-bootstrap/bootstrap/dist/css/bootstrap.min.css">
+            <link rel="stylesheet" href="{{ asset('styles.css', 'markocupic_chronometry') }}">
+            <link rel="stylesheet" href="assets/contao-component-fontawesome-free/fontawesomefree/js-packages/@fortawesome/fontawesome-free/css/all.css">
+            <link rel="stylesheet" href="assets/contao-component-fontawesome-free/fontawesomefree/js-packages/@fortawesome/fontawesome-free/css/brands.css">
+        {% endadd %}
+        <div id="chronometry-app">
+            <loading-spinner></loading-spinner>
+            <div class="application">
+                <div id="toggleSidepanel">
+                    <button type="button" data-bs-toggle="offcanvas" data-bs-target="#sidepanelContainer" aria-controls="sidepanelContainer">
+                        <i class="sidepanel-toggle-icon fa-solid fa-4x fa-bars"></i>
+                    </button>
+                </div>
+                <sidepanel></sidepanel>
+                <div class="container">
+                    <online-status-indicator></online-status-indicator>
+                    <runners-table></runners-table>
+                </div>
+                <modal></modal>
+            </div>
+        </div><
+        <script{{ attrs().setIfExists('nonce', csp_nonce('script-src')) }}>
+          CHRONOMETRY = {
+            requestToken: '{{ contao.request_token }}',
+            modalId: 'chronometryModal',
+          }
+        </script>
+        {% add to body %}
+            <script src="{{ asset('app.js','markocupic_chronometry') }}"></script>
+        {% endadd %}
+    {% endif %}
+{% endblock %}

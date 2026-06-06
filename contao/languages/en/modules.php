@@ -14,7 +14,3 @@ declare(strict_types=1);
 
 $GLOBALS['TL_LANG']['MOD']['chronometry'] = ['Zeitmessung', 'Zeitmessung Athleten-Einstellungen'];
 $GLOBALS['TL_LANG']['MOD']['chronometry_archive'] = ['Zeitmessung Archiv', 'Zeitmessung Athleten-Einstellungen'];
-
-// Frontend modules
-$GLOBALS['TL_LANG']['FMD']['chronometry'] = 'Zeitmessung Module';
-$GLOBALS['TL_LANG']['FMD']['chronometry_list'] = ['Zeitmessung Startliste', 'Zeitmessung Startliste'];

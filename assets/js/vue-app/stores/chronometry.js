@@ -117,8 +117,8 @@ export const useChronometryStore = defineStore('chronometry', () => {
     }
   };
 
-  const checkIsOnline = () => {
-    fetch(window.location.href + '?action=checkIsOnline', {
+  const checkOnlineState = () => {
+    fetch(window.location.href + '?action=checkOnlineState', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -160,7 +160,7 @@ export const useChronometryStore = defineStore('chronometry', () => {
     fetchAppData,
     openModal,
     speakNumber,
-    checkIsOnline,
+    checkOnlineState,
     findRunnerById,
   };
 });

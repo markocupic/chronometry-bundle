@@ -39,19 +39,18 @@ class FrontendAjax
         $this->config = $this->framework->getAdapter(Config::class);
     }
 
-    public function checkIsOnline(): void
+    public function checkOnlineState(): JsonResponse
     {
-        $arrJson = [];
-        $arrJson['status'] = 'success';
-        $response = new JsonResponse($arrJson);
+        $json = [];
+        $json['status'] = 'success';
 
-        throw new ResponseException($response);
+        return new JsonResponse($json);
     }
 
-    public function fetchAppData(): void
+    public function fetchAppData(): JsonResponse
     {
         $arrRows = [];
-        $arrJson = [];
+        $json = [];
 
         $rows = $this->connection
             ->fetchAllAssociative(
@@ -64,31 +63,29 @@ class FrontendAjax
             $arrRows[] = $this->chronometryHelper->getRowAsObject($row);
         }
 
-        $arrJson['status'] = 'success';
-        $arrJson['stats'] = $this->chronometryHelper->getStats();
-        $arrJson['runners'] = $arrRows;
-        $arrJson['categories'] = $this->chronometryHelper->getCategories();
+        $json['status'] = 'success';
+        $json['stats'] = $this->chronometryHelper->getStats();
+        $json['runners'] = $arrRows;
+        $json['categories'] = $this->chronometryHelper->getCategories();
 
-        $response = new JsonResponse($arrJson);
-
-        throw new ResponseException($response);
+        return new JsonResponse($json);
     }
 
     /**
      * @throws \Exception
      */
-    public function persistRow(int $id, string $endtime, string $status): void
+    public function persistRow(int $id, string $endtime, string $status): JsonResponse
     {
-        $arrJson = [];
-        $arrJson['status'] = 'error';
+        $json = [];
+        $json['status'] = 'error';
 
         $set = $this->connection->fetchAssociative('SELECT * FROM tl_chronometry WHERE id = ?', [$id]);
 
         // Save endtime
         if (false === $set) {
-            $response = new JsonResponse($arrJson);
+            $response = new JsonResponse($json);
 
-            throw new ResponseException($response);
+            return new ResponseException($response);
         }
 
         if ($status === Status::finisher->value || $status === Status::unranked->value) {
@@ -135,8 +132,6 @@ class FrontendAjax
 
         $this->csvWriter->saveToFile($path);
 
-        $response = new JsonResponse($json);
-
-        throw new ResponseException($response);
+        return new JsonResponse($json);
     }
 }

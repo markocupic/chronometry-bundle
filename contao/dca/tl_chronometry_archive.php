@@ -98,7 +98,7 @@ $GLOBALS['TL_DCA']['tl_chronometry_archive'] = [
             'sql'       => "int(1) unsigned NOT NULL default '0'",
         ],
         'category'        => [
-            'reference' => &$GLOBALS['TL_LANG']['tl_chronometry_archive']['categories'],
+            'reference' => &$GLOBALS['TL_LANG']['CHRONOMETRY']['categories'],
             'exclude'   => true,
             'search'    => true,
             'sorting'   => true,

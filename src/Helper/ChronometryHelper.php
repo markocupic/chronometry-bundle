@@ -129,7 +129,7 @@ readonly class ChronometryHelper
 
     public function getCategories(): array
     {
-        Controller::loadLanguageFile(ChronometryModel::getTable());
+        Controller::loadLanguageFile('default');
         $aCat = [];
         $arrCats = Config::get('chronometry_bundle_categories');
 
@@ -138,8 +138,7 @@ readonly class ChronometryHelper
                 $objCat = new \stdClass();
                 $objCat->id = $cat;
 
-                $table = ChronometryModel::getTable();
-                $categoryLabel = $GLOBALS['TL_LANG'][$table]['categories'][$cat] ?? '';
+                $categoryLabel = $GLOBALS['TL_LANG']['CHRONOMETRY']['categories'][$cat] ?? '';
                 $objCat->label = '' !== $categoryLabel ? $categoryLabel : 'undefined';
                 $aCat[] = $objCat;
             }

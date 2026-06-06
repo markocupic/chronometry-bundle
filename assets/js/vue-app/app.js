@@ -51,10 +51,10 @@ window.chronometryApp = createApp({
                 setTime();
             }, 1000);
 
-            store.checkIsOnline();
+            store.checkOnlineState();
 
             window.setInterval(() => {
-                store.checkIsOnline();
+                store.checkOnlineState();
             }, 15000);
 
             store.fetchAppData();
