@@ -17,6 +17,7 @@ namespace Markocupic\ChronometryBundle\Export;
 use Contao\Config;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\Date;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use League\Csv\Bom;
@@ -40,7 +41,7 @@ class CsvWriter
 
     public function generate(bool $addHeadline = true): File
     {
-        $strDatim = date('Ymd_H_i_s_', time());
+        $strDatim = Date::parse('Ymd_H_i_s_', time());
         $targetPath = Path::join($this->projectDir, $this->config->get('chronometry_bundle_backup_path'));
         $targetPath = \sprintf($targetPath, $strDatim);
 
@@ -86,6 +87,12 @@ class CsvWriter
                 // Add the headline first
                 $arrRows[] = array_keys($row);
             }
+
+            // Convert timestamps to date
+            if ($row['eventDate']) {
+                $row['eventDate'] = Date::parse(Config::get('dateFormat'), $row['eventDate']);
+            }
+
             $arrRows[] = array_map(static fn ($v) => \is_string($v) ? StringUtil::revertInputEncoding($v) : $v, $row);
             ++$i;
         }
